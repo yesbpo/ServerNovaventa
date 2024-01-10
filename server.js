@@ -18,7 +18,7 @@ app.options('/db/crear-datos', (req, res) => {
 
 app.use(bodyParser.json());
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://appcenteryes.appcenteryes.com/'); // Permitir todos los orígenes (No recomendado en producción)
+  res.header('Access-Control-Allow-Origin', '*'); // Permitir todos los orígenes (No recomendado en producción)
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
@@ -500,7 +500,7 @@ app.get('/db/obtener-usuarios', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
-const PORT = 3001;
+const PORT = 3003;
 app.listen(PORT, () => {
   console.log(`Servidor Express en ejecución en el puerto ${PORT}`);
 });
