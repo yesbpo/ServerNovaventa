@@ -566,6 +566,7 @@ if (chatsSinUserId.length>1) {
         var frecuenciaNumeros = {};
         chatsParaAsignar.forEach(numero => {
         frecuenciaNumeros[numero] = (frecuenciaNumeros[numero] || 0) + 1;
+        elementoSeleccionado = idsUactivos[Math.floor(Math.random() * idsUactivos.length)];
         });
         if (chatsParaAsignar.length === 0) {
         elementoSeleccionado = idsUactivos[Math.floor(Math.random() * idsUactivos.length)];
@@ -629,7 +630,7 @@ if (chatsSinUserId.length>1) {
           const nuevoUserId = idsUactivos[Math.floor(Math.random() * idsUactivos.length)]; // Reemplaza con el nuevo valor de userId
           
           try {
-        
+            console.log('id asignado', nuevoUserId)
             const resultadoActualizacion = await actualizarUsuarioChat(idChat2, nuevoUserId);
             console.log(resultadoActualizacion)
             // Aquí puedes manipular la información del resultado según tus necesidades
