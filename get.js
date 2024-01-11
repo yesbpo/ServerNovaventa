@@ -175,7 +175,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
                 const idChat2 = chatlimpio[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
                 const resolvedValue = false; // Reemplaza 'nuevo_valor_resolved' con el nuevo valor para 'resolved'
               
-                const response = await fetch(`novaventa.appcenteryes.com/dbn/actualizar-chat/${idChat2}`, {
+                const response = await fetch(`https://novaventa.appcenteryes.com/dbn/actualizar-chat/${idChat2}`, {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
