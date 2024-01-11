@@ -144,6 +144,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
       if(data.type == 'message'){
         console.log('entra en if')
         singuardar()
+        engestionSinResolver()
         console.log('log de obtener',chatlimpio)
         
           console.log('entra en if2')
@@ -167,6 +168,32 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
               console.log('no exito')       
             }
 
+          }
+          async function engestionSinResolver(){
+            if(chatlimpio[0].status == 'in progress'){
+              try {
+                const idChat2 = chatlimpio[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
+                const resolvedValue = false; // Reemplaza 'nuevo_valor_resolved' con el nuevo valor para 'resolved'
+              
+                const response = await fetch(`novaventa.appcenteryes.com/dbn/actualizar-chat/${idChat2}`, {
+                  method: 'PUT',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ resolved: resolvedValue }),
+                });
+              
+                if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+              
+                const data = await response.json();
+                console.log('Datos actualizados correctamente:', data);
+              } catch (error) {
+                console.error('Error al actualizar el chat:', error);
+              }
+              
+            }
           }
           async function singuardar (){
           if(chatlimpio.length === 0){

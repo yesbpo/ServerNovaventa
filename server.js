@@ -296,6 +296,35 @@ app.post('/dbn/crear-chat', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+//actualizar chat resolved 
+app.put('/dbn/actualizar-chat/:idChat2', async (req, res) => {
+  try {
+    const { idChat2 } = req.params;
+    const { resolved } = req.body;
+
+    // Verificar si ya existe un chat con el mismo idChat2
+    const [existingResult] = await promisePool.execute(
+      'SELECT * FROM Chat WHERE idChat2 = ?',
+      [idChat2]
+    );
+
+    if (existingResult.length > 0) {
+      // Si existe, actualiza el dato 'resolved'
+      await promisePool.execute(
+        'UPDATE Chat SET resolved = ? WHERE idChat2 = ?',
+        [resolved, idChat2]
+      );
+
+      res.status(200).json({ message: 'Datos actualizados correctamente.' });
+    } else {
+      // Si no existe un chat con el idChat2 proporcionado
+      res.status(404).json({ message: 'No se encontró un chat con el idChat2 proporcionado.' });
+    }
+  } catch (error) {
+    console.error('Error al actualizar el chat:', error);
+    res.status(500).json({ message: 'Error interno del servidor.' });
+  }
+});
 // Ruta para actualizar el userId de un chat por idChat2
 app.put('/dbn/actualizar-usuario-chat', async (req, res) => {
   try {
