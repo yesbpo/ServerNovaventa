@@ -10,7 +10,7 @@ app.use(cors({
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 }));
-app.options('/db/crear-datos', (req, res) => {
+app.options('/dbn/crear-datos', (req, res) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.status(200).send();
