@@ -144,7 +144,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
       if(data.type == 'message'){
         console.log('entra en if')
         singuardar()
-        engestionSinResolver()
+        
         console.log('log de obtener',chatlimpio)
         
           console.log('entra en if2')
@@ -170,7 +170,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
 
           }
           async function engestionSinResolver(){
-            if(chatlimpio[0].status == 'in progress'){
+            if(chatlimpio[0].status === 'in progress' || 'pending'){
               try {
                 const idChat2 = chatlimpio[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
                 const resolvedValue = false; // Reemplaza 'nuevo_valor_resolved' con el nuevo valor para 'resolved'
@@ -196,6 +196,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
             }
           }
           async function singuardar (){
+            engestionSinResolver()
           if(chatlimpio.length === 0){
             console.log('entra en if33')
             
