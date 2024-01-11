@@ -436,7 +436,7 @@ if (chatsSinUserId.length>1) {
       console.log('si entra')
     // Lógica para un solo elemento
     var indiceAleatorio = Math.floor(Math.random() * idsUactivos.length);
-    elementoSeleccionado = Math.floor(Math.random() * idsUactivos.length);
+    elementoSeleccionado = idsUactivos[indiceAleatorio];
     console.log(elementoSeleccionado)
     const response = await fetch('https://novaventa.appcenteryes.com/dbn/actualizar-usuario-chat', {
       method: 'PUT',
