@@ -348,7 +348,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
         const idsChatsinasignar = chatsSinUserId.map(objeto => objeto.userId);
         const idsChats =  idsChatasignados.concat(idsChatsinasignar);
         const chatsParaAsignar = idsChats.filter(value => value !== null && value !== 0);
-        const responseUsuarios = await fetch('https://appcenteryes.appcenteryes.com/db/obtener-usuarios');
+        const responseUsuarios = await fetch('https://appcenteryes.appcenteryes.com/dbn/obtener-usuarios');
         const usuarios = await responseUsuarios.json();   
         const usuariosActivos = usuarios.filter((usuario) => usuario.session === 'Activo' && usuario.type_user ==='Asesor');
         const idsUactivos = usuariosActivos.map(objeto => objeto.id);
@@ -561,7 +561,7 @@ if (chatsSinUserId.length>1) {
         const chatsParaAsignar = idsChats.filter(value => value !== null && value !== 0);
         const responseUsuarios = await fetch('https://novaventa.appcenteryes.com/dbn/obtener-usuarios');
         const usuarios = await responseUsuarios.json();   
-        const usuariosActivos = usuarios.filter((usuario) => usuario.session === 'Activo' && usuario.type_user ==='Asesor');
+        const usuariosActivos = usuarios.filter((usuario) => usuario.session == 'Activo' && usuario.type_user =='Asesor');
         const idsUactivos = usuariosActivos.map(objeto => objeto.id);
         var frecuenciaNumeros = {};
         chatsParaAsignar.forEach(numero => {
