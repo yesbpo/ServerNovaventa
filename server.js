@@ -174,15 +174,21 @@ app.get('/dbn/generar-informe', async (req, res) => {
     const { campaign, fechaInicio, fechaFin } = req.query;
 
     // Validar que se proporcionen los parámetros necesarios
-    if (!campaign || !fechaInicio || !fechaFin) {
+    if (!fechaInicio || !fechaFin) {
       return res.status(400).json({ error: 'Faltan parámetros requeridos para generar el informe.' });
     }
 
+    let query = 'SELECT * FROM Template WHERE timestamp BETWEEN ? AND ?';
+    let queryParams = [fechaInicio, fechaFin];
+
+    // Agregar el filtro de campaña si está presente
+    if (campaign) {
+      query += ' AND campaign = ?';
+      queryParams.push(campaign);
+    }
+
     // Consultar la base de datos para obtener informes según la campaña y el rango de fechas
-    const [informes] = await promisePool.execute(
-      'SELECT * FROM Template WHERE campaign = ? AND timestamp BETWEEN ? AND ?',
-      [campaign, fechaInicio, fechaFin]
-    );
+    const [informes] = await promisePool.execute(query, queryParams);
 
     res.json({ informes });
   } catch (error) {
