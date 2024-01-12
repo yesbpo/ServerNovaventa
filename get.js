@@ -125,7 +125,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
         content, type_comunication, status, number, timestamp, type_message, idMessage
       };
       console.log(mensaje)
-      try {const response = await fetch('https://novaventa.appcenteryes.com/dbn/guardar-mensajes', {
+      try {const response = await fetch(process.env.BASE_DB+'/guardar-mensajes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -137,7 +137,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
         console.error('Error en la solicitud:', response);
         throw new Error('Error en la solicitud');
       }
-      const responseChat = await fetch('https://novaventa.appcenteryes.com/dbn/obtener-chats');
+      const responseChat = await fetch(process.env.BASE_DB+'/obtener-chats');
       const chats = await responseChat.json();
       const chatlimpio = chats.filter(chat=> chat.idChat2 == data.payload.source);
       
@@ -157,7 +157,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
               status: 'pending',
               userId: 0,
             };
-            const response = await fetch('https://novaventa.appcenteryes.com/dbn/crear-chat', {
+            const response = await fetch(process.env.BASE_DB+'/crear-chat', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -175,7 +175,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
                 const idChat2 = chatlimpio[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
                 const resolvedValue = false; // Reemplaza 'nuevo_valor_resolved' con el nuevo valor para 'resolved'
               
-                const response = await fetch(`https://novaventa.appcenteryes.com/dbn/actualizar-chat/${idChat2}`, {
+                const response = await fetch(`${process.env.BASE_DB}/actualizar-chat/${idChat2}`, {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
@@ -210,7 +210,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
                status: 'pending',
                userId: 0,
              };
-             const response = await fetch('https://novaventa.appcenteryes.com/dbn/crear-chat', {
+             const response = await fetch(process.env.BASE_DB+'/crear-chat', {
                method: 'POST',
                headers: {
                  'Content-Type': 'application/json',
@@ -245,7 +245,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
       timestamp: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`,
       idmessageTemplate: data.payload.id
     };
-      const respnseweb = await fetch("https://novaventa.appcenteryes.com/dbn/insertar-datos-template", {
+      const respnseweb = await fetch(process.env.BASE_DB+"/insertar-datos-template", {
          method: 'POST',
          headers: {
            'Content-Type': 'application/json'
@@ -306,7 +306,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
     }
      //obtener mensajes
      
-      const response = await fetch('https://novaventa.appcenteryes.com/dbn/obtener-mensajes', {
+      const response = await fetch(process.env.BASE_DB+'/obtener-mensajes', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -334,12 +334,12 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
        
         return numeroNormalizado;
       }
-      const existentes = await fetch('https://novaventa.appcenteryes.com/dbn/obtener-chats');
+      const existentes = await fetch(process.env.BASE_DB+'/obtener-chats');
       let chatsvalidados =[];
       chatsvalidados = await existentes.json();
       console.log('log',chatsvalidados)
       try {
-        const response = await fetch('https://novaventa.appcenteryes.com/dbn/obtener-chats');
+        const response = await fetch(process.env.BASE_DB+'/obtener-chats');
         if (!response.ok) { 
         }
         const chatsExistentes = await response.json();
@@ -349,7 +349,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
         const idsChatsinasignar = chatsSinUserId.map(objeto => objeto.userId);
         const idsChats =  idsChatasignados.concat(idsChatsinasignar);
         const chatsParaAsignar = idsChats.filter(value => value !== null && value !== 0);
-        const responseUsuarios = await fetch('https://novaventa.appcenteryes.com/dbn/obtener-usuarios');
+        const responseUsuarios = await fetch(process.env.BASE_DB+'/obtener-usuarios');
         const usuarios = await responseUsuarios.json();   
         const usuariosActivos = usuarios.filter((usuario) => usuario.session === 'Activo' && usuario.type_user ==='Asesor');
         const idsUactivos = usuariosActivos.map(objeto => objeto.id);
@@ -393,7 +393,7 @@ if (chatsSinUserId.length>1) {
         } else {
       elementoSeleccionado = minimoValorFrecuencia;
       }
-        const response = await fetch('https://novaventa.appcenteryes.com/dbn/actualizar-usuario-chat', {
+        const response = await fetch(process.env.BASE_DB+'/actualizar-usuario-chat', {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json',
@@ -439,7 +439,7 @@ if (chatsSinUserId.length>1) {
     var indiceAleatorio = Math.floor(Math.random() * idsUactivos.length);
     elementoSeleccionado = idsUactivos[indiceAleatorio];
     console.log(idsUactivos)
-    const response = await fetch('https://novaventa.appcenteryes.com/dbn/actualizar-usuario-chat', {
+    const response = await fetch(process.env.BASE_DB+'/actualizar-usuario-chat', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -464,7 +464,7 @@ if (chatsSinUserId.length>1) {
 }
        //obtener usuarios activos
         try {
-          const response = await fetch('http://https://novaventa.appcenteryes.com/dbn/obtener-usuarios', {
+          const response = await fetch(process.env.BASE_DB+'/obtener-usuarios', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',
@@ -509,7 +509,7 @@ if (chatsSinUserId.length>1) {
            userId: 0,
            
          };
-          const response2 = await fetch('https://novaventa.appcenteryes.com/dbn/crear-chat', {
+          const response2 = await fetch(process.env.BASE_DB+'/crear-chat', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -531,7 +531,7 @@ if (chatsSinUserId.length>1) {
       async function verificarChatExistente(numero) {
       const idChat2 = numero; // Reemplaza esto con el valor real que deseas buscar
       try {
-      const responseChatExistente = await fetch(`https://novaventa.appcenteryes.com/dbn/obtener-chat-id?idChat2=${idChat2}`, {
+      const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${idChat2}`, {
       method: 'GET',
       headers: {
       'Content-Type': 'application/json',
@@ -550,7 +550,7 @@ if (chatsSinUserId.length>1) {
 // Función para distribuir mensajes equitativamente entre usuarios 
       //obtener chats
       try {
-        const response = await fetch('https://novaventa.appcenteryes.com/dbn/obtener-chats');
+        const response = await fetch(process.env.BASE_DB+'/obtener-chats');
         if (!response.ok) { 
         }
         const chatsExistentes = await response.json();
@@ -560,7 +560,7 @@ if (chatsSinUserId.length>1) {
         const idsChatsinasignar = chatsSinUserId.map(objeto => objeto.userId);
         const idsChats =  idsChatasignados.concat(idsChatsinasignar);
         const chatsParaAsignar = idsChats.filter(value => value !== null && value !== 0);
-        const responseUsuarios = await fetch('https://novaventa.appcenteryes.com/dbn/obtener-usuarios');
+        const responseUsuarios = await fetch(process.env.BASE_DB+'/obtener-usuarios');
         const usuarios = await responseUsuarios.json();   
         const usuariosActivos = usuarios.filter((usuario) => usuario.session === 'Activo' && usuario.type_user ==='Asesor');
         const idsUactivos = usuariosActivos.map(objeto => objeto.id);
@@ -605,7 +605,7 @@ if (chatsSinUserId.length>1) {
         } else {
       elementoSeleccionado = minimoValorFrecuencia;
       }
-        const response = await fetch('https://novaventa.appcenteryes.com/dbn/actualizar-usuario-chat', {
+        const response = await fetch(process.env.BASE_DB+'/actualizar-usuario-chat', {
                 method: 'PUT',
                 headers: {
                   'Content-Type': 'application/json',
@@ -651,7 +651,7 @@ if (chatsSinUserId.length>1) {
     var indiceAleatorio = Math.floor(Math.random() * idsUactivos.length);
     elementoSeleccionado = idsUactivos[indiceAleatorio];
     console.log(elementoSeleccionado)
-    const response = await fetch('https://novaventa.appcenteryes.com/dbn/actualizar-usuario-chat', {
+    const response = await fetch(process.env.BASE_DB+'/actualizar-usuario-chat', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -675,7 +675,7 @@ if (chatsSinUserId.length>1) {
 }
        //obtener usuarios activos
         try {
-          const response = await fetch('https://novaventa.appcenteryes.com/dbn/obtener-usuarios', {
+          const response = await fetch(process.env.BASE_DB+'/obtener-usuarios', {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

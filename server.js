@@ -10,7 +10,7 @@ app.use(cors({
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
 }));
-app.options('/dbn/crear-datos', (req, res) => {
+app.options(process.env.DB_ROUTE+'/crear-datos', (req, res) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.status(200).send();
@@ -38,7 +38,7 @@ const promisePool = pool.promise();
 // Función para insertar datos en la base de datos
 
 //crearsession
-app.put('/dbn/actualizar/usuario', async (req, res) => {
+app.put(process.env.DB_ROUTE+'/actualizar/usuario', async (req, res) => {
   try {
     const {nuevoDato, usuario  } = req.body;
     // Realiza la actualización en la base de datos
@@ -63,7 +63,7 @@ app.put('/dbn/actualizar/usuario', async (req, res) => {
 });
 app.use(cors());
 // Ruta para insertar datos
-app.post('/dbn/crear-usuario', async (req, res) => {
+app.post(process.env.DB_ROUTE+'/crear-usuario', async (req, res) => {
   try {
     const { type_user, email, session, usuario, password, complete_name } = req.body;
 
@@ -93,8 +93,8 @@ app.post('/dbn/crear-usuario', async (req, res) => {
 });
 // ruta de crear mensajes
 
-app.use('/dbn/obtener-mensajes-por-fecha', cors());
-app.get('/dbn/obtener-mensajes-por-fecha', async (req, res) => {
+app.use(process.env.DB_ROUTE+'/obtener-mensajes-por-fecha', cors());
+app.get(process.env.DB_ROUTE+'/obtener-mensajes-por-fecha', async (req, res) => {
   try {
     const { fechaInicio, fechaFin } = req.query; // Utiliza req.query para obtener parámetros de la URL
 
@@ -119,7 +119,7 @@ app.get('/dbn/obtener-mensajes-por-fecha', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
-app.post('/dbn/insertar-datos-template', async (req, res) => {
+app.post(process.env.DB_ROUTE+'/insertar-datos-template', async (req, res) => {
   try {
     
     const { idmessageTemplate, status, attachments, message, timestamp, campaign } = req.body;
@@ -169,7 +169,7 @@ app.post('/dbn/insertar-datos-template', async (req, res) => {
 });
 
 //ruta informes de campañas
-app.get('/dbn/generar-informe', async (req, res) => {
+app.get(process.env.DB_ROUTE+'/generar-informe', async (req, res) => {
   try {
     const { campaign, fechaInicio, fechaFin } = req.query;
 
@@ -196,7 +196,7 @@ app.get('/dbn/generar-informe', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
-app.post('/dbn/guardar-mensajes', async (req, res) => {
+app.post(process.env.DB_ROUTE+'/guardar-mensajes', async (req, res) => {
   try {
     const { content, type_comunication, status, number, timestamp, type_message, idMessage } = req.body;
 
@@ -244,7 +244,7 @@ app.post('/dbn/guardar-mensajes', async (req, res) => {
   }
 });//obtener mensajes
 
-app.get('/dbn/obtener-mensajes', async (req, res) => {
+app.get(process.env.DB_ROUTE+'/obtener-mensajes', async (req, res) => {
   try {
     // Ejecutar la consulta SQL para obtener todos los mensajes
     const [rows] = await promisePool.query('SELECT * FROM Mensaje');
@@ -257,7 +257,7 @@ app.get('/dbn/obtener-mensajes', async (req, res) => {
   }
 });
 // crear chats 
-app.post('/dbn/crear-chat', async (req, res) => {
+app.post(process.env.DB_ROUTE+'/crear-chat', async (req, res) => {
   try {
     const chatsData = req.body;
 
@@ -303,7 +303,7 @@ app.post('/dbn/crear-chat', async (req, res) => {
   }
 });
 //actualizar chat resolved 
-app.put('/dbn/actualizar-chat/:idChat2', async (req, res) => {
+app.put(process.env.DB_ROUTE+'/actualizar-chat/:idChat2', async (req, res) => {
   try {
     const { idChat2 } = req.params;
     const { resolved } = req.body;
@@ -332,7 +332,7 @@ app.put('/dbn/actualizar-chat/:idChat2', async (req, res) => {
   }
 });
 // Ruta para actualizar el userId de un chat por idChat2
-app.put('/dbn/actualizar-usuario-chat', async (req, res) => {
+app.put(process.env.DB_ROUTE+'/actualizar-usuario-chat', async (req, res) => {
   try {
     const idChat2 = req.body.idChat2; // Se espera que el idChat2 sea proporcionado en el cuerpo de la solicitud
     const nuevoUserId = req.body.nuevoUserId; // Nuevo valor de userId que se proporcionará en el cuerpo de la solicitud
@@ -375,7 +375,7 @@ app.put('/dbn/actualizar-usuario-chat', async (req, res) => {
   }
 });
 // actualizar estado del chat 
-app.put('/dbn/actualizar-estado-chat', async (req, res) => {
+app.put(process.env.DB_ROUTE+'/actualizar-estado-chat', async (req, res) => {
   try {
     const idChat2 = req.body.idChat2; // Se espera que el idChat2 sea proporcionado en el cuerpo de la solicitud
     const nuevoEstado = req.body.nuevoEstado; // Nuevo valor de userId que se proporcionará en el cuerpo de la solicitud
@@ -416,7 +416,7 @@ else{
 // buscar chat por id 
 // Supongamos que 'pool' es tu conexión a la base de datos
 
-app.get('/dbn/obtener-chat-id', async (req, res) => {
+app.get(process.env.DB_ROUTE+'/obtener-chat-id', async (req, res) => {
   try {
     const idChat2 = req.query.idChat2;
 
@@ -436,7 +436,7 @@ app.get('/dbn/obtener-chat-id', async (req, res) => {
   }
 });
 // Ruta para obtener todos los chats
-app.get('/dbn/obtener-chats', async (req, res) => {
+app.get(process.env.DB_ROUTE+'/obtener-chats', async (req, res) => {
   try {
     // Obtener todos los chats de la base de datos
     const [rows] = await promisePool.execute('SELECT * FROM Chat');
@@ -452,7 +452,7 @@ app.get('/dbn/obtener-chats', async (req, res) => {
 });
 
 // actualizar mensajes 
-app.put('/dbn/mensajeenviado', async (req, res) => {
+app.put(process.env.DB_ROUTE+'/mensajeenviado', async (req, res) => {
   try {
     const {content, idMessage} = req.body;
     // Realiza la actualización en la base de datos
@@ -476,7 +476,7 @@ app.put('/dbn/mensajeenviado', async (req, res) => {
   }
 });
 // actualizar uusario 
-app.put('/dbn/actualizar/usuario', async (req, res) => {
+app.put(process.env.DB_ROUTE+'/actualizar/usuario', async (req, res) => {
   try {
     const {nuevoDato, usuario } = req.body;
     // Realiza la actualización en la base de datos
@@ -501,7 +501,7 @@ app.put('/dbn/actualizar/usuario', async (req, res) => {
 });
 
 // actualizar estado del mensaje
-app.put('/dbn/mensajestatus', async (req, res) => {
+app.put(process.env.DB_ROUTE+'/mensajestatus', async (req, res) => {
   try {
     const {status, idMessage} = req.body;
     // Realiza la actualización en la base de datos
@@ -526,7 +526,7 @@ app.put('/dbn/mensajestatus', async (req, res) => {
 });
 
 //obtener usuaios
-app.get('/dbn/obtener-usuarios', async (req, res) => {
+app.get(process.env.DB_ROUTE+'/obtener-usuarios', async (req, res) => {
   try {
     const [rows] = await promisePool.query('SELECT * FROM User');
     res.json(rows);
@@ -540,7 +540,7 @@ app.listen(PORT, () => {
   console.log(`Servidor Express en ejecución en el puerto ${PORT}`);
 });
 //por id
-app.get('/dbn/usuarios/:id', (req, res) => {
+app.get(process.env.DB_ROUTE+'/usuarios/:id', (req, res) => {
   const userId = req.params.id;
 
   // Consultar el usuario en la base de datos
