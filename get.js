@@ -18,10 +18,10 @@ const io = socketIo(server, {
     methods: ["GET", "POST"]
   }
 });
-const apiUrl = 'https://api.gupshup.io/sm/api/v1/template/list/NOVAVENTA2024';
+const apiUrl = `https://api.gupshup.io/sm/api/v1/template/list/${process.env.DBNAME}`;
 const apiUrlenvio = 'https://api.gupshup.io/sm/api/v1/msg';
 const apiKey = 'thpuawjbidnbbbfrp9bw7qg03eci6rdz';
-const apiUrluser = 'https://api.gupshup.io/sm/api/v1/users/NOVAVENTA2024';
+const apiUrluser = `https://api.gupshup.io/sm/api/v1/users/${process.env.DBNAME}`;
 const apiUrlPartnertoken = 'https://partner.gupshup.io/partner/account/login';
 app.use(cors({ origin: '*' }));
 // conexion crud base de datos
