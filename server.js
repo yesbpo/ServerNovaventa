@@ -535,7 +535,7 @@ app.get(process.env.DB_ROUTE+'/obtener-usuarios', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
-const PORT = 3003;
+const PORT = process.env.PORTSERVER;
 app.listen(PORT, () => {
   console.log(`Servidor Express en ejecución en el puerto ${PORT}`);
 });
