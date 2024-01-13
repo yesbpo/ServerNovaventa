@@ -58,14 +58,6 @@ app.post('/w/subir-archivo', upload.single('archivo'), (req, res) => {
   res.json({ url: urlArchivo });
 });
 
-// Ruta para la carga de archivos y obtención del handleId
-app.post('/upload/media', upload.single('file'), (req, res) => {
-  // Aquí puedes realizar la lógica para procesar la carga de archivos y obtener el handleId
-  const handleId = `handle-id-${Date.now()}`; // Simplemente genera un handleId único por ahora
-
-  // Responder con el handleId
-  res.json({ handleId });
-});
 
 // Ruta para servir los archivos estáticos
 app.use('/w/uploads', express.static(directorioCargas));
