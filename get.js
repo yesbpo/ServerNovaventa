@@ -51,20 +51,20 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Ruta para la carga de archivos y obtención del handleId
-app.post('/upload/media', upload.single('file'), (req, res) => {
-  // Lógica para procesar la carga de archivos y obtener el handleId
-  const handleId = `handle-id-${Date.now()}`; // Simplemente genera un handleId único por ahora
-
-  // Responder con el handleId
-  res.json({ handleId });
-});
-
 // Ruta para manejar la carga de archivos desde el cliente
 app.post('/w/subir-archivo', upload.single('archivo'), (req, res) => {
   // Aquí deberías generar la URL del archivo y enviarla como respuesta al cliente
   const urlArchivo = `/w/uploads/${req.file.filename}`;
   res.json({ url: urlArchivo });
+});
+
+// Ruta para la carga de archivos y obtención del handleId
+app.post('/upload/media', upload.single('file'), (req, res) => {
+  // Aquí puedes realizar la lógica para procesar la carga de archivos y obtener el handleId
+  const handleId = `handle-id-${Date.now()}`; // Simplemente genera un handleId único por ahora
+
+  // Responder con el handleId
+  res.json({ handleId });
 });
 
 // Ruta para servir los archivos estáticos
