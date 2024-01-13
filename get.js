@@ -829,8 +829,8 @@ app.use((req, res, next) => {
 //Post templates
 app.post('/w/createTemplates', async (req, res) => {
   try {
-    const appId = '522e21b6-d83f-486c-ba0e-872180219095'; // Reemplaza con tu ID de aplicación real
-    const partnerAppToken = 'sk_3cf52c6b3c5d40e8b742d46c6ab3845d'; // Reemplaza con tu token de partner real
+    const appId = process.env.APPID; // Reemplaza con tu ID de aplicación real
+    const partnerAppToken = process.env.PARTNERAPPTOKEN; // Reemplaza con tu token de partner real
     const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
 
     const templateData = req.body; // Los datos de la plantilla provienen del cuerpo de la solicitud
@@ -856,8 +856,8 @@ app.post('/w/createTemplates', async (req, res) => {
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {
   try {
-    const appId = '522e21b6-d83f-486c-ba0e-872180219095';
-    const partnerAppToken = 'sk_3cf52c6b3c5d40e8b742d46c6ab3845d';
+    const appId = process.env.APPID;
+    const partnerAppToken = process.env.PARTNERAPPTOKEN;
     const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
 
     const response = await fetch(apiUrl, {
@@ -879,8 +879,8 @@ app.get('/w/gupshup-templates', async (req, res) => {
 //DELETE TEMPLATES
 app.delete('/w/deleteTemplate/:elementName', async (req, res) => {
   try {
-    const appId = '522e21b6-d83f-486c-ba0e-872180219095';
-    const partnerAppToken = 'sk_3cf52c6b3c5d40e8b742d46c6ab3845d';
+    const appId = process.env.APPID;
+    const partnerAppToken = process.env.PARTNERAPPTOKEN;
     const elementName = req.params.elementName;
 
     const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/template/${elementName}?id=${elementName}`;
