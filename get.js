@@ -300,24 +300,46 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
     }
      //obtener mensajes
      
-      const response = await fetch(process.env.BASE_DB+'/obtener-mensajes', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          // Agrega cualquier otra cabecera que sea necesaria, como token de autorización, si es aplicable
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
-      }
-  
-      const mensajes = await response.json();
-  
-      // Filtra solo los usuarios activos
-      const mensajesEntrantes = mensajes.filter(mensaje=> mensaje.type_comunication=='message')
-      const numerosUnicos = [...new Set(mensajesEntrantes.map((mensaje) => mensaje.number))];
-      
+     const fechaInicio = new Date(fechaActual);
+     fechaInicio.setHours(fechaInicio.getHours() - 24);
+     
+     // Formatear la fecha de inicio
+     const anioInicio = fechaInicio.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
+     const mesInicio = fechaInicio.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
+     const diaInicio = fechaInicio.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
+     const horaInicio = fechaInicio.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
+     const minutosInicio = fechaInicio.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
+     const segundosInicio = fechaInicio.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
+     
+     const fechaInicioString = `${anioInicio}-${mesInicio}-${diaInicio} ${horaInicio}:${minutosInicio}:${segundosInicio}`;
+     
+     // Formatear la fecha actual
+     const anioFin = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
+     const mesFin = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
+     const diaFin = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
+     const horaFin = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
+     const minutosFin = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
+     const segundosFin = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
+     
+     const fechaFinString = `${anioFin}-${mesFin}-${diaFin} ${horaFin}:${minutosFin}:${segundosFin}`;
+           const response = await fetch(`${process.env.BASE_DB}/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`, {
+             method: 'GET',
+             headers: {
+               'Content-Type': 'application/json',
+               // Agrega cualquier otra cabecera que sea necesaria, como token de autorización, si es aplicable
+             },
+           });
+       
+           if (!response.ok) {
+             throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
+           }
+       
+           const mensajes = await response.json();
+           console.log(Object.values(mensajes))
+           // Filtra solo los usuarios activos
+           const mensajesEntrantes = Object.values(mensajes)[0].filter(mensaje=> mensaje.type_comunication=='message')
+           const numerosUnicos = [...new Set(mensajesEntrantes.map((mensaje) => mensaje.number))];
+           
       async function normalizarNumero(numero) {
         // Eliminar caracteres no numéricos
         const numeroLimpio = numero.replace(/\D/g, '');

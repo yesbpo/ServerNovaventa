@@ -32,7 +32,7 @@ app.all('/w/api/index', async (req, res) => {
       // Procesa la solicitud de manera asíncrona aquí
       await processAsync(data);
     }
-    res.status(200).send('OK');
+    res.status(200)
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
