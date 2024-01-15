@@ -18,10 +18,10 @@ const io = socketIo(server, {
     methods: ["GET", "POST"]
   }
 });
-const apiUrl = `https://api.gupshup.io/sm/api/v1/template/list/${process.env.DBNAME}`;
+const apiUrl = `https://api.gupshup.io/sm/api/v1/template/list/${process.env.APPNAME}`;
 const apiUrlenvio = 'https://api.gupshup.io/sm/api/v1/msg';
 const apiKey = 'thpuawjbidnbbbfrp9bw7qg03eci6rdz';
-const apiUrluser = `https://api.gupshup.io/sm/api/v1/users/${process.env.DBNAME}`;
+const apiUrluser = `https://api.gupshup.io/sm/api/v1/users/${process.env.APPNAME}`;
 const apiUrlPartnertoken = 'https://partner.gupshup.io/partner/account/login';
 app.use(cors({ origin: '*' }));
 // conexion crud base de datos
@@ -775,7 +775,7 @@ app.post('/w/api/envios', bodyParser.urlencoded({ extended: true }), async (req,
   }
 });
 // Ruta para realizar la solicitud y devolver la respuesta al cliente de los templates
-app.get(process.env.BASE_API+'/api/templates', async (req, res) => {
+app.get('/w/api/templates', async (req, res) => {
   try {
     const response = await fetch(apiUrl, {
       method: 'GET',
