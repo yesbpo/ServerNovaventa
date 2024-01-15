@@ -302,6 +302,24 @@ app.post(process.env.DB_ROUTE+'/crear-chat', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+// consulta por status
+app.get(process.env.DB_ROUTE + '/consultar_por_status', async (req, res) => {
+  try {
+    const status = req.query.status;
+
+    // Consulta SQL para obtener registros por status
+    const sql = 'SELECT * FROM Chat WHERE status = ?';
+
+    // Ejecutar la consulta utilizando await
+    const [results] = await promisePool.execute(sql, [status]);
+
+    // Enviar resultados como JSON
+    res.json(results);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Error en el servidor' });
+  }
+});
 //actualizar chat resolved 
 app.put(process.env.DB_ROUTE+'/actualizar-chat/:idChat2', async (req, res) => {
   try {
