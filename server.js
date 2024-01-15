@@ -50,7 +50,7 @@ app.put(process.env.DB_ROUTE+'/actualizar/usuario', async (req, res) => {
       );  
     // Verifica si se realizó la actualización correctamente
     if (result.affectedRows > 0) {
-      console.log('Usuario actualizado correctamente.');
+      
       res.status(200).json({ mensaje: 'Usuario actualizado correctamente.' });
     } else {
       console.log('No se encontró el usuario para actualizar.');
@@ -143,7 +143,7 @@ app.post(process.env.DB_ROUTE+'/insertar-datos-template', async (req, res) => {
       );
 
       if (updateResult.affectedRows > 0) {
-        console.log('Registro actualizado correctamente.');
+        
         res.json({ mensaje: 'Registro actualizado con éxito', datos: { idmessageTemplate, status, attachments, message, timestamp, campaign } });
       } else {
         console.log('No se encontró el registro para actualizar.');
@@ -219,7 +219,7 @@ app.post(process.env.DB_ROUTE+'/guardar-mensajes', async (req, res) => {
       );
 
       if (updateResult.affectedRows > 0) {
-        console.log('Mensaje actualizado correctamente.');
+        
         res.json({ mensaje: 'Mensaje actualizado con éxito', usuario: { idMessage, content, type_comunication, status, number, timestamp, type_message } });
       } else {
         console.log('No se encontró el mensaje para actualizar.');
@@ -531,7 +531,7 @@ app.put(process.env.DB_ROUTE+'/mensajestatus', async (req, res) => {
       );  
     // Verifica si se realizó la actualización correctamente
     if (result.affectedRows > 0) {
-      console.log('mensaje actualizado correctamente.');
+      
       res.status(200).json({ mensaje: 'mensaje actualizado correctamente.' });
     } else {
       console.log('No se encontró el mensaje para actualizar.');
