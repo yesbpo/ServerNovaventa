@@ -272,7 +272,7 @@ app.post(process.env.DB_ROUTE+'/crear-chat', async (req, res) => {
           const minutos = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
           const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
     for (const chat of chatsArray) {
-      const { assignedDate =`${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`, receivedDate =`${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`, resolved, status, userId, idChat2 } = chat;
+      const { assignedDate =`${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`, receivedDate , resolved, status, userId, idChat2 } = chat;
 
       // Verificar si ya existe un chat con el mismo idChat2
       const [existingResult] = await promisePool.execute(
