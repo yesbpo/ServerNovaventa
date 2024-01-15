@@ -149,13 +149,21 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
         
           console.log('entra en if2')
           if(chatlimpio[0].status == 'closed'){
-            
+            const fechaActual = new Date();
+            const options = { timeZone: 'America/Bogota', hour12: false };
+            const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
+            const mes = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
+            const dia = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
+            const hora = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
+            const minutos = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
+            const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
             const data1 = {
             
               idChat2: chatlimpio[0].idChat2,
               resolved: false,
               status: 'pending',
               userId: 0,
+              receivedDate: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`
             };
             const response = await fetch(process.env.BASE_DB+'/crear-chat', {
               method: 'POST',
@@ -201,7 +209,15 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
             console.log('entra en if33')
             
             console.log('log de obtener33',chatlimpio)
-            
+            const fechaActual = new Date();
+            const options = { timeZone: 'America/Bogota', hour12: false };
+            const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
+            const mes = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
+            const dia = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
+            const hora = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
+            const minutos = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
+            const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
+
               console.log('entra en if2')
               const data5 = {
                 
@@ -209,6 +225,8 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
                resolved: false,
                status: 'pending',
                userId: 0,
+               receivedDate: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`
+
              };
              const response = await fetch(process.env.BASE_DB+'/crear-chat', {
                method: 'POST',
@@ -499,7 +517,15 @@ if (chatsSinUserId.length>1) {
       //crear chats
       for (const chatparacrear of chatsparacrear) {
         const numeroNormalizado = await normalizarNumero(chatparacrear);
-        
+        const fechaActual = new Date();
+            const options = { timeZone: 'America/Bogota', hour12: false };
+            const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
+            const mes = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
+            const dia = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
+            const hora = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
+            const minutos = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
+            const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
+
        
           const data2 = {
             // Asigna el valor actual del contador y luego incrementa
@@ -507,6 +533,7 @@ if (chatsSinUserId.length>1) {
            resolved: false,
            status: "pending",
            userId: 0,
+           receivedDate: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`
            
          };
           const response2 = await fetch(process.env.BASE_DB+'/crear-chat', {
