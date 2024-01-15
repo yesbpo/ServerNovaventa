@@ -775,7 +775,7 @@ app.post('/w/api/envios', bodyParser.urlencoded({ extended: true }), async (req,
   }
 });
 // Ruta para realizar la solicitud y devolver la respuesta al cliente de los templates
-app.get(process.env.BASE_DB+'/api/templates', async (req, res) => {
+app.get(process.env.BASE_API+'/api/templates', async (req, res) => {
   try {
     const response = await fetch(apiUrl, {
       method: 'GET',
