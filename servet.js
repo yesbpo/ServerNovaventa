@@ -4,7 +4,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-
+const multer = require('multer');
 require('dotenv').config();
 
 const app = express();
@@ -32,7 +32,7 @@ app.all('/w/api/index', async (req, res) => {
       // Procesa la solicitud de manera asíncrona aquí
       await processAsync(data);
     }
-    res.status(200).send(ok)
+    res.status(200).send('OK');
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -55,3 +55,7 @@ server.listen(port, () => {
 });
 
 // Función asíncrona para procesar datos
+async function processAsync(data) {
+  // Implementa tu lógica aquí
+  console.log('Procesando datos:', data);
+}
