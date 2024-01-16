@@ -299,7 +299,8 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
     res.status(403).send('Acceso no autorizado.');
     }
      //obtener mensajes
-     
+     const fechaActual = new Date();
+const options = { timeZone: 'America/Bogota', hour12: false };
      const fechaInicio = new Date(fechaActual);
      fechaInicio.setMinutes(fechaInicio.getMinutes() - 30);
      
