@@ -349,6 +349,59 @@ app.put(process.env.DB_ROUTE+'/actualizar-chat/:idChat2', async (req, res) => {
     res.status(500).json({ message: 'Error interno del servidor.' });
   }
 });
+// ruta para crear conversacion
+app.post('/insertar-conversacion', async (req, res) => {
+  const { idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion } = req.body;
+
+  // Verificar si ya existe una conversación con el mismo idchat y userid diferente a cero
+  const checkQuery = `
+    SELECT * FROM Conversation
+    WHERE idchat = ? AND userid <> 0
+  `;
+
+  const checkValues = [idchat];
+
+  try {
+    const [existingConversations, checkFields] = await promisePool.execute(checkQuery, checkValues);
+
+    if (existingConversations.length > 0) {
+      // Ya existe una conversación con el mismo idchat y userid diferente a cero
+      // Obtener la conversación existente
+      const existingConversation = existingConversations[0];
+      
+      // Agregar el nuevo dato a la conversación existente
+      const updatedConversacion = existingConversation.conversacion + '\n' + conversacion;
+
+      // Actualizar la conversación existente con la nueva información
+      const updateQuery = `
+        UPDATE Conversation
+        SET conversacion = ?
+        WHERE idchat = ? AND userid <> 0
+      `;
+
+      const updateValues = [updatedConversacion, idchat];
+
+      await promisePool.execute(updateQuery, updateValues);
+      res.json({ mensaje: 'Datos actualizados correctamente' });
+    } else {
+      // No existe una conversación con el mismo idchat y userid diferente a cero
+      // Crear una nueva instancia
+      const insertQuery = `
+        INSERT INTO Conversation (idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `;
+
+      const insertValues = [idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion];
+
+      const [results, fields] = await promisePool.execute(insertQuery, insertValues);
+      res.json({ mensaje: 'Datos insertados correctamente' });
+    }
+  } catch (error) {
+    console.error('Error al procesar la solicitud:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 // Ruta para actualizar el userId de un chat por idChat2
 app.put(process.env.DB_ROUTE+'/actualizar-usuario-chat', async (req, res) => {
   try {

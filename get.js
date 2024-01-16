@@ -154,6 +154,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
 
           }
           async function engestionSinResolver(){
+            crearConversacion ()
             if(chatlimpio[0].status === 'in progress' || 'pending'){
               try {
                 const idChat2 = chatlimpio[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
@@ -179,12 +180,29 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
               
             }
           }
+          async function crearConversacion (){
+            try {
+              const response = await fetch(process.env.BASE_DB+'/insertar-conversacion', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datos)
+              });
+        
+              if (!response.ok) {
+                throw new Error(`Error en la solicitud: ${response.status}`);
+              }
+        
+              const data = await response.json();
+              console.log('Respuesta del servidor:', data);
+            } catch (error) {
+              console.error('Error durante la solicitud:', error.message);
+            }
+          }
           async function singuardar (){
             engestionSinResolver()
           if(chatlimpio.length === 0){
-            
-            
-            
             const fechaActual = new Date();
             const options = { timeZone: 'America/Bogota', hour12: false };
             const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
@@ -196,7 +214,6 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
 
               
               const data5 = {
-                
                idChat2: data.payload.source,
                resolved: false,
                status: 'pending',
@@ -219,8 +236,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
              
           }
          const responseData = await response.json();
-          
-         
+        
       }}
       //chats no creados
       const datamensaje = await response.json();

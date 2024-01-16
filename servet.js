@@ -55,7 +55,3 @@ server.listen(port, () => {
 });
 
 // Función asíncrona para procesar datos
-async function processAsync(data) {
-  // Implementa tu lógica aquí
-  console.log('Procesando datos:', data);
-}
