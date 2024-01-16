@@ -301,7 +301,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
      //obtener mensajes
      
      const fechaInicio = new Date(fechaActual);
-     fechaInicio.setHours(fechaInicio.getHours() - 24);
+     fechaInicio.setMinutes(fechaInicio.getMinutes() - 30);
      
      // Formatear la fecha de inicio
      const anioInicio = fechaInicio.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
