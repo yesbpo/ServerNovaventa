@@ -401,7 +401,17 @@ app.post(process.env.DB_ROUTE+'/insertar-conversacion', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
-
+// obtener conversaciones 
+app.get(process.env.DB_ROUTE+'/obtener-conversaciones', async (req, res) => {
+  try {
+    const consultaConversaciones = 'SELECT * FROM Conversation';
+    const [conversaciones, fields] = await promisePool.execute(consultaConversaciones);
+    res.json({ conversaciones });
+  } catch (error) {
+    console.error('Error al obtener conversaciones:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 // Ruta para actualizar el userId de un chat por idChat2
 app.put(process.env.DB_ROUTE+'/actualizar-usuario-chat', async (req, res) => {
   try {
