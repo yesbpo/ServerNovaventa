@@ -154,9 +154,10 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
 
           }
           async function engestionSinResolver(){
-            crearConversacion ()
+            
             if(chatlimpio[0].status === 'in progress' || 'pending'){
               try {
+                crearConversacion ()
                 const idChat2 = chatlimpio[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
                 const resolvedValue = false; // Reemplaza 'nuevo_valor_resolved' con el nuevo valor para 'resolved'
               
@@ -181,7 +182,56 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
             }
           }
           async function crearConversacion (){
+            const fechaActual = new Date();
+const options = { timeZone: 'America/Bogota', hour12: false };
+     const fechaInicio = new Date(fechaActual);
+     fechaInicio.setMinutes(fechaInicio.getMinutes() - 5);
+     
+     // Formatear la fecha de inicio
+     const anioInicio = fechaInicio.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
+     const mesInicio = fechaInicio.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
+     const diaInicio = fechaInicio.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
+     const horaInicio = fechaInicio.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
+     const minutosInicio = fechaInicio.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
+     const segundosInicio = fechaInicio.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
+     
+     const fechaInicioString = `${anioInicio}-${mesInicio}-${diaInicio} ${horaInicio}:${minutosInicio}:${segundosInicio}`;
+     
+     // Formatear la fecha actual
+     const anioFin = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
+     const mesFin = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
+     const diaFin = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
+     const horaFin = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
+     const minutosFin = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
+     const segundosFin = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
+     
+     const fechaFinString = `${anioFin}-${mesFin}-${diaFin} ${horaFin}:${minutosFin}:${segundosFin}`;
+           const response = await fetch(`${process.env.BASE_DB}/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`, {
+             method: 'GET',
+             headers: {
+               'Content-Type': 'application/json',
+               // Agrega cualquier otra cabecera que sea necesaria, como token de autorización, si es aplicable
+             },
+           });
+       
+           if (!response.ok) {
+             throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
+           }
+           
+           const mensajes = await response.json();
+           const existeNumero = Object.values(mensajes)[0].find(objeto => objeto.number === chatlimpio[0].idChat2 );
+           if( existeNumero){
+           const conver = {
+              idchat: chatlimpio[0].idChat2,
+              asesor: chatlimpio[0].userId,
+              conversacion: existeNumero.content ,
+              numero: chatlimpio[0].idChat2,
+              calificacion: chatlimpio[0].status,
+              fecha_ingreso: fechaFinString,
+              fecha_ultimagestion: chatlimpio[0].receivedDate
+            }
             try {
+
               const response = await fetch(process.env.BASE_DB+'/insertar-conversacion', {
                 method: 'POST',
                 headers: {
@@ -198,7 +248,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
               console.log('Respuesta del servidor:', data);
             } catch (error) {
               console.error('Error durante la solicitud:', error.message);
-            }
+            }}
           }
           async function singuardar (){
             engestionSinResolver()
