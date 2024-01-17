@@ -186,7 +186,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
 const options = { timeZone: 'America/Bogota', hour12: false };
      const fechaInicio = new Date(fechaActual);
      fechaInicio.setMinutes(fechaInicio.getMinutes() - 5);
-     console.log(existeNumero,"si")
+     
      // Formatear la fecha de inicio
      const anioInicio = fechaInicio.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
      const mesInicio = fechaInicio.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
@@ -220,8 +220,9 @@ const options = { timeZone: 'America/Bogota', hour12: false };
            
            const mensajes = await response.json();
            const existeNumero = Object.values(mensajes)[0].find(objeto => objeto.number === chatlimpio[0].idChat2 );
-           console.log(existeNumero,"si")
+           
            if(existeNumero){
+            console.log(existeNumero,"si")
            const conver = {
               idchat: chatlimpio[0].idChat2,
               asesor: chatlimpio[0].userId,
