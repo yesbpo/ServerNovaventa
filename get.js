@@ -230,7 +230,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
               numero: chatlimpio[0].idChat2,
               calificacion: chatlimpio[0].status,
               fecha_ingreso: fechaFinString,
-              fecha_ultimagestion: chatlimpio[0].receivedDate,
+              fecha_ultimagestion: new Date(chatlimpio[0].receivedDate).toISOString().slice(0, 19).replace('T', ' '),
               userid: chatlimpio[0].userId
             }
             try {
