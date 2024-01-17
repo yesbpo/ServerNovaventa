@@ -351,7 +351,7 @@ app.put(process.env.DB_ROUTE+'/actualizar-chat/:idChat2', async (req, res) => {
 });
 // ruta para crear conversacion
 app.post(process.env.DB_ROUTE+'/insertar-conversacion', async (req, res) => {
-  const { idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion } = req.body;
+  const { idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid } = req.body;
 
   // Verificar si ya existe una conversación con el mismo idchat y userid diferente a cero
   const checkQuery = `
@@ -387,11 +387,11 @@ app.post(process.env.DB_ROUTE+'/insertar-conversacion', async (req, res) => {
       // No existe una conversación con el mismo idchat y userid diferente a cero
       // Crear una nueva instancia
       const insertQuery = `
-        INSERT INTO Conversation (idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO Conversation (idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       `;
 
-      const insertValues = [idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion];
+      const insertValues = [idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid];
 
       const [results, fields] = await promisePool.execute(insertQuery, insertValues);
       res.json({ mensaje: 'Datos insertados correctamente' });
