@@ -161,12 +161,12 @@ const options = { timeZone: 'America/Bogota', hour12: false };
        }
        
        const mensajes = await response.json();
-       const existeNumero = Object.values(mensajes)[0].find(objeto => objeto.number === chats[0].idChat2 );
-       console.log('entra si')
-       console.log(existeNumero,"si")
-       console.log(chats[0],"si")
-       if(existeNumero){
-        console.log(existeNumero,"si")
+       Object.values(mensajes)[0].forEach( async element => {
+        const chateje = element.number
+      const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
+      const chats = await responseChatExistente.json();
+      if(chats){
+        console.log("si")
         console.log('entra si')
        const conver = {
           idchat: chats[0].idChat2,
@@ -197,6 +197,11 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         } catch (error) {
           console.error('Error durante la solicitud:', error.message);
         }}
+
+    });
+       
+
+     
       }
       
       if(data.type == 'message'){
