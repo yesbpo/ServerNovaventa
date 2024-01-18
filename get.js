@@ -259,7 +259,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
             }
           }
           async function singuardar (){
-            engestionSinResolver()
+            
           if(chatlimpio == false){
             const fechaActual = new Date();
             const options = { timeZone: 'America/Bogota', hour12: false };
@@ -293,6 +293,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
               
              
           }
+          engestionSinResolver()
          const responseData = await response.json();
         
       }}
