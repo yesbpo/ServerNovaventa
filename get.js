@@ -199,7 +199,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         
         
         
-          if(chatlimpio.status == 'closed'){
+          if(chats.status == 'closed'){
             const fechaActual = new Date();
             const options = { timeZone: 'America/Bogota', hour12: false };
             const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
@@ -210,7 +210,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
             const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
             const data1 = {
             
-              idChat2: chatlimpio.idChat2,
+              idChat2: chats.idChat2,
               resolved: false,
               status: 'pending',
               userId: 0,
@@ -230,10 +230,10 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           }
           async function engestionSinResolver(){
             
-            if(chatlimpio.status === 'in progress' || 'pending'){
+            if(chats.status === 'in progress' || 'pending'){
               try {
                 crearConversacion ()
-                const idChat2 = chatlimpio.idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
+                const idChat2 = chats.idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
                 const resolvedValue = false; // Reemplaza 'nuevo_valor_resolved' con el nuevo valor para 'resolved'
               console.log(chats)
                 const response = await fetch(`${process.env.BASE_DB}/actualizar-chat/${idChat2}`, {
@@ -294,19 +294,19 @@ const options = { timeZone: 'America/Bogota', hour12: false };
            }
            
            const mensajes = await response.json();
-           const existeNumero = Object.values(mensajes)[0].find(objeto => objeto.number === chatlimpio.idChat2 );
+           const existeNumero = Object.values(mensajes)[0].find(objeto => objeto.number === chats.idChat2 );
            
            if(existeNumero){
             console.log(existeNumero,"si")
            const conver = {
-              idchat: chatlimpio.idChat2,
-              asesor: chatlimpio.userId,
+              idchat: chats.idChat2,
+              asesor: chats.userId,
               conversacion: existeNumero.content ,
-              numero: chatlimpio.idChat2,
-              calificacion: chatlimpio.status,
+              numero: chats.idChat2,
+              calificacion: chats.status,
               fecha_ingreso: fechaFinString,
-              fecha_ultimagestion: new Date(chatlimpio.receivedDate).toISOString().slice(0, 19).replace('T', ' '),
-              userid: chatlimpio.userId
+              fecha_ultimagestion: new Date(chats.receivedDate).toISOString().slice(0, 19).replace('T', ' '),
+              userid: chats.userId
             }
             try {
 
@@ -330,7 +330,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           }
           async function singuardar (){
             engestionSinResolver()
-          if(chatlimpio.length === 0){
+          if(chatlimpio == false){
             const fechaActual = new Date();
             const options = { timeZone: 'America/Bogota', hour12: false };
             const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
