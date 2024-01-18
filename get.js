@@ -101,7 +101,9 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
         content, type_comunication, status, number, timestamp, type_message, idMessage
       };
       
-      try {const response = await fetch(process.env.BASE_DB+'/guardar-mensajes', {
+      try {
+        console.log(mensaje)
+        const response = await fetch(process.env.BASE_DB+'/guardar-mensajes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +112,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
       });
     
       if (!response.ok) {
-        console.error('Error en la solicitud:', response);
+        console.error('Error en la solicitud:', mensaje);
         throw new Error('Error en la solicitud');
       }
       const chateje = data.payload.source || data.payload.destination
