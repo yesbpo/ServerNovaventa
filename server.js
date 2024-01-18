@@ -659,3 +659,18 @@ app.get(process.env.DB_ROUTE+'/usuarios/:id', (req, res) => {
     }
   });
 });
+
+// Ruta para obtener datos de la tabla Seetemp
+app.get(process.env.DB_ROUTE + '/obtener-seetemp', async (req, res) => {
+  try {
+    // Realiza la consulta SQL para obtener todos los datos de la tabla Seetemp
+    const [rows] = await promisePool.query('SELECT * FROM Seetemp');
+
+    // Enviar los datos obtenidos como respuesta
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener los datos de Seetemp:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
