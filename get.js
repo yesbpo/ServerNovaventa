@@ -860,7 +860,7 @@ async function getElementNamesFromSeetemp() {
     // Supongamos que ya tienes la conexión a la base de datos disponible en la variable 'connection'
     // Asegúrate de que la conexión esté establecida antes de llamar a esta función
 
-    const [rows] = await connection.execute('SELECT elementname FROM Seetemp');
+    const [rows] = await connection.query('SELECT elementname FROM Seetemp');
     return rows.map(row => row.elementname);
   } catch (error) {
     console.error('Error al obtener elementnames de Seetemp:', error.message || error);
