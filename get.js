@@ -857,22 +857,24 @@ app.post('/w/createTemplates', async (req, res) => {
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {
   try {
-    const appId = process.env.APPID;
-    const partnerAppToken = process.env.PARTNERAPPTOKEN;
-    const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
+    // Consulta la tabla Seetemp para obtener los elementname
+    const seetempQuery = 'SELECT elementname FROM Seetemp';
+    const seetempResult = await db.query(seetempQuery);
 
-    const response = await fetch(apiUrl, {
-      method: 'GET',
-      headers: {
-        'Connection': 'keep-alive',
-        'token': partnerAppToken,
-      },
-    });
+    // Obtén los elementname de la respuesta de Gupshup
+    const gupshupElementNames = data.templates.map(template => template.elementname);
 
-    const data = await response.json();
-    res.json(data);
+    // Filtra solo los elementname que están en ambas listas
+    const commonElementNames = seetempResult.map(row => row.elementname)
+      .filter(elementname => gupshupElementNames.includes(elementname));
+
+    // Filtra las plantillas que tienen elementname en commonElementNames
+    const filteredTemplates = data.templates.filter(template => commonElementNames.includes(template.elementname));
+
+    // Devuelve las plantillas filtradas
+    res.json({ status: 'success', templates: filteredTemplates });
   } catch (error) {
-    
+    console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
