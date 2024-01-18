@@ -375,7 +375,7 @@ app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
       
 
       // Ya existe una conversación con el mismo idchat y userid diferente a cero
-      const existingConversation = existingConversations[existingConversations.length];
+      const existingConversation = existingConversations[existingConversations.length-1];
 
       if (existingConversation.userid !== userid) {
         console.log('ingresa', existingConversation)
