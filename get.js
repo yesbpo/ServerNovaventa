@@ -230,7 +230,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           }
           async function engestionSinResolver(){
             
-            if(chatlimpio[0].status === 'in progress' || 'pending'){
+            if(chatlimpio.status === 'in progress' || 'pending'){
               try {
                 crearConversacion ()
                 const idChat2 = chatlimpio[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
