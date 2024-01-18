@@ -400,8 +400,8 @@ app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
         console.log(existingConversation.conversacion)
         // Actualizar la conversación existente con la nueva información
         await promisePool.execute(
-          'UPDATE Conversation SET conversacion = ?, calificacion = ?, fecha_ultimagestion = NOW() WHERE idchat = ? AND fecha_ingreso = ?',
-      [updatedConversacion, calificacion, idchat, fecha_ingreso]
+          'UPDATE Conversation SET conversacion = ?, numero =?, calificacion = ?, fecha_ingreso = NOW(),fecha_ultimagestion = NOW() WHERE idchat = ? AND fecha_ingreso = ?',
+      [updatedConversacion, numero, calificacion, idchat, fecha_ingreso]
         );
         res.json({ mensaje: 'Datos actualizados correctamente' });
       }
