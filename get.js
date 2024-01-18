@@ -947,7 +947,7 @@ app.get('/w/gupshup-templates', async (req, res) => {
 
     // Consulta la tabla Seetemp para obtener todos los datos
     const seetempQuery = 'SELECT * FROM Seetemp';
-    const [seetempRows] = await db.query(seetempQuery);
+    const [seetempRows] = await dbconfig.query(seetempQuery);
 
     // Devuelve las plantillas de Gupshup y los datos de Seetemp
     res.json({ status: 'success', templates: gupshupData.templates, seetempData: seetempRows });
