@@ -367,7 +367,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         
       }}
       //chats no creados
-      const datamensaje = await response.json();
+      
       // Manejar la respuesta según tus necesidades
     } catch (error) {
       console.error('Error en la solicitud:', error);
