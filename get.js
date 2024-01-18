@@ -172,7 +172,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         console.log('entra si')
        const conver = {
           idchat: chats[0].idChat2,
-          asesor: usuariosC[0].map(user=> user.id == chats[0].userId).complete_name,
+          asesor: usuariosC.map(user=> user.id == chats[0].userId).complete_name,
           conversacion: "["+element.timestamp+"]" +"["+element.status+"]"+ element.content  ,
           numero: element.idMessage,
           calificacion: chats[0].status,
