@@ -388,7 +388,7 @@ app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
       } else {
         // Agregar el nuevo dato a la conversación existente
         const updatedConversacion = existingConversation.conversacion + '\n' + conversacion;
-        const fecha_ingreso = updatedConversacion.fecha_ingreso
+        const fecha_ingreso = existingConversation.fecha_ingreso
         console.log(existingConversation.conversacion)
         // Actualizar la conversación existente con la nueva información
         await promisePool.execute(
