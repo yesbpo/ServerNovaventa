@@ -121,6 +121,8 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
       const chatlimpio = chats[0].idChat2 == data.payload.source;
       crearConversacion()
       async function crearConversacion (){
+        
+        
         console.log('entra')
         const fechaActual = new Date();
 const options = { timeZone: 'America/Bogota', hour12: false };
