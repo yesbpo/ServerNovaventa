@@ -161,6 +161,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
        const mensajes = await response.json();
        const existeNumero = Object.values(mensajes)[0].find(objeto => objeto.number === chats.idChat2 );
        console.log('entra si')
+       console.log(existeNumero,"si")
        if(existeNumero){
         console.log(existeNumero,"si")
         console.log('entra si')
