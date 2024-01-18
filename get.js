@@ -199,7 +199,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         
         
         
-          if(chatlimpio[0].status == 'closed'){
+          if(chatlimpio.status == 'closed'){
             const fechaActual = new Date();
             const options = { timeZone: 'America/Bogota', hour12: false };
             const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
@@ -210,7 +210,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
             const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
             const data1 = {
             
-              idChat2: chatlimpio[0].idChat2,
+              idChat2: chatlimpio.idChat2,
               resolved: false,
               status: 'pending',
               userId: 0,
@@ -299,14 +299,14 @@ const options = { timeZone: 'America/Bogota', hour12: false };
            if(existeNumero){
             console.log(existeNumero,"si")
            const conver = {
-              idchat: chatlimpio[0].idChat2,
-              asesor: chatlimpio[0].userId,
+              idchat: chatlimpio.idChat2,
+              asesor: chatlimpio.userId,
               conversacion: existeNumero.content ,
-              numero: chatlimpio[0].idChat2,
-              calificacion: chatlimpio[0].status,
+              numero: chatlimpio.idChat2,
+              calificacion: chatlimpio.status,
               fecha_ingreso: fechaFinString,
-              fecha_ultimagestion: new Date(chatlimpio[0].receivedDate).toISOString().slice(0, 19).replace('T', ' '),
-              userid: chatlimpio[0].userId
+              fecha_ultimagestion: new Date(chatlimpio.receivedDate).toISOString().slice(0, 19).replace('T', ' '),
+              userid: chatlimpio.userId
             }
             try {
 
