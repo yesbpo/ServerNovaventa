@@ -235,7 +235,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
                 crearConversacion ()
                 const idChat2 = chatlimpio.idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
                 const resolvedValue = false; // Reemplaza 'nuevo_valor_resolved' con el nuevo valor para 'resolved'
-              console.log(chatlimpio)
+              console.log(chats)
                 const response = await fetch(`${process.env.BASE_DB}/actualizar-chat/${idChat2}`, {
                   method: 'PUT',
                   headers: {
