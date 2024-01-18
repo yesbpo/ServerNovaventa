@@ -113,9 +113,10 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
         console.error('Error en la solicitud:', response);
         throw new Error('Error en la solicitud');
       }
-      const responseChat = await fetch(process.env.BASE_DB+'/obtener-chats');
-      const chats = await responseChat.json();
-      const chatlimpio = chats.filter(chat=> chat.idChat2 == data.payload.source);
+      const chateje = data.payload.source || data.payload.destination
+      const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
+      const chats = await responseChatExistente.json();
+      const chatlimpio = chats.idChat2 == data.payload.source;
       crearConversacion()
       async function crearConversacion (){
         const fechaActual = new Date();
@@ -155,19 +156,20 @@ const options = { timeZone: 'America/Bogota', hour12: false };
        }
        
        const mensajes = await response.json();
-       const existeNumero = Object.values(mensajes)[0].find(objeto => objeto.number === chatlimpio[0].idChat2 );
+       const existeNumero = Object.values(mensajes)[0].find(objeto => objeto.number === chats.idChat2 );
        
        if(existeNumero){
         console.log(existeNumero,"si")
+        
        const conver = {
-          idchat: chatlimpio[0].idChat2,
-          asesor: chatlimpio[0].userId,
+          idchat: chats.idChat2,
+          asesor: chats.userId,
           conversacion: existeNumero.content ,
-          numero: chatlimpio[0].idChat2,
-          calificacion: chatlimpio[0].status,
+          numero: chats.idChat2,
+          calificacion: chats.status,
           fecha_ingreso: fechaFinString,
-          fecha_ultimagestion: new Date(chatlimpio[0].receivedDate).toISOString().slice(0, 19).replace('T', ' '),
-          userid: chatlimpio[0].userId
+          fecha_ultimagestion: new Date(chats.receivedDate).toISOString().slice(0, 19).replace('T', ' '),
+          userid: chats.userId
         }
         try {
 
