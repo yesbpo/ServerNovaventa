@@ -172,7 +172,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           idchat: chats[0].idChat2,
           asesor: chats[0].userId,
           conversacion: element.content ,
-          numero: chats[0].idChat2,
+          numero: element.idMessage,
           calificacion: chats[0].status,
           fecha_ingreso: fechaFinString,
           fecha_ultimagestion: new Date(chats[0].receivedDate).toISOString().slice(0, 19).replace('T', ' '),
