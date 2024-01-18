@@ -374,10 +374,9 @@ app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
       // Ya existe una conversación con el mismo idchat y userid diferente a cero
       const existingConversation = existingConversations[0];
 
-      // Validar si el userid es diferente al existente
       if (existingConversation.userid !== userid) {
         // Crear una nueva instancia ya que el userid es diferente al existente
-        const [results, fields] = await promisePool.execute(
+        await promisePool.execute(
           'INSERT INTO Conversation (idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
           [idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid]
         );
@@ -396,7 +395,7 @@ app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
     } else {
       // No existe una conversación con el mismo idchat y userid diferente a cero
       // Crear una nueva instancia
-      const [results, fields] = await promisePool.execute(
+      await promisePool.execute(
         'INSERT INTO Conversation (idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
         [idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid]
       );
@@ -407,6 +406,7 @@ app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+
 
 // obtener conversaciones 
 app.get(process.env.DB_ROUTE+'/obtener-conversaciones', async (req, res) => {
