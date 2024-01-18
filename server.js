@@ -215,7 +215,15 @@ app.post(process.env.DB_ROUTE+'/guardar-mensajes', async (req, res) => {
       // Si ya existe, actualiza los demás datos
       const [updateResult] = await promisePool.execute(
         'UPDATE Mensaje SET type_comunication = ?, status = ?, number = ?, type_message = ?, content = COALESCE(?, content) WHERE idMessage = ?',
-        [type_comunication, status, number, type_message, content, idMessage]
+        [
+          type_comunication,
+          status,
+          number,
+          type_message,
+          content || null,
+          idMessage
+        ]
+      
       );
 
       if (updateResult.affectedRows > 0) {
