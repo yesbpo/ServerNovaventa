@@ -18,10 +18,10 @@ const io = socketIo(server, {
     methods: ["GET", "POST"]
   }
 });
-const apiUrl = `https://api.gupshup.io/sm/api/v1/template/list/${process.env.APPNAME}`;
+const apiUrl = `https://api.gupshup.io/sm/api/v1/template/list/${process.env.DBNAME}`;
 const apiUrlenvio = 'https://api.gupshup.io/sm/api/v1/msg';
 const apiKey = 'thpuawjbidnbbbfrp9bw7qg03eci6rdz';
-const apiUrluser = `https://api.gupshup.io/sm/api/v1/users/${process.env.APPNAME}`;
+const apiUrluser = `https://api.gupshup.io/sm/api/v1/users/${process.env.DBNAME}`;
 const apiUrlPartnertoken = 'https://partner.gupshup.io/partner/account/login';
 app.use(cors({ origin: '*' }));
 // conexion crud base de datos
@@ -78,8 +78,33 @@ app.all('/w/api/index', async (req, res) => {
     try {
       var data = req.body;
       await processAsync(data);
+      console.log(data);
       
-
+      //aqui
+       // console.log('entra en if3')
+         // const data1 = {
+            // Asigna el valor actual del contador y luego incrementa
+           //idChat2: data.payload.source,
+          // resolved: false,
+           
+           
+         //};
+         //console.log(data1.idChat2)
+         //const response = await fetch('https://appcenteryes.appcenteryes.com/db/crear-chat', {
+          // method: 'POST',
+           //headers: {
+            // 'Content-Type': 'application/json',
+           //},
+           //7body: JSON.stringify(data1),
+       //  });
+         //if (!response.ok) {
+          // console.log('no exito')       
+         
+       //  const responseData = await response.json();
+   //console.log(responseData)
+          
+          
+     // }
       
       const fechaActual = new Date();
 const options = { timeZone: 'America/Bogota', hour12: false };
@@ -100,10 +125,8 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
        const mensaje = {
         content, type_comunication, status, number, timestamp, type_message, idMessage
       };
-      
-      try {
-        console.log(mensaje)
-        const response = await fetch(process.env.BASE_DB+'/guardar-mensajes', {
+      console.log(mensaje)
+      try {const response = await fetch(process.env.BASE_DB+'/guardar-mensajes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -112,121 +135,28 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
       });
     
       if (!response.ok) {
-        console.error('Error en la solicitud:', mensaje);
+        console.error('Error en la solicitud:', response);
         throw new Error('Error en la solicitud');
       }
-      const chateje = data.payload.source || data.payload.destination
-      const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
-      const chats = await responseChatExistente.json();
-      const chatlimpio = chats[0].idChat2 == data.payload.source;
-      crearConversacion()
-      async function crearConversacion (){
-        
-        
-        console.log('entra')
-        const fechaActual = new Date();
-const options = { timeZone: 'America/Bogota', hour12: false };
- const fechaInicio = new Date(fechaActual);
- fechaInicio.setMinutes(fechaInicio.getMinutes() - 2);
- 
- // Formatear la fecha de inicio
- const anioInicio = fechaInicio.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
- const mesInicio = fechaInicio.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
- const diaInicio = fechaInicio.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
- const horaInicio = fechaInicio.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
- const minutosInicio = fechaInicio.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
- const segundosInicio = fechaInicio.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
- 
- const fechaInicioString = `${anioInicio}-${mesInicio}-${diaInicio} ${horaInicio}:${minutosInicio}:${segundosInicio}`;
- 
- // Formatear la fecha actual
- const anioFin = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
- const mesFin = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
- const diaFin = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
- const horaFin = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
- const minutosFin = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
- const segundosFin = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
- 
- const fechaFinString = `${anioFin}-${mesFin}-${diaFin} ${horaFin}:${minutosFin}:${segundosFin}`;
-       const response = await fetch(`${process.env.BASE_DB}/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`, {
-         method: 'GET',
-         headers: {
-           'Content-Type': 'application/json',
-           // Agrega cualquier otra cabecera que sea necesaria, como token de autorización, si es aplicable
-         },
-       });
-   
-       if (!response.ok) {
-         throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
-       }
-       
-       const mensajes = await response.json();
-       Object.values(mensajes)[0].forEach( async element => {
-        const chateje = element.number
-      const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
-      const chats = await responseChatExistente.json();
-      if(chats){
-        console.log("si")
-        console.log('entra si')
-       const conver = {
-          idchat: chats[0].idChat2,
-          asesor: chats[0].userId,
-          conversacion: element.content ,
-          numero: chats[0].idChat2,
-          calificacion: chats[0].status,
-          fecha_ingreso: fechaFinString,
-          fecha_ultimagestion: new Date(chats[0].receivedDate).toISOString().slice(0, 19).replace('T', ' '),
-          userid: chats[0].userId
-        }
-        try {
-
-          const response = await fetch(process.env.BASE_DB+'/insertar-conversacion', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(conver)
-          });
-    
-          if (!response.ok) {
-            throw new Error(`Error en la solicitud: ${response.status}`);
-          }
-    
-          const data = await response.json();
-          console.log('Respuesta del servidor:', data);
-        } catch (error) {
-          console.error('Error durante la solicitud:', error.message);
-        }}
-
-    });
-       
-
-     
-      }
+      const responseChat = await fetch(process.env.BASE_DB+'/obtener-chats');
+      const chats = await responseChat.json();
+      const chatlimpio = chats.filter(chat=> chat.idChat2 == data.payload.source);
       
       if(data.type == 'message'){
-
+        console.log('entra en if')
         singuardar()
         
+        console.log('log de obtener',chatlimpio)
         
-        
-        
-          if(chats[0].status == 'closed'){
-            const fechaActual = new Date();
-            const options = { timeZone: 'America/Bogota', hour12: false };
-            const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
-            const mes = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
-            const dia = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
-            const hora = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
-            const minutos = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
-            const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
+          console.log('entra en if2')
+          if(chatlimpio[0].status == 'closed'){
+            
             const data1 = {
             
-              idChat2: chats[0].idChat2,
+              idChat2: chatlimpio[0].idChat2,
               resolved: false,
               status: 'pending',
               userId: 0,
-              receivedDate: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`
             };
             const response = await fetch(process.env.BASE_DB+'/crear-chat', {
               method: 'POST',
@@ -241,10 +171,9 @@ const options = { timeZone: 'America/Bogota', hour12: false };
 
           }
           async function engestionSinResolver(){
-            if(chats[0].status === 'in progress' || 'pending'){
+            if(chatlimpio[0].status === 'in progress' || 'pending'){
               try {
-                
-                const idChat2 = chats[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
+                const idChat2 = chatlimpio[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
                 const resolvedValue = false; // Reemplaza 'nuevo_valor_resolved' con el nuevo valor para 'resolved'
               
                 const response = await fetch(`${process.env.BASE_DB}/actualizar-chat/${idChat2}`, {
@@ -260,7 +189,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
                 }
               
                 const data = await response.json();
-                
+                console.log('Datos actualizados correctamente:', data);
               } catch (error) {
                 console.error('Error al actualizar el chat:', error);
               }
@@ -268,25 +197,19 @@ const options = { timeZone: 'America/Bogota', hour12: false };
             }
           }
           async function singuardar (){
+            engestionSinResolver()
+          if(chatlimpio.length === 0){
+            console.log('entra en if33')
             
-          if(chatlimpio == false){
-            const fechaActual = new Date();
-            const options = { timeZone: 'America/Bogota', hour12: false };
-            const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
-            const mes = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
-            const dia = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
-            const hora = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
-            const minutos = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
-            const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
-
-              
+            console.log('log de obtener33',chatlimpio)
+            
+              console.log('entra en if2')
               const data5 = {
+                
                idChat2: data.payload.source,
                resolved: false,
                status: 'pending',
                userId: 0,
-               receivedDate: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`
-
              };
              const response = await fetch(process.env.BASE_DB+'/crear-chat', {
                method: 'POST',
@@ -299,15 +222,17 @@ const options = { timeZone: 'America/Bogota', hour12: false };
                console.log('no exito')       
              }
              const responseData = await response.json();
-              
+              console.log(responseData)
              
           }
-          engestionSinResolver()
          const responseData = await response.json();
-        
+          console.log(responseData)
+         
       }}
       //chats no creados
       
+
+      const datamensaje = await response.json();
       // Manejar la respuesta según tus necesidades
     } catch (error) {
       console.error('Error en la solicitud:', error);
@@ -335,10 +260,41 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       }
             
       const respnse1 = await respnseweb.json();
-
+      console.log(respnse1)
       
       }
-     
+     // const responseChat = await fetch('https://appcenteryes.appcenteryes.com/db/obtener-chats');
+     // const chats = await responseChat.json();
+     // const chatlimpio = chats.filter(chat=> chat.idChat2 == data.payload.source);
+     // const chatlimpio1 = chatlimpio.filter(chat=> chat.status == 'closed')
+      
+     // if(chatlimpio[0].status == 'closed'&& data.type == 'message'){
+      //  console.log('entra en if')
+        
+      //  console.log('log de obtener',chatlimpio)
+        
+       //   console.log('entra en if2')
+        //  const data1 = {
+            
+        //   idChat2: chatlimpio[0].idChat2,
+         //  resolved: false,
+          // status: 'pending',
+           //userId: 0,
+         //};
+         //const response = await fetch('https://appcenteryes.appcenteryes.com/db/crear-chat', {
+          // method: 'POST',
+          // headers: {
+            // 'Content-Type': 'application/json',
+           //},
+           //body: JSON.stringify(data1),
+         //});  
+         //if (!response.ok) {
+          // console.log('no exito')       
+        // }
+        // const responseData = await response.json();
+         // console.log(responseData)
+         
+      //}
       
      } catch (error) {
       // Maneja cualquier error durante el procesamiento asíncrono
@@ -350,48 +306,25 @@ const options = { timeZone: 'America/Bogota', hour12: false };
     res.status(403).send('Acceso no autorizado.');
     }
      //obtener mensajes
-     const fechaActual = new Date();
-const options = { timeZone: 'America/Bogota', hour12: false };
-     const fechaInicio = new Date(fechaActual);
-     fechaInicio.setMinutes(fechaInicio.getMinutes() - 5);
      
-     // Formatear la fecha de inicio
-     const anioInicio = fechaInicio.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
-     const mesInicio = fechaInicio.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
-     const diaInicio = fechaInicio.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
-     const horaInicio = fechaInicio.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
-     const minutosInicio = fechaInicio.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
-     const segundosInicio = fechaInicio.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
-     
-     const fechaInicioString = `${anioInicio}-${mesInicio}-${diaInicio} ${horaInicio}:${minutosInicio}:${segundosInicio}`;
-     
-     // Formatear la fecha actual
-     const anioFin = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
-     const mesFin = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
-     const diaFin = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
-     const horaFin = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
-     const minutosFin = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
-     const segundosFin = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
-     
-     const fechaFinString = `${anioFin}-${mesFin}-${diaFin} ${horaFin}:${minutosFin}:${segundosFin}`;
-           const response = await fetch(`${process.env.BASE_DB}/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`, {
-             method: 'GET',
-             headers: {
-               'Content-Type': 'application/json',
-               // Agrega cualquier otra cabecera que sea necesaria, como token de autorización, si es aplicable
-             },
-           });
-       
-           if (!response.ok) {
-             throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
-           }
-       
-           const mensajes = await response.json();
-           console.log(Object.values(mensajes))
-           // Filtra solo los usuarios activos
-           const mensajesEntrantes = Object.values(mensajes)[0].filter(mensaje=> mensaje.type_comunication=='message')
-           const numerosUnicos = [...new Set(mensajesEntrantes.map((mensaje) => mensaje.number))];
-           
+      const response = await fetch(process.env.BASE_DB+'/obtener-mensajes', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          // Agrega cualquier otra cabecera que sea necesaria, como token de autorización, si es aplicable
+        },
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
+      }
+  
+      const mensajes = await response.json();
+  
+      // Filtra solo los usuarios activos
+      const mensajesEntrantes = mensajes.filter(mensaje=> mensaje.type_comunication=='message')
+      const numerosUnicos = [...new Set(mensajesEntrantes.map((mensaje) => mensaje.number))];
+      console.log(numerosUnicos)
       async function normalizarNumero(numero) {
         // Eliminar caracteres no numéricos
         const numeroLimpio = numero.replace(/\D/g, '');
@@ -405,7 +338,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       const existentes = await fetch(process.env.BASE_DB+'/obtener-chats');
       let chatsvalidados =[];
       chatsvalidados = await existentes.json();
-      
+      console.log('log',chatsvalidados)
       try {
         const response = await fetch(process.env.BASE_DB+'/obtener-chats');
         if (!response.ok) { 
@@ -429,8 +362,8 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         elementoSeleccionado = idsUactivos[Math.floor(Math.random() * idsUactivos.length)];
         }
         // Encuentra el valor mínimo en las frecuencias
-      
-      
+      console.log("Frecuencia de números:", frecuenciaNumeros);
+      console.log(chatsExistentes);
       var elementoSeleccionado;
       // Verifica si chatsSinUserId es un array o no
 if (chatsSinUserId.length>1) { 
@@ -471,7 +404,7 @@ if (chatsSinUserId.length>1) {
           
               if (!response.ok) {
               }
-              
+              console.log('2')
               const resultado = await response.json();
               return resultado;
             } catch (error) {
@@ -481,7 +414,7 @@ if (chatsSinUserId.length>1) {
             }
             
           }
-          
+          console.log('1')
           // Uso de la función
           const idChat2 = chat.idChat2;// Reemplaza con el idChat2 correcto
           const nuevoUserId = idsUactivos[Math.floor(Math.random() * idsUactivos.length)]; // Reemplaza con el nuevo valor de userId
@@ -489,7 +422,7 @@ if (chatsSinUserId.length>1) {
           try {
         
             const resultadoActualizacion = await actualizarUsuarioChat(idChat2, nuevoUserId);
-
+            console.log(resultadoActualizacion)
             // Aquí puedes manipular la información del resultado según tus necesidades
           } catch (error) {
             // Manejar el error, por ejemplo, mostrar un mensaje al usuario
@@ -502,11 +435,11 @@ if (chatsSinUserId.length>1) {
   
 
     try{
-      
+      console.log('si entra')
     // Lógica para un solo elemento
     var indiceAleatorio = Math.floor(Math.random() * idsUactivos.length);
     elementoSeleccionado = idsUactivos[indiceAleatorio];
-    
+    console.log(idsUactivos)
     const response = await fetch(process.env.BASE_DB+'/actualizar-usuario-chat', {
       method: 'PUT',
       headers: {
@@ -520,7 +453,8 @@ if (chatsSinUserId.length>1) {
     }
 
     const resultado = await response.json();
-    
+    console.log("exitoso",resultado)
+    console.log("exitoso",resultado)
 
     // Aquí puedes manipular la información del resultado según tus necesidades
   } catch (error) {
@@ -566,15 +500,7 @@ if (chatsSinUserId.length>1) {
       //crear chats
       for (const chatparacrear of chatsparacrear) {
         const numeroNormalizado = await normalizarNumero(chatparacrear);
-        const fechaActual = new Date();
-            const options = { timeZone: 'America/Bogota', hour12: false };
-            const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
-            const mes = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
-            const dia = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
-            const hora = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
-            const minutos = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
-            const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
-
+        
        
           const data2 = {
             // Asigna el valor actual del contador y luego incrementa
@@ -582,7 +508,6 @@ if (chatsSinUserId.length>1) {
            resolved: false,
            status: "pending",
            userId: 0,
-           receivedDate: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`
            
          };
           const response2 = await fetch(process.env.BASE_DB+'/crear-chat', {
@@ -597,7 +522,7 @@ if (chatsSinUserId.length>1) {
           console.log('no exito crear chat1')       
         
         const responseData2 = await response2.json();
-
+  console.log('exito1',responseData2)
         }
       }
        
@@ -649,8 +574,8 @@ if (chatsSinUserId.length>1) {
         elementoSeleccionado = idsUactivos[Math.floor(Math.random() * idsUactivos.length)];
         }
         // Encuentra el valor mínimo en las frecuencias
-      
-      
+      console.log("Frecuencia de números:", frecuenciaNumeros);
+      console.log(chatsExistentes);
       var elementoSeleccionado;
       // Verifica si chatsSinUserId es un array o no
 if (chatsSinUserId.length>1) { 
@@ -691,7 +616,7 @@ if (chatsSinUserId.length>1) {
           
               if (!response.ok) {
               }
-              
+              console.log('2')
               const resultado = await response.json();
               return resultado;
             } catch (error) {
@@ -701,15 +626,15 @@ if (chatsSinUserId.length>1) {
             }
             
           }
-
+          console.log('1')
           // Uso de la función
           const idChat2 = chat.idChat2;// Reemplaza con el idChat2 correcto
           const nuevoUserId = idsUactivos[Math.floor(Math.random() * idsUactivos.length)]; // Reemplaza con el nuevo valor de userId
           
           try {
-            
+            console.log('id asignado', nuevoUserId)
             const resultadoActualizacion = await actualizarUsuarioChat(idChat2, nuevoUserId);
-            
+            console.log(resultadoActualizacion)
             // Aquí puedes manipular la información del resultado según tus necesidades
           } catch (error) {
             // Manejar el error, por ejemplo, mostrar un mensaje al usuario
@@ -726,7 +651,7 @@ if (chatsSinUserId.length>1) {
     // Lógica para un solo elemento
     var indiceAleatorio = Math.floor(Math.random() * idsUactivos.length);
     elementoSeleccionado = idsUactivos[indiceAleatorio];
-    
+    console.log(elementoSeleccionado)
     const response = await fetch(process.env.BASE_DB+'/actualizar-usuario-chat', {
       method: 'PUT',
       headers: {
@@ -740,7 +665,7 @@ if (chatsSinUserId.length>1) {
     }
 
     const resultado = await response.json();
-    
+    console.log("exitoso",resultado)
 
     // Aquí puedes manipular la información del resultado según tus necesidades
   } catch (error) {
@@ -929,24 +854,44 @@ app.post('/w/createTemplates', async (req, res) => {
   }
 });
 
+//Filter tem´plates group
+async function getElementNamesFromSeetemp() {
+  try {
+    // Supongamos que ya tienes la conexión a la base de datos disponible en la variable 'connection'
+    // Asegúrate de que la conexión esté establecida antes de llamar a esta función
+
+    const [rows] = await connection.execute('SELECT elementname FROM Seetemp');
+    return rows.map(row => row.elementname);
+  } catch (error) {
+    console.error('Error al obtener elementnames de Seetemp:', error.message || error);
+    throw error; // Puedes manejar el error según tus necesidades
+  }
+}
+
+
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {
   try {
-    // Consulta la tabla Seetemp para obtener los elementname
-    const seetempQuery = 'SELECT elementname FROM Seetemp';
-    const seetempResult = await db.query(seetempQuery);
+    const appId = process.env.APPID;
+    const partnerAppToken = process.env.PARTNERAPPTOKEN;
+    const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
 
-    // Obtén los elementname de la respuesta de Gupshup
-    const gupshupElementNames = data.templates.map(template => template.elementname);
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Connection': 'keep-alive',
+        'token': partnerAppToken,
+      },
+    });
 
-    // Filtra solo los elementname que están en ambas listas
-    const commonElementNames = seetempResult.map(row => row.elementname)
-      .filter(elementname => gupshupElementNames.includes(elementname));
+    const data = await response.json();
 
-    // Filtra las plantillas que tienen elementname en commonElementNames
-    const filteredTemplates = data.templates.filter(template => commonElementNames.includes(template.elementname));
+    // Obtén los elementname de la tabla Seetemp
+    const seetempElementNames = await getElementNamesFromSeetemp();
 
-    // Devuelve las plantillas filtradas
+    // Filtra las plantillas para incluir solo aquellas cuyo elementname coincide con los de la tabla
+    const filteredTemplates = data.templates.filter(template => seetempElementNames.includes(template.elementname));
+
     res.json({ status: 'success', templates: filteredTemplates });
   } catch (error) {
     console.error('Error:', error.message || error);
