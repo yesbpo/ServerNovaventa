@@ -942,10 +942,13 @@ app.get('/w/gupshup-templates', async (req, res) => {
       },
     });
 
+    // Obtiene la respuesta de Gupshup
     const gupshupData = await response.json();
 
     // Consulta la tabla Seetemp para obtener los elementname
     const seetempQuery = 'SELECT elementname FROM Seetemp';
+    
+    // Ejecuta la consulta y obtén los resultados
     const [seetempRows] = await db.query(seetempQuery);
 
     // Obtén los elementname de la respuesta de Gupshup
@@ -965,6 +968,7 @@ app.get('/w/gupshup-templates', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 
 //DELETE TEMPLATES
