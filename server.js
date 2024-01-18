@@ -388,10 +388,10 @@ app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
       } else {
         // Agregar el nuevo dato a la conversación existente
         const updatedConversacion = existingConversation.conversacion + '\n' + conversacion;
-        fecha_ultimagestion = updatedConversacion.fecha_ultimagestion
+        fecha_ingreso = updatedConversacion.fecha_ingreso
         // Actualizar la conversación existente con la nueva información
         await promisePool.execute(
-          'UPDATE Conversation SET conversacion = ?, calificacion = ?, fecha_ultimagestion = NOW() WHERE idchat = ? AND fecha_ultimagestion = ?',
+          'UPDATE Conversation SET conversacion = ?, calificacion = ?, fecha_ultimagestion = NOW() WHERE idchat = ? AND fecha_ingreso = ?',
       [updatedConversacion, calificacion, idchat, fecha_ultimagestion]
         );
         res.json({ mensaje: 'Datos actualizados correctamente' });
