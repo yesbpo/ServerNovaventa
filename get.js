@@ -945,8 +945,16 @@ app.get('/w/gupshup-templates', async (req, res) => {
     // Obtiene la respuesta de Gupshup
     const gupshupData = await response.json();
 
-    // Devuelve las plantillas de Gupshup directamente
-    res.json({ status: 'success', templates: gupshupData.templates });
+    // Obtén las plantillas almacenadas en tu base de datos (reemplaza 'obtenerPlantillasDesdeDB' con tu lógica real)
+    const plantillasDB = await obtenerPlantillasDesdeDB();
+
+    // Filtra las plantillas de Gupshup que tienen el mismo nombre que las almacenadas en tu base de datos
+    const plantillasCoincidentes = gupshupData.templates.filter(gupshupTemplate =>
+      plantillasDB.some(dbTemplate => dbTemplate.nombre === gupshupTemplate.name)
+    );
+
+    // Devuelve las plantillas coincidentes
+    res.json({ status: 'success', templates: plantillasCoincidentes });
   } catch (error) {
     console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Internal Server Error' });
