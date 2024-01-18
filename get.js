@@ -945,12 +945,8 @@ app.get('/w/gupshup-templates', async (req, res) => {
     // Obtiene la respuesta de Gupshup
     const gupshupData = await response.json();
 
-    // Consulta la tabla Seetemp para obtener todos los datos
-    const seetempQuery = 'SELECT * FROM Seetemp';
-    const [seetempRows] = await dbconfig.query(seetempQuery);
-
-    // Devuelve las plantillas de Gupshup y los datos de Seetemp
-    res.json({ status: 'success', templates: gupshupData.templates, seetempData: seetempRows });
+    // Devuelve las plantillas de Gupshup directamente
+    res.json({ status: 'success', templates: gupshupData.templates });
   } catch (error) {
     console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Internal Server Error' });
