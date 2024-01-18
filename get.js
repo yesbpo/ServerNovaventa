@@ -926,6 +926,18 @@ app.post('/w/createTemplates', async (req, res) => {
   }
 });
 
+//knsdpsd
+async function obtenerPlantillasDesdeDB() {
+  try {
+    // Realiza la consulta SQL para obtener todos los datos de la tabla Seetemp
+    const [rows] = await promisePool.query('SELECT * FROM Seetemp');
+    return rows;
+  } catch (error) {
+    console.error('Error al obtener los datos de Seetemp:', error);
+    throw error;
+  }
+}
+
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {
   try {
