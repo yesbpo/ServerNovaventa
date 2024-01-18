@@ -294,7 +294,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
            }
            
            const mensajes = await response.json();
-           const existeNumero = Object.values(mensajes)[0].find(objeto => objeto.number === chatlimpio[0].idChat2 );
+           const existeNumero = Object.values(mensajes)[0].find(objeto => objeto.number === chatlimpio.idChat2 );
            
            if(existeNumero){
             console.log(existeNumero,"si")
