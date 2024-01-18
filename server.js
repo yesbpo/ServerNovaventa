@@ -50,7 +50,7 @@ app.put(process.env.DB_ROUTE+'/actualizar/usuario', async (req, res) => {
       );  
     // Verifica si se realizó la actualización correctamente
     if (result.affectedRows > 0) {
-      console.log('Usuario actualizado correctamente.');
+      
       res.status(200).json({ mensaje: 'Usuario actualizado correctamente.' });
     } else {
       console.log('No se encontró el usuario para actualizar.');
@@ -143,7 +143,7 @@ app.post(process.env.DB_ROUTE+'/insertar-datos-template', async (req, res) => {
       );
 
       if (updateResult.affectedRows > 0) {
-        console.log('Registro actualizado correctamente.');
+        
         res.json({ mensaje: 'Registro actualizado con éxito', datos: { idmessageTemplate, status, attachments, message, timestamp, campaign } });
       } else {
         console.log('No se encontró el registro para actualizar.');
@@ -201,7 +201,7 @@ app.post(process.env.DB_ROUTE+'/guardar-mensajes', async (req, res) => {
     const { content, type_comunication, status, number, timestamp, type_message, idMessage } = req.body;
 
     // Validar que todos los campos requeridos estén presentes
-    if (!content || !type_comunication || !status || !number || !timestamp || !type_message || !idMessage) {
+    if (!type_comunication || !status || !number || !timestamp || !type_message || !idMessage) {
       return res.status(400).json({ error: 'Faltan datos requeridos para guardar el mensaje.' });
     }
 
@@ -214,12 +214,20 @@ app.post(process.env.DB_ROUTE+'/guardar-mensajes', async (req, res) => {
     if (existingResult.length > 0) {
       // Si ya existe, actualiza los demás datos
       const [updateResult] = await promisePool.execute(
-        'UPDATE Mensaje SET type_comunication = ?, status = ?, number = ?, type_message = ? WHERE idMessage = ?',
-        [type_comunication, status, number, type_message, idMessage]
+        'UPDATE Mensaje SET type_comunication = ?, status = ?, number = ?, type_message = ?, content = COALESCE(?, content) WHERE idMessage = ?',
+        [
+          type_comunication,
+          status,
+          number,
+          type_message,
+          content || null,
+          idMessage
+        ]
+      
       );
 
       if (updateResult.affectedRows > 0) {
-        console.log('Mensaje actualizado correctamente.');
+        
         res.json({ mensaje: 'Mensaje actualizado con éxito', usuario: { idMessage, content, type_comunication, status, number, timestamp, type_message } });
       } else {
         console.log('No se encontró el mensaje para actualizar.');
@@ -229,8 +237,10 @@ app.post(process.env.DB_ROUTE+'/guardar-mensajes', async (req, res) => {
       // Si no existe, inserta un nuevo mensaje
       const [insertResult] = await promisePool.execute(
         'INSERT INTO Mensaje (idMessage, content, type_comunication, status, number, timestamp, type_message) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [idMessage, content, type_comunication, status, number, timestamp, type_message]
+        [idMessage, content || '', type_comunication, status, number, timestamp, type_message]
       );
+      
+      
 
       const nuevoMensaje = {
         idMessage, content, type_comunication, status, number, timestamp, type_message
@@ -272,7 +282,7 @@ app.post(process.env.DB_ROUTE+'/crear-chat', async (req, res) => {
           const minutos = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
           const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
     for (const chat of chatsArray) {
-      const { assignedDate =`${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`, receivedDate =`${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`, resolved, status, userId, idChat2 } = chat;
+      const { assignedDate =`${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`, receivedDate , resolved, status, userId, idChat2 } = chat;
 
       // Verificar si ya existe un chat con el mismo idChat2
       const [existingResult] = await promisePool.execute(
@@ -302,6 +312,24 @@ app.post(process.env.DB_ROUTE+'/crear-chat', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+// consulta por status
+app.get(process.env.DB_ROUTE + '/consultar_por_status', async (req, res) => {
+  try {
+    const status = req.query.status;
+
+    // Consulta SQL para obtener registros por status
+    const sql = 'SELECT * FROM Chat WHERE status = ?';
+
+    // Ejecutar la consulta utilizando await
+    const [results] = await promisePool.execute(sql, [status]);
+
+    // Enviar resultados como JSON
+    res.json(results);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Error en el servidor' });
+  }
+});
 //actualizar chat resolved 
 app.put(process.env.DB_ROUTE+'/actualizar-chat/:idChat2', async (req, res) => {
   try {
@@ -329,6 +357,84 @@ app.put(process.env.DB_ROUTE+'/actualizar-chat/:idChat2', async (req, res) => {
   } catch (error) {
     console.error('Error al actualizar el chat:', error);
     res.status(500).json({ message: 'Error interno del servidor.' });
+  }
+});
+// ruta para crear conversacion
+app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
+  const { idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid } = req.body;
+
+  // Verificar si ya existe una conversación con el mismo idchat y userid diferente a cero
+  const checkQuery = `
+    SELECT * FROM Conversation
+    WHERE idchat = ? AND userid <> 0
+  `;
+
+  const checkValues = [idchat];
+
+  try {
+    const [existingConversations, checkFields] = await promisePool.execute(checkQuery, checkValues);
+
+    if (existingConversations.length > 0) {
+      // Ya existe una conversación con el mismo idchat y userid diferente a cero
+      // Obtener la conversación existente
+      const existingConversation = existingConversations[0];
+
+      // Validar si el userid es diferente al existente
+      if (existingConversation.userid !== userid) {
+        // Crear una nueva instancia ya que el userid es diferente al existente
+        const insertQuery = `
+          INSERT INTO Conversation (idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
+        const insertValues = [idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid];
+
+        const [results, fields] = await promisePool.execute(insertQuery, insertValues);
+        res.json({ mensaje: 'Datos insertados correctamente' });
+      } else {
+        // Agregar el nuevo dato a la conversación existente
+        const updatedConversacion = existingConversation.conversacion + '\n' + conversacion;
+
+        // Actualizar la conversación existente con la nueva información
+        const updateQuery = `
+          UPDATE Conversation
+          SET conversacion = ?, calificacion = ?, fecha_ultimagestion = NOW()
+          WHERE idchat = ? AND userid <> 0
+        `;
+
+        const updateValues = [updatedConversacion, calificacion, idchat];
+
+        await promisePool.execute(updateQuery, updateValues);
+        res.json({ mensaje: 'Datos actualizados correctamente' });
+      }
+    } else {
+      // No existe una conversación con el mismo idchat y userid diferente a cero
+      // Crear una nueva instancia
+      const insertQuery = `
+        INSERT INTO Conversation (idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+
+      const insertValues = [idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid];
+
+      const [results, fields] = await promisePool.execute(insertQuery, insertValues);
+      res.json({ mensaje: 'Datos insertados correctamente' });
+    }
+  } catch (error) {
+    console.error('Error al procesar la solicitud:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// obtener conversaciones 
+app.get(process.env.DB_ROUTE+'/obtener-conversaciones', async (req, res) => {
+  try {
+    const consultaConversaciones = 'SELECT * FROM Conversation';
+    const [conversaciones, fields] = await promisePool.execute(consultaConversaciones);
+    res.json({ conversaciones });
+  } catch (error) {
+    console.error('Error al obtener conversaciones:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
 // Ruta para actualizar el userId de un chat por idChat2
@@ -513,7 +619,7 @@ app.put(process.env.DB_ROUTE+'/mensajestatus', async (req, res) => {
       );  
     // Verifica si se realizó la actualización correctamente
     if (result.affectedRows > 0) {
-      console.log('mensaje actualizado correctamente.');
+      
       res.status(200).json({ mensaje: 'mensaje actualizado correctamente.' });
     } else {
       console.log('No se encontró el mensaje para actualizar.');
