@@ -171,7 +171,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
        const conver = {
           idchat: chats[0].idChat2,
           asesor: chats[0].userId,
-          conversacion: existeNumero.content ,
+          conversacion: element.content ,
           numero: chats[0].idChat2,
           calificacion: chats[0].status,
           fecha_ingreso: fechaFinString,
