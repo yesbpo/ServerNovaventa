@@ -918,9 +918,6 @@ app.post('/w/createTemplates', async (req, res) => {
         'token': partnerAppToken,
       },
     });
-    
-
-    
 
     res.status(response.status).json(response.data);
   } catch (error) {
@@ -932,19 +929,34 @@ app.post('/w/createTemplates', async (req, res) => {
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {
   try {
+    // Obtiene las plantillas de Gupshup
+    const appId = process.env.APPID;
+    const partnerAppToken = process.env.PARTNERAPPTOKEN;
+    const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
+
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Connection': 'keep-alive',
+        'token': partnerAppToken,
+      },
+    });
+
+    const gupshupData = await response.json();
+
     // Consulta la tabla Seetemp para obtener los elementname
     const seetempQuery = 'SELECT elementname FROM Seetemp';
     const [seetempRows] = await db.query(seetempQuery);
 
     // Obtén los elementname de la respuesta de Gupshup
-    const gupshupElementNames = data.templates.map(template => template.elementName);
+    const gupshupElementNames = gupshupData.templates.map(template => template.elementName);
 
     // Filtra solo los elementname que están en ambas listas
     const commonElementNames = seetempRows.map(row => row.elementname)
       .filter(elementname => gupshupElementNames.includes(elementname));
 
     // Filtra las plantillas que tienen elementname en commonElementNames
-    const filteredTemplates = data.templates.filter(template => commonElementNames.includes(template.elementName));
+    const filteredTemplates = gupshupData.templates.filter(template => commonElementNames.includes(template.elementName));
 
     // Devuelve las plantillas filtradas
     res.json({ status: 'success', templates: filteredTemplates });
@@ -953,6 +965,7 @@ app.get('/w/gupshup-templates', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 //DELETE TEMPLATES
 app.delete('/w/deleteTemplate/:elementName', async (req, res) => {
