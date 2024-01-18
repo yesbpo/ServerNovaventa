@@ -162,15 +162,17 @@ const options = { timeZone: 'America/Bogota', hour12: false };
        
        const mensajes = await response.json();
        Object.values(mensajes)[0].forEach( async element => {
-        const chateje = element.number
+        const chateje = element.number;
+        const responseUsuarios = await fetch(process.env.BASE_DB+'/obtener-usuarios');  
       const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
       const chats = await responseChatExistente.json();
+      const usuariosC = await responseUsuarios.json();
       if(chats){
         console.log("si")
         console.log('entra si')
        const conver = {
           idchat: chats[0].idChat2,
-          asesor: chats[0].userId,
+          asesor: usuariosC[0].map(user=> user.id == chats[0].userId).complete_name,
           conversacion: "["+element.timestamp+"]" +"["+element.status+"]"+ element.content  ,
           numero: element.idMessage,
           calificacion: chats[0].status,
