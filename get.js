@@ -232,7 +232,6 @@ const options = { timeZone: 'America/Bogota', hour12: false };
 
           }
           async function engestionSinResolver(){
-            
             if(chats.status === 'in progress' || 'pending'){
               try {
                 
