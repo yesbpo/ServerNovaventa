@@ -363,61 +363,43 @@ app.put(process.env.DB_ROUTE+'/actualizar-chat/:idChat2', async (req, res) => {
 app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
   const { idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid } = req.body;
 
-  // Verificar si ya existe una conversación con el mismo idchat y userid diferente a cero
-  const checkQuery = `
-    SELECT * FROM Conversation
-    WHERE idchat = ? AND userid <> 0
-  `;
-
-  const checkValues = [idchat];
-
   try {
-    const [existingConversations, checkFields] = await promisePool.execute(checkQuery, checkValues);
+    // Verificar si ya existe una conversación con el mismo idchat y userid diferente a cero
+    const [existingConversations] = await promisePool.execute(
+      'SELECT * FROM Conversation WHERE idchat = ? AND userid <> 0',
+      [idchat]
+    );
 
     if (existingConversations.length > 0) {
       // Ya existe una conversación con el mismo idchat y userid diferente a cero
-      // Obtener la conversación existente
       const existingConversation = existingConversations[0];
 
       // Validar si el userid es diferente al existente
       if (existingConversation.userid !== userid) {
         // Crear una nueva instancia ya que el userid es diferente al existente
-        const insertQuery = `
-          INSERT INTO Conversation (idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        `;
-
-        const insertValues = [idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid];
-
-        const [results, fields] = await promisePool.execute(insertQuery, insertValues);
+        const [results, fields] = await promisePool.execute(
+          'INSERT INTO Conversation (idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+          [idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid]
+        );
         res.json({ mensaje: 'Datos insertados correctamente' });
       } else {
         // Agregar el nuevo dato a la conversación existente
         const updatedConversacion = existingConversation.conversacion + '\n' + conversacion;
 
         // Actualizar la conversación existente con la nueva información
-        const updateQuery = `
-          UPDATE Conversation
-          SET conversacion = ?, calificacion = ?, fecha_ultimagestion = NOW()
-          WHERE idchat = ? AND userid <> 0
-        `;
-
-        const updateValues = [updatedConversacion, calificacion, idchat];
-
-        await promisePool.execute(updateQuery, updateValues);
+        await promisePool.execute(
+          'UPDATE Conversation SET conversacion = ?, calificacion = ?, fecha_ultimagestion = NOW() WHERE idchat = ? AND userid <> 0',
+          [updatedConversacion, calificacion, idchat]
+        );
         res.json({ mensaje: 'Datos actualizados correctamente' });
       }
     } else {
       // No existe una conversación con el mismo idchat y userid diferente a cero
       // Crear una nueva instancia
-      const insertQuery = `
-        INSERT INTO Conversation (idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `;
-
-      const insertValues = [idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid];
-
-      const [results, fields] = await promisePool.execute(insertQuery, insertValues);
+      const [results, fields] = await promisePool.execute(
+        'INSERT INTO Conversation (idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid]
+      );
       res.json({ mensaje: 'Datos insertados correctamente' });
     }
   } catch (error) {
