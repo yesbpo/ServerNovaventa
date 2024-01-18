@@ -945,30 +945,17 @@ app.get('/w/gupshup-templates', async (req, res) => {
     // Obtiene la respuesta de Gupshup
     const gupshupData = await response.json();
 
-    // Consulta la tabla Seetemp para obtener los elementname
-    const seetempQuery = 'SELECT elementname FROM Seetemp';
-    
-    // Ejecuta la consulta y obtén los resultados
-    const [seetempRows] = await dbconfig.query(seetempQuery);
+    // Consulta la tabla Seetemp para obtener todos los datos
+    const seetempQuery = 'SELECT * FROM Seetemp';
+    const [seetempRows] = await db.query(seetempQuery);
 
-    // Obtén los elementname de la respuesta de Gupshup
-    const gupshupElementNames = gupshupData.templates.map(template => template.elementName);
-
-    // Filtra solo los elementname que están en ambas listas
-    const commonElementNames = seetempRows.map(row => row.elementname)
-      .filter(elementname => gupshupElementNames.includes(elementname));
-
-    // Filtra las plantillas que tienen elementname en commonElementNames
-    const filteredTemplates = gupshupData.templates.filter(template => commonElementNames.includes(template.elementName));
-
-    // Devuelve las plantillas filtradas
-    res.json({ status: 'success', templates: filteredTemplates });
+    // Devuelve las plantillas de Gupshup y los datos de Seetemp
+    res.json({ status: 'success', templates: gupshupData.templates, seetempData: seetempRows });
   } catch (error) {
     console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 
 //DELETE TEMPLATES
 app.delete('/w/deleteTemplate/:elementName', async (req, res) => {
