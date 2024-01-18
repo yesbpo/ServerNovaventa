@@ -201,7 +201,7 @@ app.post(process.env.DB_ROUTE+'/guardar-mensajes', async (req, res) => {
     const { content, type_comunication, status, number, timestamp, type_message, idMessage } = req.body;
 
     // Validar que todos los campos requeridos estén presentes
-    if (!content || !type_comunication || !status || !number || !timestamp || !type_message || !idMessage) {
+    if (!type_comunication || !status || !number || !timestamp || !type_message || !idMessage) {
       return res.status(400).json({ error: 'Faltan datos requeridos para guardar el mensaje.' });
     }
 
