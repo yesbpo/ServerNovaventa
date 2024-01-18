@@ -118,7 +118,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
       const chateje = data.payload.source || data.payload.destination
       const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
       const chats = await responseChatExistente.json();
-      const chatlimpio = chats.idChat2 == data.payload.source;
+      const chatlimpio = chats[0].idChat2 == data.payload.source;
       crearConversacion()
       async function crearConversacion (){
         console.log('entra')
@@ -159,7 +159,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
        }
        
        const mensajes = await response.json();
-       const existeNumero = Object.values(mensajes)[0].find(objeto => objeto.number === chats.idChat2 );
+       const existeNumero = Object.values(mensajes)[0].find(objeto => objeto.number === chats[0].idChat2 );
        console.log('entra si')
        console.log(existeNumero,"si")
        console.log(chats[0],"si")
@@ -167,14 +167,14 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         console.log(existeNumero,"si")
         console.log('entra si')
        const conver = {
-          idchat: chats.idChat2,
-          asesor: chats.userId,
+          idchat: chats[0].idChat2,
+          asesor: chats[0].userId,
           conversacion: existeNumero.content ,
-          numero: chats.idChat2,
-          calificacion: chats.status,
+          numero: chats[0].idChat2,
+          calificacion: chats[0].status,
           fecha_ingreso: fechaFinString,
-          fecha_ultimagestion: new Date(chats.receivedDate).toISOString().slice(0, 19).replace('T', ' '),
-          userid: chats.userId
+          fecha_ultimagestion: new Date(chats[0].receivedDate).toISOString().slice(0, 19).replace('T', ' '),
+          userid: chats[0].userId
         }
         try {
 
@@ -204,7 +204,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         
         
         
-          if(chats.status == 'closed'){
+          if(chats[0].status == 'closed'){
             const fechaActual = new Date();
             const options = { timeZone: 'America/Bogota', hour12: false };
             const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
@@ -215,7 +215,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
             const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
             const data1 = {
             
-              idChat2: chats.idChat2,
+              idChat2: chats[0].idChat2,
               resolved: false,
               status: 'pending',
               userId: 0,
@@ -234,10 +234,10 @@ const options = { timeZone: 'America/Bogota', hour12: false };
 
           }
           async function engestionSinResolver(){
-            if(chats.status === 'in progress' || 'pending'){
+            if(chats[0].status === 'in progress' || 'pending'){
               try {
                 
-                const idChat2 = chats.idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
+                const idChat2 = chats[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
                 const resolvedValue = false; // Reemplaza 'nuevo_valor_resolved' con el nuevo valor para 'resolved'
               
                 const response = await fetch(`${process.env.BASE_DB}/actualizar-chat/${idChat2}`, {
