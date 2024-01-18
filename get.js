@@ -934,17 +934,17 @@ app.get('/w/gupshup-templates', async (req, res) => {
   try {
     // Consulta la tabla Seetemp para obtener los elementname
     const seetempQuery = 'SELECT elementname FROM Seetemp';
-    const seetempResult = await db.query(seetempQuery);
+    const [seetempRows] = await db.query(seetempQuery);
 
     // Obtén los elementname de la respuesta de Gupshup
-    const gupshupElementNames = data.templates.map(template => template.elementname);
+    const gupshupElementNames = data.templates.map(template => template.elementName);
 
     // Filtra solo los elementname que están en ambas listas
-    const commonElementNames = seetempResult.map(row => row.elementname)
+    const commonElementNames = seetempRows.map(row => row.elementname)
       .filter(elementname => gupshupElementNames.includes(elementname));
 
     // Filtra las plantillas que tienen elementname en commonElementNames
-    const filteredTemplates = data.templates.filter(template => commonElementNames.includes(template.elementname));
+    const filteredTemplates = data.templates.filter(template => commonElementNames.includes(template.elementName));
 
     // Devuelve las plantillas filtradas
     res.json({ status: 'success', templates: filteredTemplates });
