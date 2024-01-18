@@ -945,8 +945,24 @@ app.get('/w/gupshup-templates', async (req, res) => {
     // Obtiene la respuesta de Gupshup
     const gupshupData = await response.json();
 
-    // Devuelve las plantillas de Gupshup directamente
-    res.json({ status: 'success', templates: gupshupData.templates });
+    // Consulta la tabla Seetemp para obtener los elementname
+    const seetempQuery = 'SELECT elementname FROM Seetemp';
+    
+    // Ejecuta la consulta y obtén los resultados
+    const [seetempRows] = await dbconfig.query(seetempQuery);
+
+    // Obtén los elementname de la respuesta de Gupshup
+    const gupshupElementNames = gupshupData.templates.map(template => template.elementName);
+
+    // Filtra solo los elementname que están en ambas listas
+    const commonElementNames = seetempRows.map(row => row.elementname)
+      .filter(elementname => gupshupElementNames.includes(elementname));
+
+    // Filtra las plantillas que tienen elementname en commonElementNames
+    const filteredTemplates = gupshupData.templates.filter(template => commonElementNames.includes(template.elementName));
+
+    // Devuelve las plantillas filtradas
+    res.json({ status: 'success', templates: filteredTemplates });
   } catch (error) {
     console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Internal Server Error' });
