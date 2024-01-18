@@ -127,7 +127,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
         const fechaActual = new Date();
 const options = { timeZone: 'America/Bogota', hour12: false };
  const fechaInicio = new Date(fechaActual);
- fechaInicio.setMinutes(fechaInicio.getMinutes() - 2);
+ fechaInicio.setMinutes(fechaInicio.getMinutes() - 1);
  
  // Formatear la fecha de inicio
  const anioInicio = fechaInicio.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
