@@ -387,7 +387,7 @@ app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
         res.json({ mensaje: 'Datos insertados correctamente' });
       } else {
         // Agregar el nuevo dato a la conversación existente
-        const validaid = existingConversation.numero == numero
+        const validaid = existingConversation.numero === numero
         let updatedConversacion;
         if(validaid){
           updatedConversacion = existingConversation.conversacion
