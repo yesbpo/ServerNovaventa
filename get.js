@@ -269,7 +269,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
               
             }}
             
-            singuardar ()
+            if(chats.error === 'Chat no encontrado'){singuardar()}
           }
           
           async function singuardar (){
