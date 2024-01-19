@@ -246,7 +246,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           async function engestionSinResolver(){
             if(chats[0].status === 'in progress' || 'pending'){
               try {
-                console.log('creado')
+                console.log('creado2')
                 const idChat2 = chats[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
                 const resolvedValue = false; // Reemplaza 'nuevo_valor_resolved' con el nuevo valor para 'resolved'
               
@@ -301,6 +301,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
              if (!response.ok) {
                console.log('no exito')       
              }
+             console.log('creado3') 
              const responseData = await response.json();
               
              
