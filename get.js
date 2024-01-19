@@ -195,7 +195,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           }
     
           const data = await response.json();
-          console.log('Respuesta del servidor:', data);
+          console.log('Respuesta del servidor:',conver, data);
         } catch (error) {
           console.error('Error durante la solicitud:', error.message);
         }}
