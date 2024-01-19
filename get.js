@@ -241,6 +241,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         }}
           
           async function engestionSinResolver(){
+
             if(chats.error === undefined){  
               if(chats[0].status === 'in progress' || 'pending'){
               try {
@@ -307,7 +308,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
               
              
           }
-          if(chats !== undefined){engestionSinResolver() }
+          if(chats.error === undefined){engestionSinResolver() }
           
          const responseData = await response.json();
         
