@@ -210,7 +210,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       if(data.type == 'message'){
 
         singuardar()
-          if(chats[0].status == 'closed'){
+          if(chats !== undefined && chats[0].status == 'closed'){
             const fechaActual = new Date();
             const options = { timeZone: 'America/Bogota', hour12: false };
             const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
@@ -240,7 +240,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
             console.log('creado') 
           }
           async function engestionSinResolver(){
-            if(chats[0].status === 'in progress' || 'pending'){
+            if(chats !== undefined && chats[0].status === 'in progress' || 'pending'){
               try {
                 console.log('creado2')
                 const idChat2 = chats[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
