@@ -242,12 +242,12 @@ const options = { timeZone: 'America/Bogota', hour12: false };
             if (!response.ok) {
               console.log('no exito')       
             }
-
+            console.log('creado') 
           }
           async function engestionSinResolver(){
             if(chats[0].status === 'in progress' || 'pending'){
               try {
-                
+                console.log('creado')
                 const idChat2 = chats[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
                 const resolvedValue = false; // Reemplaza 'nuevo_valor_resolved' con el nuevo valor para 'resolved'
               
@@ -273,7 +273,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           }
           async function singuardar (){
             
-          if(chatlimpio == false){
+          if(!chats){
             const fechaActual = new Date();
             const options = { timeZone: 'America/Bogota', hour12: false };
             const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
