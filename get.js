@@ -123,11 +123,11 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
       async function crearConversacion (){
         
         
-        console.log('entra')
+
         const fechaActual = new Date();
 const options = { timeZone: 'America/Bogota', hour12: false };
  const fechaInicio = new Date(fechaActual);
- fechaInicio.setMinutes(fechaInicio.getSeconds() - 30);
+ fechaInicio.setMinutes(fechaInicio.getSeconds() - 15);
  
  // Formatear la fecha de inicio
  const anioInicio = fechaInicio.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
@@ -303,7 +303,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
              if (!response.ok) {
                console.log('no exito')       
              }
-             console.log('creado3') 
+             
              const responseData = await response.json();
               
              
