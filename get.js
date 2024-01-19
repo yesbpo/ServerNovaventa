@@ -39,6 +39,16 @@ app.use((req, res, next) => {
 });
 const directorioCargas =   path.join(__dirname, '..', 'uploads'); // Carpeta para almacenar los archivos cargados
 
+const pool = mysql.createPool({
+  host: process.env.DBHOST,
+  user: process.env.DBUSER,
+  password: process.env.DBPASS,
+  database: process.env.DBNAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
 // Configuración de Multer para manejar la carga de archivos
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -933,16 +943,6 @@ app.post('/w/createTemplates', async (req, res) => {
   }
 });
 
-const pool = mysql.createPool({
-  host: process.env.DBHOST,
-  user: process.env.DBUSER,
-  password: process.env.DBPASS,
-  database: process.env.DBNAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
-
 
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {
@@ -964,9 +964,9 @@ app.get('/w/gupshup-templates', async (req, res) => {
     const gupshupData = await response.json();
 
     // Consulta la base de datos para obtener las plantillas permitidas
-    const connection = await pool.getConnection();
+    const connection = await promisePool.getConnection();
     try {
-      const [rows] = await connection.execute('SELECT elementname FROM Seetemp');
+      const [rows] = await promisePool.execute('SELECT elementname FROM Seetemp');
       const allowedTemplates = rows.map(row => row.elementname);
 
       // Filtra las plantillas de Gupshup basándose en las permitidas en la base de datos
