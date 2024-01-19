@@ -169,7 +169,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       const usuariosC = await responseUsuarios.json();
       if(chats){
         console.log("si")
-        console.log('entra si',chats)
+        console.log('entra si',usuariosC)
        const conver = {
           idchat: chats[0].idChat2,
           asesor: usuariosC.map(user=> user.id == chats[0].userId).complete_name,
