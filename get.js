@@ -241,7 +241,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         }}
           
           async function engestionSinResolver(){
-            if(chats !== undefined){  
+            if(chats.error === undefined){  
               if(chats[0].status === 'in progress' || 'pending'){
               try {
                 console.log('creado2')
