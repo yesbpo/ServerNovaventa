@@ -39,16 +39,6 @@ app.use((req, res, next) => {
 });
 const directorioCargas =   path.join(__dirname, '..', 'uploads'); // Carpeta para almacenar los archivos cargados
 
-const pool = mysql.createPool({
-  host: process.env.DBHOST,
-  user: process.env.DBUSER,
-  password: process.env.DBPASS,
-  database: process.env.DBNAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
-
 // Configuración de Multer para manejar la carga de archivos
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -128,16 +118,16 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
       const chateje = data.payload.source || data.payload.destination
       const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
       const chats = await responseChatExistente.json();
-     
+      const chatlimpio = chats[0].idChat2 == data.payload.source;
       crearConversacion()
       async function crearConversacion (){
         
         
-
+        console.log('entra')
         const fechaActual = new Date();
 const options = { timeZone: 'America/Bogota', hour12: false };
  const fechaInicio = new Date(fechaActual);
- fechaInicio.setMinutes(fechaInicio.getSeconds() - 3);
+ fechaInicio.setMinutes(fechaInicio.getSeconds() - 30);
  
  // Formatear la fecha de inicio
  const anioInicio = fechaInicio.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
@@ -172,18 +162,15 @@ const options = { timeZone: 'America/Bogota', hour12: false };
        
        const mensajes = await response.json();
        Object.values(mensajes)[0].forEach( async element => {
-        const chateje = element.number;
-        const responseUsuarios = await fetch(process.env.BASE_DB+'/obtener-usuarios');  
+        const chateje = element.number
       const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
       const chats = await responseChatExistente.json();
-      const usuariosC = await responseUsuarios.json();
       if(chats){
-        
-        
-        const nameuser = usuariosC.find(user => user.id === chats[0].userId).complete_name
-               const conver = {
+        console.log("si")
+        console.log('entra si')
+       const conver = {
           idchat: chats[0].idChat2,
-          asesor: nameuser,
+          asesor: chats[0].userId,
           conversacion: "["+element.timestamp+"]" +"["+element.status+"]"+ element.content  ,
           numero: element.idMessage,
           calificacion: chats[0].status,
@@ -220,42 +207,43 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       if(data.type == 'message'){
 
         singuardar()
-        if(chats.error === undefined){if( chats[0].status == 'closed'){
-          const fechaActual = new Date();
-          const options = { timeZone: 'America/Bogota', hour12: false };
-          const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
-          const mes = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
-          const dia = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
-          const hora = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
-          const minutos = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
-          const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
-          const data1 = {
-          
-            idChat2: chats[0].idChat2,
-            resolved: false,
-            status: 'pending',
-            userId: 0,
-            receivedDate: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`
-          };
-          const response = await fetch(process.env.BASE_DB+'/crear-chat', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data1),
-          });  
-          if (!response.ok) {
-            console.log('no exito')       
-          }
-          console.log('creado') 
-        }}
-          
-          async function engestionSinResolver(){
+        
+        
+        
+        
+          if(chats[0].status == 'closed'){
+            const fechaActual = new Date();
+            const options = { timeZone: 'America/Bogota', hour12: false };
+            const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
+            const mes = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
+            const dia = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
+            const hora = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
+            const minutos = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
+            const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
+            const data1 = {
+            
+              idChat2: chats[0].idChat2,
+              resolved: false,
+              status: 'pending',
+              userId: 0,
+              receivedDate: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`
+            };
+            const response = await fetch(process.env.BASE_DB+'/crear-chat', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(data1),
+            });  
+            if (!response.ok) {
+              console.log('no exito')       
+            }
 
-            if(chats.error === undefined){  
-              if(chats[0].status === 'in progress' || 'pending'){
+          }
+          async function engestionSinResolver(){
+            if(chats[0].status === 'in progress' || 'pending'){
               try {
-                console.log('creado2')
+                
                 const idChat2 = chats[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
                 const resolvedValue = false; // Reemplaza 'nuevo_valor_resolved' con el nuevo valor para 'resolved'
               
@@ -277,14 +265,11 @@ const options = { timeZone: 'America/Bogota', hour12: false };
                 console.error('Error al actualizar el chat:', error);
               }
               
-            }}
-            
-            if(chats.error === 'Chat no encontrado'){singuardar()}
+            }
           }
-          
           async function singuardar (){
             
-          if(chats.error === 'Chat no encontrado'){
+          if(chatlimpio == false){
             const fechaActual = new Date();
             const options = { timeZone: 'America/Bogota', hour12: false };
             const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
@@ -313,13 +298,11 @@ const options = { timeZone: 'America/Bogota', hour12: false };
              if (!response.ok) {
                console.log('no exito')       
              }
-             
              const responseData = await response.json();
               
              
           }
-          if(chats.error === undefined){engestionSinResolver() }
-          
+          engestionSinResolver()
          const responseData = await response.json();
         
       }}
@@ -943,7 +926,6 @@ app.post('/w/createTemplates', async (req, res) => {
   }
 });
 
-
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {
   try {
@@ -963,21 +945,8 @@ app.get('/w/gupshup-templates', async (req, res) => {
     // Obtiene la respuesta de Gupshup
     const gupshupData = await response.json();
 
-    // Consulta la base de datos para obtener las plantillas permitidas
-    const connection = await promisePool.getConnection();
-    try {
-      const [rows] = await promisePool.execute('SELECT elementname FROM Seetemp');
-      const allowedTemplates = rows.map(row => row.elementname);
-
-      // Filtra las plantillas de Gupshup basándose en las permitidas en la base de datos
-      const filteredTemplates = gupshupData.templates.filter(template =>
-        allowedTemplates.includes(template.elementName)
-      );
-
-      res.json({ status: 'success', templates: filteredTemplates });
-    } finally {
-      connection.release();
-    }
+    // Devuelve las plantillas de Gupshup directamente
+    res.json({ status: 'success', templates: gupshupData.templates });
   } catch (error) {
     console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Internal Server Error' });
