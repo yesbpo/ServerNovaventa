@@ -267,12 +267,12 @@ const options = { timeZone: 'America/Bogota', hour12: false };
               }
               
             }}
-          
+            console.log(chats)
             singuardar ()
           }
           
           async function singuardar (){
-            console.log(chats.length)
+            
           if(chats === undefined || chats.length === 0){
             const fechaActual = new Date();
             const options = { timeZone: 'America/Bogota', hour12: false };
