@@ -926,6 +926,17 @@ app.post('/w/createTemplates', async (req, res) => {
   }
 });
 
+const pool = mysql.createPool({
+  host: process.env.DBHOST,
+  user: process.env.DBUSER,
+  password: process.env.DBPASS,
+  database: process.env.DBNAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+});
+
+
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {
   try {
@@ -945,8 +956,21 @@ app.get('/w/gupshup-templates', async (req, res) => {
     // Obtiene la respuesta de Gupshup
     const gupshupData = await response.json();
 
-    // Devuelve las plantillas de Gupshup directamente
-    res.json({ status: 'success', templates: gupshupData.templates });
+    // Consulta la base de datos para obtener las plantillas permitidas
+    const connection = await pool.getConnection();
+    try {
+      const [rows] = await connection.execute('SELECT elementname FROM Seetemp');
+      const allowedTemplates = rows.map(row => row.elementname);
+
+      // Filtra las plantillas de Gupshup basándose en las permitidas en la base de datos
+      const filteredTemplates = gupshupData.templates.filter(template =>
+        allowedTemplates.includes(template.elementName)
+      );
+
+      res.json({ status: 'success', templates: filteredTemplates });
+    } finally {
+      connection.release();
+    }
   } catch (error) {
     console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Internal Server Error' });
