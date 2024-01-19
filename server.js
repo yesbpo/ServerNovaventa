@@ -378,7 +378,7 @@ app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
       const existingConversation = existingConversations[existingConversations.length-1];
 
       if (existingConversation.userid !== userid) {
-        console.log('ingresa', existingConversation)
+        
         // Crear una nueva instancia ya que el userid es diferente al existente
         await promisePool.execute(
           'INSERT INTO Conversation (idchat, asesor, conversacion, numero, calificacion, fecha_ingreso, fecha_ultimagestion, userid) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
@@ -397,7 +397,7 @@ app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
         }
         
         const fecha_ingreso = existingConversation.fecha_ingreso
-        console.log(existingConversation.conversacion)
+        
         // Actualizar la conversación existente con la nueva información
         try {
           await promisePool.execute(
