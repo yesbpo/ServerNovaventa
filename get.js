@@ -210,10 +210,6 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       if(data.type == 'message'){
 
         singuardar()
-        
-        
-        
-        
           if(chats[0].status == 'closed'){
             const fechaActual = new Date();
             const options = { timeZone: 'America/Bogota', hour12: false };
@@ -272,7 +268,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           }
           async function singuardar (){
             
-          if(!chats){
+          if(chats.length === 0){
             const fechaActual = new Date();
             const options = { timeZone: 'America/Bogota', hour12: false };
             const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
