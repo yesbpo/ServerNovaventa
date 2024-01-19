@@ -171,9 +171,10 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         console.log("si")
         console.log('entra si',usuariosC)
         const nameuser = usuariosC.map((user)=> user.id == chats[0].userId).complete_name
-       const conver = {
+        console.log('entra si', usuariosC.map((user)=> user.id == chats[0].userId))
+        const conver = {
           idchat: chats[0].idChat2,
-          asesor: usuariosC.map(user=> user.id == chats[0].userId).complete_name,
+          asesor: nameuser,
           conversacion: "["+element.timestamp+"]" +"["+element.status+"]"+ element.content  ,
           numero: element.idMessage,
           calificacion: chats[0].status,
