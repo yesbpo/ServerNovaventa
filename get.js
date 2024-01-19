@@ -168,11 +168,10 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       const chats = await responseChatExistente.json();
       const usuariosC = await responseUsuarios.json();
       if(chats){
-        console.log("si")
-        console.log('entra si',usuariosC)
+        
+        
         const nameuser = usuariosC.find(user => user.id === chats[0].userId).complete_name
-        console.log('entra si', usuariosC.find(user=> user.id == chats[0].userId))
-        const conver = {
+               const conver = {
           idchat: chats[0].idChat2,
           asesor: nameuser,
           conversacion: "["+element.timestamp+"]" +"["+element.status+"]"+ element.content  ,
