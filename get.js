@@ -118,7 +118,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
       const chateje = data.payload.source || data.payload.destination
       const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
       const chats = await responseChatExistente.json();
-      const chatlimpio = chats[0].idChat2 == data.payload.source;
+     
       crearConversacion()
       async function crearConversacion (){
         
@@ -196,7 +196,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           }
     
           const data = await response.json();
-          console.log('Respuesta del servidor:',conver, data);
+          console.log('Respuesta del servidor:', data);
         } catch (error) {
           console.error('Error durante la solicitud:', error.message);
         }}
