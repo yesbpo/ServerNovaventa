@@ -273,7 +273,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           
           async function singuardar (){
             console.log(chats)
-          if(chats === undefined || chats.length === 0){
+          if(chats ===  chats.error === 'Chat no encontrado' || chats.length === 0){
             const fechaActual = new Date();
             const options = { timeZone: 'America/Bogota', hour12: false };
             const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
