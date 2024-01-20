@@ -170,7 +170,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       if(chats){
         
         
-        const nameuser = usuariosC.find(user => user.id === chats[0].userId).complete_name
+        const nameuser = usuariosC[0].find(user => user.id === chats[0].userId).complete_name
         console.log(usuariosC)       
         const conver = {
           idchat: chats[0].idChat2,
