@@ -171,7 +171,8 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         
         
         const nameuser = usuariosC.find(user => user.id === chats[0].userId).complete_name
-               const conver = {
+        console.log(usuariosC)       
+        const conver = {
           idchat: chats[0].idChat2,
           asesor: nameuser,
           conversacion: "["+element.timestamp+"]" +"["+element.status+"]"+ element.content  ,
@@ -400,23 +401,52 @@ const options = { timeZone: 'America/Bogota', hour12: false };
            const numerosUnicos = [...new Set(mensajesEntrantes.map((mensaje) => mensaje.number))];
            
       async function normalizarNumero(numero) {
-        // Eliminar caracteres no numéricos
-        const numeroLimpio = numero.replace(/\D/g, '');
+     
+       
       
         // Si el número tiene 10 dígitos, agregar el prefijo '57'
-        const numeroNormalizado = numeroLimpio.length === 10 ? '57' + numeroLimpio : numeroLimpio;
+        const numeroNormalizado = numero.length === 10 ? '57' + numero : numero;
        
        
         return numeroNormalizado;
       }
       const existentes = await fetch(process.env.BASE_DB+'/obtener-chats');
       let chatsvalidados =[];
+      
       chatsvalidados = await existentes.json();
       
       try {
-        const response = await fetch(process.env.BASE_DB+'/obtener-chats');
+        const fechaActual = new Date();
+        const options = { timeZone: 'America/Bogota', hour12: false };
+              const fechaInicio = new Date(fechaActual);
+        fechaInicio.setHours(fechaInicio.getHours() - 24);
+        
+        // Formatear la fecha de inicio
+        const anioInicio = fechaInicio.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
+        const mesInicio = fechaInicio.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
+        const diaInicio = fechaInicio.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
+        const horaInicio = fechaInicio.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
+        const minutosInicio = fechaInicio.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
+        const segundosInicio = fechaInicio.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
+        
+        const fechaInicioString = `${anioInicio}-${mesInicio}-${diaInicio} ${horaInicio}:${minutosInicio}:${segundosInicio}`;
+        
+        // Formatear la fecha actual
+        const anioFin = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
+        const mesFin = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
+        const diaFin = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
+        const horaFin = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
+        const minutosFin = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
+        const segundosFin = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
+        
+        const fechaFinString = `${anioFin}-${mesFin}-${diaFin} ${horaFin}:${minutosFin}:${segundosFin}`;
+        
+              const responsemensajes = await fetch(process.env.NEXT_PUBLIC_BASE_DB+`/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`);
+
+              const response = await fetch(process.env.BASE_DB+'/obtener-chats');
         if (!response.ok) { 
         }
+        const mensajesultimodia =
         const chatsExistentes = await response.json();
         const chatsConUserId = chatsExistentes.filter(chat => chat.userId!== 0);
         const idsChatasignados = chatsConUserId.map(objeto => objeto.userId);
