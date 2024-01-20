@@ -446,7 +446,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
               const response = await fetch(process.env.BASE_DB+'/obtener-chats');
         if (!response.ok) { 
         }
-        const mensajesultimodia =
+        const mensajesultimodia = await responsemensajes.json();
         const chatsExistentes = await response.json();
         const chatsConUserId = chatsExistentes.filter(chat => chat.userId!== 0);
         const idsChatasignados = chatsConUserId.map(objeto => objeto.userId);
