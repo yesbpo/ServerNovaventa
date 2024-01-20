@@ -127,7 +127,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
         const fechaActual = new Date();
 const options = { timeZone: 'America/Bogota', hour12: false };
  const fechaInicio = new Date(fechaActual);
- fechaInicio.setMinutes(fechaInicio.getSeconds() - 3);
+ fechaInicio.setMinutes(fechaInicio.getSeconds() - 30);
  
  // Formatear la fecha de inicio
  const anioInicio = fechaInicio.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
@@ -210,7 +210,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       if(data.type == 'message'){
 
         singuardar()
-        if(chats.error === undefined){if( chats[0].status == 'closed'){
+        if(chats.error === undefined){if( chats[0].status == 'closed' || 'expiredbyasesor'|| 'expiredbyclient' ){
           const fechaActual = new Date();
           const options = { timeZone: 'America/Bogota', hour12: false };
           const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });

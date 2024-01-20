@@ -91,6 +91,67 @@ app.post(process.env.DB_ROUTE+'/crear-usuario', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+// ruta actualizar usuario
+app.post(process.env.DB_ROUTE + '/actualizar-usuario/:id', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { type_user, email, session, usuario, password, complete_name } = req.body;
+
+    // Construir la consulta SQL dinámicamente basada en los campos proporcionados
+    let updateQuery = 'UPDATE User SET ';
+    const updateValues = [];
+
+    if (type_user) {
+      updateQuery += 'type_user = ?, ';
+      updateValues.push(type_user);
+    }
+
+    if (email) {
+      updateQuery += 'email = ?, ';
+      updateValues.push(email);
+    }
+
+    if (session) {
+      updateQuery += 'session = ?, ';
+      updateValues.push(session);
+    }
+
+    if (usuario) {
+      updateQuery += 'usuario = ?, ';
+      updateValues.push(usuario);
+    }
+
+    if (password) {
+      updateQuery += 'password = ?, ';
+      updateValues.push(password);
+    }
+
+    if (complete_name) {
+      updateQuery += 'complete_name = ?, ';
+      updateValues.push(complete_name);
+    }
+
+    // Eliminar la coma extra al final de la cadena de consulta
+    updateQuery = updateQuery.slice(0, -2);
+
+    // Agregar la condición WHERE para el id del usuario
+    updateQuery += ' WHERE id = ?';
+    updateValues.push(userId);
+
+    // Ejecutar la consulta SQL para actualizar el usuario
+    const [result] = await promisePool.execute(updateQuery, updateValues);
+
+    if (result.affectedRows === 0) {
+      res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    } else {
+      res.json({ mensaje: 'Usuario actualizado con éxito' });
+    }
+  } catch (error) {
+    console.error('Error al actualizar el usuario en la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 // ruta de crear mensajes
 
 app.use(process.env.DB_ROUTE+'/obtener-mensajes-por-fecha', cors());
