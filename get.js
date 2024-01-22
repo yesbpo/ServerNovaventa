@@ -118,12 +118,12 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
       const chateje = data.payload.source || data.payload.destination
       const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
       const chats = await responseChatExistente.json();
-      const chatlimpio = chats[0].idChat2 == data.payload.source;
+     
       crearConversacion()
       async function crearConversacion (){
         
         
-        console.log('entra')
+
         const fechaActual = new Date();
 const options = { timeZone: 'America/Bogota', hour12: false };
  const fechaInicio = new Date(fechaActual);
@@ -162,15 +162,19 @@ const options = { timeZone: 'America/Bogota', hour12: false };
        
        const mensajes = await response.json();
        Object.values(mensajes)[0].forEach( async element => {
-        const chateje = element.number
+        const chateje = element.number;
+        const responseUsuarios = await fetch(process.env.BASE_DB+'/obtener-usuarios');  
       const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
       const chats = await responseChatExistente.json();
+      const usuariosC = await responseUsuarios.json();
       if(chats){
-        console.log("si")
-        console.log('entra si')
-       const conver = {
+        
+        
+        const nameuser = usuariosC.find(user => user.id === chats[0].userId).complete_name
+             
+        const conver = {
           idchat: chats[0].idChat2,
-          asesor: chats[0].userId,
+          asesor: nameuser,
           conversacion: "["+element.timestamp+"]" +"["+element.status+"]"+ element.content  ,
           numero: element.idMessage,
           calificacion: chats[0].status,
@@ -207,43 +211,42 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       if(data.type == 'message'){
 
         singuardar()
-        
-        
-        
-        
-          if(chats[0].status == 'closed'){
-            const fechaActual = new Date();
-            const options = { timeZone: 'America/Bogota', hour12: false };
-            const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
-            const mes = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
-            const dia = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
-            const hora = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
-            const minutos = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
-            const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
-            const data1 = {
-            
-              idChat2: chats[0].idChat2,
-              resolved: false,
-              status: 'pending',
-              userId: 0,
-              receivedDate: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`
-            };
-            const response = await fetch(process.env.BASE_DB+'/crear-chat', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(data1),
-            });  
-            if (!response.ok) {
-              console.log('no exito')       
-            }
-
+        if(chats.error === undefined){if( chats[0].status == 'closed' || 'expiredbyasesor'|| 'expiredbyclient' ){
+          const fechaActual = new Date();
+          const options = { timeZone: 'America/Bogota', hour12: false };
+          const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
+          const mes = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
+          const dia = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
+          const hora = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
+          const minutos = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
+          const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
+          const data1 = {
+          
+            idChat2: chats[0].idChat2,
+            resolved: false,
+            status: 'pending',
+            userId: 0,
+            receivedDate: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`
+          };
+          const response = await fetch(process.env.BASE_DB+'/crear-chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data1),
+          });  
+          if (!response.ok) {
+            console.log('no exito')       
           }
+          console.log('creado') 
+        }}
+          
           async function engestionSinResolver(){
-            if(chats[0].status === 'in progress' || 'pending'){
+
+            if(chats.error === undefined){  
+              if(chats[0].status === 'in progress' || 'pending'){
               try {
-                
+                console.log('creado2')
                 const idChat2 = chats[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
                 const resolvedValue = false; // Reemplaza 'nuevo_valor_resolved' con el nuevo valor para 'resolved'
               
@@ -265,11 +268,14 @@ const options = { timeZone: 'America/Bogota', hour12: false };
                 console.error('Error al actualizar el chat:', error);
               }
               
-            }
+            }}
+            
+            if(chats.error === 'Chat no encontrado'){singuardar()}
           }
+          
           async function singuardar (){
             
-          if(chatlimpio == false){
+          if(chats.error === 'Chat no encontrado'){
             const fechaActual = new Date();
             const options = { timeZone: 'America/Bogota', hour12: false };
             const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
@@ -298,11 +304,13 @@ const options = { timeZone: 'America/Bogota', hour12: false };
              if (!response.ok) {
                console.log('no exito')       
              }
+             
              const responseData = await response.json();
               
              
           }
-          engestionSinResolver()
+          if(chats.error === undefined){engestionSinResolver() }
+          
          const responseData = await response.json();
         
       }}
@@ -393,23 +401,52 @@ const options = { timeZone: 'America/Bogota', hour12: false };
            const numerosUnicos = [...new Set(mensajesEntrantes.map((mensaje) => mensaje.number))];
            
       async function normalizarNumero(numero) {
-        // Eliminar caracteres no numéricos
-        const numeroLimpio = numero.replace(/\D/g, '');
+     
+       
       
         // Si el número tiene 10 dígitos, agregar el prefijo '57'
-        const numeroNormalizado = numeroLimpio.length === 10 ? '57' + numeroLimpio : numeroLimpio;
+        const numeroNormalizado = numero.length === 10 ? '57' + numero : numero;
        
        
         return numeroNormalizado;
       }
       const existentes = await fetch(process.env.BASE_DB+'/obtener-chats');
       let chatsvalidados =[];
+      
       chatsvalidados = await existentes.json();
       
       try {
-        const response = await fetch(process.env.BASE_DB+'/obtener-chats');
+        const fechaActual = new Date();
+        const options = { timeZone: 'America/Bogota', hour12: false };
+              const fechaInicio = new Date(fechaActual);
+        fechaInicio.setHours(fechaInicio.getHours() - 24);
+        
+        // Formatear la fecha de inicio
+        const anioInicio = fechaInicio.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
+        const mesInicio = fechaInicio.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
+        const diaInicio = fechaInicio.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
+        const horaInicio = fechaInicio.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
+        const minutosInicio = fechaInicio.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
+        const segundosInicio = fechaInicio.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
+        
+        const fechaInicioString = `${anioInicio}-${mesInicio}-${diaInicio} ${horaInicio}:${minutosInicio}:${segundosInicio}`;
+        
+        // Formatear la fecha actual
+        const anioFin = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
+        const mesFin = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
+        const diaFin = fechaActual.toLocaleString('en-US', { day: '2-digit', timeZone: options.timeZone });
+        const horaFin = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
+        const minutosFin = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
+        const segundosFin = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
+        
+        const fechaFinString = `${anioFin}-${mesFin}-${diaFin} ${horaFin}:${minutosFin}:${segundosFin}`;
+        
+              const responsemensajes = await fetch(process.env.NEXT_PUBLIC_BASE_DB+`/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`);
+
+              const response = await fetch(process.env.BASE_DB+'/obtener-chats');
         if (!response.ok) { 
         }
+        const mensajesultimodia = await responsemensajes.json();
         const chatsExistentes = await response.json();
         const chatsConUserId = chatsExistentes.filter(chat => chat.userId!== 0);
         const idsChatasignados = chatsConUserId.map(objeto => objeto.userId);
