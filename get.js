@@ -445,8 +445,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
               const responsemensajes = await fetch(process.env.NEXT_PUBLIC_BASE_DB+`/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`);
 
               const response = await fetch(process.env.BASE_DB+'/obtener-chats');
-        if (!response.ok) { 
-        }
+        
         const mensajesultimodia = await responsemensajes.json();
         const chatsExistentes = await response.json();
         console.log('mensajesultdia1')
