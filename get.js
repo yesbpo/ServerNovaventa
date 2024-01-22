@@ -178,8 +178,8 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           conversacion: "["+element.timestamp+"]" +"["+element.status+"]"+ element.content  ,
           numero: element.idMessage,
           calificacion: chats[0].status,
-          fecha_ingreso: fechaFinString,
-          fecha_ultimagestion: new Date(chats[0].receivedDate).toISOString().slice(0, 19).replace('T', ' '),
+          fecha_ingreso: new Date(chats[0].receivedDate).toISOString().slice(0, 19).replace('T', ' '),
+          fecha_ultimagestion: fechaFinString,
           userid: chats[0].userId
         }
         try {
@@ -448,6 +448,58 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         }
         const mensajesultimodia = await responsemensajes.json();
         const chatsExistentes = await response.json();
+        const mensajesultdia = mensajesultimodia.map(m => {
+          if (m.number && m.type_comunication == 'message') {
+            return {
+              number: m.number,
+              type_comunication: m.type_comunication
+            };
+            
+          }
+          return null; // O cualquier valor que prefieras para los objetos que no cumplen la condición
+        }).filter(Boolean)
+        const numchatclient = chatsExistentes.map(c => c.idChat2)
+        const maxLength = Math.max(mensajesultdia.length, numchatclient.length);
+
+        // Realizar la resta elemento por elemento
+        const rexpclient = [];
+        for (let i = 0; i < maxLength; i++) {
+          const mensaje = mensajesultdia[i] ? mensajesultdia[i].number : 0;
+          const numchat = numchatclient[i] ? numchatclient[i] : 0;
+          rexpclient.push({
+            idChat2: numchat,
+            resultado: numchat - mensaje
+          });
+        } 
+        console.log(rexpclient)
+        //rexpclient.forEach( async(chat)=>{
+         // const requestBody = {
+          //  idChat2: idChat2,
+          //  nuevoEstado: nuevoEstado,
+          //  nuevoUserId: nuevoUserId,
+          //};
+          
+          // Realiza la solicitud PUT a la ruta
+          //try {
+          //  const response = await fetch(url, {
+           //   method: 'PUT',
+            //  headers: {
+             //   'Content-Type': 'application/json',
+             // },
+             // body: JSON.stringify(requestBody),
+            //});
+          
+         //   if (response.ok) {
+          //    const data = await response.json();
+           //   console.log(data);  // Maneja la respuesta según tus necesidades
+           // } else {
+            //  console.error('Error al realizar la solicitud:', response.status, response.statusText);
+            //}
+          //} catch (error) {
+           // console.error('Error al realizar la solicitud:', error.message);
+         // }
+       // }
+        //  )
         const chatsConUserId = chatsExistentes.filter(chat => chat.userId!== 0);
         const idsChatasignados = chatsConUserId.map(objeto => objeto.userId);
         const chatsSinUserId = chatsExistentes.filter(chat => chat.userId == 0 && chat.status == 'pending');
