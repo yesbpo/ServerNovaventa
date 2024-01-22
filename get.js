@@ -991,6 +991,12 @@ app.get('/w/gupshup-templates', async (req, res) => {
       },
     });
 
+    if (!response.ok) {
+      console.error(`Error en la solicitud a la API de Gupshup: ${response.statusText}`);
+      res.status(response.status).json({ error: 'Bad Gateway', errorMessage: response.statusText });
+      return;
+    }
+
     // Obtiene la respuesta de Gupshup
     const gupshupData = await response.json();
 

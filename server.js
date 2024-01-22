@@ -619,13 +619,15 @@ app.get(process.env.DB_ROUTE + '/get-temp', async (req, res) => {
   try {
     const [resultados] = await promisePool.query('SELECT elementname FROM Seetemp');
     const elementNames = resultados.map(resultado => resultado.elementname);
-    res.json({ elementNames }); 
+    res.json({ elementNames });
+  } catch (error) {
+    console.error('Error al consultar la base de datos:', error.message || error);
+    res.status(500).json({ error: 'Internal Server Error' });
   } finally {
     conexion.release();
   }
 });
 
-module.exports = realizarConsulta;
 
 
 // actualizar mensajes 
