@@ -448,6 +448,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         }
         const mensajesultimodia = await responsemensajes.json();
         const chatsExistentes = await response.json();
+        console.log(mensajesultdia)
         const mensajesultdia = mensajesultimodia.map(m => {
           if (m.number && m.type_comunication == 'message') {
             console.log('ingresa')
@@ -473,7 +474,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
             resultado: numchat - mensaje
           });
         } 
-        console.log(rexpclient)
+        console.log('sddsgs',rexpclient)
         //rexpclient.forEach( async(chat)=>{
          // const requestBody = {
           //  idChat2: idChat2,
