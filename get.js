@@ -965,12 +965,10 @@ app.post('/w/createTemplates', async (req, res) => {
 });
 
 // Get templates
-const router = express.Router();
-
-router.get('/gupshup-templates', async (req, res) => {
+app.get('/w/gupshup-templates', async (req, res) => {
   try {
-    const appId = process.env.APPID;
-    const partnerAppToken = process.env.PARTNERAPPTOKEN;
+    const appId = '522e21b6-d83f-486c-ba0e-872180219095';
+    const partnerAppToken = 'sk_3cf52c6b3c5d40e8b742d46c6ab3845d';
     const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
 
     const response = await fetch(apiUrl, {
@@ -981,23 +979,13 @@ router.get('/gupshup-templates', async (req, res) => {
       },
     });
 
-    const gupshupData = await response.json();
-    const datosSeetemp = await obtenerDatosSeetemp(); // Obtener datos de la tabla Seetemp
-
-    // Filtrar las plantillas de Gupshup según los elementname presentes en datosSeetemp
-    const templatesFiltradas = gupshupData.templates.filter(template => {
-      return datosSeetemp.includes(template.elementname);
-    });
-
-    res.json({ status: 'success', templates: templatesFiltradas });
+    const data = await response.json();
+    res.json(data);
   } catch (error) {
-    console.error('Error:', error.message || error);
+    
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-module.exports = router;
-
 
 //DELETE TEMPLATES
 app.delete('/w/deleteTemplate/:elementName', async (req, res) => {

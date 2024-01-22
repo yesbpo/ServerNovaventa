@@ -614,26 +614,6 @@ app.get(process.env.DB_ROUTE+'/obtener-chats', async (req, res) => {
 });
 
 
-//Consultar plantillas base de datos
-app.get(process.env.DB_ROUTE + '/obtener-plantillas', async (req, res) => {
-  try {
-    // Obtener todos los elementos de la columna elementname de la tabla Seetemp
-    const [rows] = await promisePool.execute('SELECT elementname FROM Seetemp');
-
-    if (Array.isArray(rows) && rows.length > 0) {
-      // Extraer los valores de la columna elementname y devolverlos como un array
-      const elementNames = rows.map(row => row.elementname);
-      res.json(elementNames);
-    } else {
-      res.json({ mensaje: 'No hay datos disponibles en la base de datos' });
-    }
-  } catch (error) {
-    console.error('Error al obtener datos:', error.message || error);
-    res.status(500).json({ error: 'Error al obtener los datos' });
-  }
-});
-
-
 // actualizar mensajes 
 app.put(process.env.DB_ROUTE+'/mensajeenviado', async (req, res) => {
   try {
