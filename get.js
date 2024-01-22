@@ -7,12 +7,12 @@ const http = require('http');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const socketIo = require('socket.io');
+const { realizarConsulta } = require('./server'); // Importa la función desde server.js
 const app = express();
 const port = 8080;
 const multer = require('multer');
 const path = require('path');
 const server = http.createServer(app);
-const realizarConsulta = require('./server.js'); 
 const io = socketIo(server, {
   cors: {
     origin: "*", // Reemplaza con tu dominio
@@ -967,7 +967,7 @@ app.post('/w/createTemplates', async (req, res) => {
 // Función para obtener los elementname de la tabla Seetemp desde la base de datos
 const obtenerDatosSeetemp = async () => {
   try {
-    const elementnames = await realizarConsulta(); // Realiza la consulta a la base de datos
+    const elementnames = await realizarConsulta(); // Utiliza la función exportada
     return elementnames;
   } catch (error) {
     console.error('Error al obtener datos de Seetemp:', error.message || error);
