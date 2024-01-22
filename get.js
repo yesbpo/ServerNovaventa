@@ -419,7 +419,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         console.log('mensajesultdia')
         const fechaActual = new Date();
         const options = { timeZone: 'America/Bogota', hour12: false };
-        const fechaInicio = new Date(fechaActual);
+              const fechaInicio = new Date(fechaActual);
         fechaInicio.setHours(fechaInicio.getHours() - 24);
         
         // Formatear la fecha de inicio
@@ -441,16 +441,17 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         const segundosFin = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
         
         const fechaFinString = `${anioFin}-${mesFin}-${diaFin} ${horaFin}:${minutosFin}:${segundosFin}`;
-        console.log('mensajesultdia12')
-        const responsemensajes = await fetch(process.env.NEXT_PUBLIC_BASE_DB+`/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`);
-        console.log('mensajesultdia13')
-        const response = await fetch(process.env.BASE_DB+'/obtener-chats');
         
+              const responsemensajes = await fetch(process.env.NEXT_PUBLIC_BASE_DB+`/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`);
+
+              const response = await fetch(process.env.BASE_DB+'/obtener-chats');
+        if (!response.ok) { 
+        }
         const mensajesultimodia = await responsemensajes.json();
         const chatsExistentes = await response.json();
-        console.log('mensajesultdia1')
+        console.log(mensajesultdia)
         const mensajesultdia = mensajesultimodia.map(m => {
-          if (m.number &&  m.type_comunication == 'message') {
+          if (m.number && m.type_comunication == 'message') {
             console.log('ingresa')
             return {
               number: m.number,
@@ -1040,10 +1041,10 @@ app.get('/w/gupshup-templates', async (req, res) => {
     const data = await response.json();
 
     // Nombres a filtrar (puedes ajustar según tus necesidades)
-    const nombresFiltrar = process.env.TEMPLATES.split(',').map(nombre => nombre.toLowerCase());
+    const nombresFiltrar = ['nombramiento3','nombramiento1','nombramiento2','nombramiento_4','act_codeudor'];
 
     // Filtrar las plantillas por nombres
-    const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(template.elementName.toLowerCase()));
+    const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(template.elementName));
 
     res.json({ status: 'success', templates: plantillasFiltradas });
   } catch (error) {
