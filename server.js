@@ -180,6 +180,45 @@ app.get(process.env.DB_ROUTE+'/obtener-mensajes-por-fecha', async (req, res) => 
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+//actualizar status template
+// Agrega una nueva ruta para actualizar solo el status basado en el idmessageTemplate
+app.put(process.env.DB_ROUTE + '/actualizar-status-template/:idmessageTemplate', async (req, res) => {
+  try {
+    const idmessageTemplate = req.params.idmessageTemplate;
+    const { status } = req.body;
+
+    // Validar que el campo 'status' esté presente
+    if (!status) {
+      return res.status(400).json({ error: 'Falta el campo "status" para la actualización.' });
+    }
+
+    // Verificar si existe un registro con el mismo idmessageTemplate
+    const [existingResult] = await promisePool.execute(
+      'SELECT * FROM Template WHERE idMessageTemplate = ?',
+      [idmessageTemplate]
+    );
+
+    if (existingResult.length > 0) {
+      // Actualizar solo el campo 'status'
+      const [updateResult] = await promisePool.execute(
+        'UPDATE Template SET status = ? WHERE idMessageTemplate = ?',
+        [status, idmessageTemplate]
+      );
+
+      if (updateResult.affectedRows > 0) {
+        res.json({ mensaje: 'Status actualizado con éxito', idmessageTemplate, status });
+      } else {
+        res.status(404).json({ error: 'No se encontró el registro para actualizar.' });
+      }
+    } else {
+      res.status(404).json({ error: 'No se encontró el registro para actualizar.' });
+    }
+  } catch (error) {
+    console.error('Error al actualizar el status en la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 app.post(process.env.DB_ROUTE+'/insertar-datos-template', async (req, res) => {
   try {
     

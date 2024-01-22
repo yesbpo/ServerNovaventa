@@ -321,34 +321,25 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       console.error('Error en la solicitud:', error);
     }
       // Manejar el error según tus necesidades
-    if(data.payload.conversation && data.payload.pricing){
-    const datosAInsertar = {
-      status: data.payload.type,
-      attachments: data.payload.destination,
-      message: data.payload.conversation.id,
-      timestamp: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`,
-      idmessageTemplate: data.payload.id
-    };
-      const respnseweb = await fetch(process.env.BASE_DB+"/insertar-datos-template", {
-         method: 'POST',
+      const idmessageTemplate = data.payload.gsId || data.payload.id ;; // Reemplaza con el valor correcto
+      const nuevoStatus = data.payload.type;
+
+      const respnseweb = await fetch(process.env.BASE_DB+`/actualizar-status-template/${idmessageTemplate}`, {
+         method: 'PUT',
          headers: {
            'Content-Type': 'application/json'
            // Puedes agregar más encabezados según sea necesario
          },
-         body: JSON.stringify(datosAInsertar)
+        body: JSON.stringify({ status: nuevoStatus })
          
        })
        if (!respnseweb.ok) {
         console.log('no exitoso')       
       }
-            
+      console.log('se actualiza')
       const respnse1 = await respnseweb.json();
-
-      
-      }
-     
-      
-     } catch (error) {
+    
+      } catch (error) {
       // Maneja cualquier error durante el procesamiento asíncrono
   
       res.status(500).send('Error interno del servidor.');
@@ -357,6 +348,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
      //La solicitud no proviene de Gupshup, responde con un error
     res.status(403).send('Acceso no autorizado.');
     }
+  
      //obtener mensajes
      const fechaActual = new Date();
 const options = { timeZone: 'America/Bogota', hour12: false };
