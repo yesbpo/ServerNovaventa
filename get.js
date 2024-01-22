@@ -449,9 +449,9 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         }
         const mensajesultimodia = await responsemensajes.json();
         const chatsExistentes = await response.json();
-        console.log(mensajesultdia)
+        console.log('mensajesultdia1')
         const mensajesultdia = mensajesultimodia.map(m => {
-          if (m.number && m.type_comunication == 'message') {
+          if (m.number &&  m.type_comunication == 'message') {
             console.log('ingresa')
             return {
               number: m.number,
