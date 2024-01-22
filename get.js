@@ -464,6 +464,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         // Realizar la resta elemento por elemento
         const rexpclient = [];
         for (let i = 0; i < maxLength; i++) {
+          console.log('ingresa')
           const mensaje = mensajesultdia[i] ? mensajesultdia[i].number : 0;
           const numchat = numchatclient[i] ? numchatclient[i] : 0;
           rexpclient.push({
