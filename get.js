@@ -924,17 +924,26 @@ app.get('/w/api/templates', async (req, res) => {
         'apikey': apiKey,
       },
     });
+
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }
+
     const data = await response.json();
     
-    res.json(data.templates); // Devolver la respuesta al cliente
+    // Nombres a filtrar desde el entorno
+    const nombresFiltrar = process.env.TEMPLATES.split(',');
+
+    // Filtrar las plantillas por nombres
+    const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(template.elementName));
+
+    res.json(plantillasFiltradas); // Devolver la respuesta al cliente
   } catch (error) {
-    
+    console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+
 //solicitud de usuarios activos en gupshup
 app.get('/w/api/users', async (req, res) => {
   try {
