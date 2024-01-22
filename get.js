@@ -419,7 +419,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         console.log('mensajesultdia')
         const fechaActual = new Date();
         const options = { timeZone: 'America/Bogota', hour12: false };
-        const fechaInicio = new Date(fechaActual);
+              const fechaInicio = new Date(fechaActual);
         fechaInicio.setHours(fechaInicio.getHours() - 24);
         
         // Formatear la fecha de inicio
@@ -441,16 +441,17 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         const segundosFin = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });
         
         const fechaFinString = `${anioFin}-${mesFin}-${diaFin} ${horaFin}:${minutosFin}:${segundosFin}`;
-        console.log('mensajesultdia12')
-        const responsemensajes = await fetch(process.env.NEXT_PUBLIC_BASE_DB+`/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`);
-        console.log('mensajesultdia13')
-        const response = await fetch(process.env.BASE_DB+'/obtener-chats');
         
+              const responsemensajes = await fetch(process.env.NEXT_PUBLIC_BASE_DB+`/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`);
+
+              const response = await fetch(process.env.BASE_DB+'/obtener-chats');
+        if (!response.ok) { 
+        }
         const mensajesultimodia = await responsemensajes.json();
         const chatsExistentes = await response.json();
-        console.log('mensajesultdia1')
+        console.log(mensajesultdia)
         const mensajesultdia = mensajesultimodia.map(m => {
-          if (m.number &&  m.type_comunication == 'message') {
+          if (m.number && m.type_comunication == 'message') {
             console.log('ingresa')
             return {
               number: m.number,
@@ -923,17 +924,26 @@ app.get('/w/api/templates', async (req, res) => {
         'apikey': apiKey,
       },
     });
+
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }
+
     const data = await response.json();
     
-    res.json(data.templates); // Devolver la respuesta al cliente
+    // Nombres a filtrar desde el entorno
+    const nombresFiltrar = process.env.TEMPLATES.split(',');
+
+    // Filtrar las plantillas por nombres
+    const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(template.elementName));
+
+    res.json(plantillasFiltradas); // Devolver la respuesta al cliente
   } catch (error) {
-    
+    console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+
 //solicitud de usuarios activos en gupshup
 app.get('/w/api/users', async (req, res) => {
   try {
@@ -1018,11 +1028,52 @@ app.post('/w/createTemplates', async (req, res) => {
   }
 });
 
+// Configurar la conexión a la base de datos
+const connection = mysql.createConnection({
+  host: process.env.DBHOST,
+  port: process.env.DBPORT,
+  user: process.env.DBUSER,
+  password: process.env.DBPASS,
+  database: process.env.DBNAME,
+});
+
+// Conectar a la base de datos
+connection.connect();
+
+// Realizar la consulta y pasar los datos a un array
+const obtenerDatosColumna = () => {
+  return new Promise((resolve, reject) => {
+    const query = 'SELECT elementname FROM Seetemp';
+
+    connection.query(query, (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        const datosArray = results.map(resultado => resultado.nombre_columna);
+        resolve(datosArray);
+      }
+    });
+  });
+};
+
+// Ejemplo de cómo usar la función
+obtenerDatosColumna()
+  .then(arrayDeDatos => {
+    console.log('Datos obtenidos:', arrayDeDatos);
+  })
+  .catch(error => {
+    console.error('Error al obtener datos:', error);
+  })
+  .finally(() => {
+    // Cerrar la conexión a la base de datos después de realizar la consulta
+    connection.end();
+  });
+
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {
   try {
     const appId = process.env.APPID;
-    const partnerAppToken = process.env.PARTNERAPPTOKEN.split(',');
+    const partnerAppToken = process.env.PARTNERAPPTOKEN;
     const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
 
     const response = await fetch(apiUrl, {
@@ -1040,7 +1091,7 @@ app.get('/w/gupshup-templates', async (req, res) => {
     const data = await response.json();
 
     // Nombres a filtrar (puedes ajustar según tus necesidades)
-    const nombresFiltrar = process.env.TEMPLATES;
+    const nombresFiltrar = process.env.TEMPLATES.split(',');
 
     // Filtrar las plantillas por nombres
     const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(template.elementName));
