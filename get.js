@@ -7,7 +7,6 @@ const http = require('http');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const socketIo = require('socket.io');
-const obtenerDatosSeetemp = require('./server'); // Ajusta la ruta según tu estructura de archivos
 const app = express();
 const port = 8080;
 const multer = require('multer');
