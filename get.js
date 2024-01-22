@@ -988,7 +988,7 @@ app.get('/w/gupshup-templates', async (req, res) => {
     const nombresFiltrar = ['negociacion_1dlc', 'saldoconfirmacion_3nd', 'confirmacion1dlc'];
 
     // Filtrar las plantillas por nombres
-    const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(templates.elementName));
+    const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(template.elementName));
 
     res.json({ status: 'success', templates: plantillasFiltradas });
   } catch (error) {
