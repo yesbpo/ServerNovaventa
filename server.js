@@ -552,6 +552,23 @@ app.get(process.env.DB_ROUTE+'/obtener-chats', async (req, res) => {
   }
 });
 
+
+//Consultar plantillas base de datos
+const realizarConsulta = async () => {
+  const conexion = await promisePool.getConnection(); // Utiliza pool en lugar de promisePool
+
+  try {
+    const [resultados] = await promisePool.query('SELECT elementname FROM Seetemp'); // Utiliza pool en lugar de promisePool
+    return resultados.map(resultado => resultado.elementname);
+  } finally {
+    conexion.release();
+  }
+};
+
+module.exports = realizarConsulta;
+
+
+
 // actualizar mensajes 
 app.put(process.env.DB_ROUTE+'/mensajeenviado', async (req, res) => {
   try {

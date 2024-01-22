@@ -945,8 +945,16 @@ app.get('/w/gupshup-templates', async (req, res) => {
     // Obtiene la respuesta de Gupshup
     const gupshupData = await response.json();
 
-    // Devuelve las plantillas de Gupshup directamente
-    res.json({ status: 'success', templates: gupshupData.templates });
+    // Obtiene el array de la otra ruta
+    const datosSeetemp = await obtenerDatosSeetemp();
+
+    // Filtra las plantillas de Gupshup según los elementos presentes en datosSeetemp
+    const templatesFiltradas = gupshupData.templates.filter(template => {
+      return datosSeetemp.includes(template.elementname);
+    });
+
+    // Devuelve las plantillas filtradas
+    res.json({ status: 'success', templates: templatesFiltradas });
   } catch (error) {
     console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Internal Server Error' });
