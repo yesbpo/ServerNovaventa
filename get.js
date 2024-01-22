@@ -1024,7 +1024,7 @@ app.get('/w/gupshup-templates', async (req, res) => {
   try {
     const appId = process.env.APPID;
     const partnerAppToken = process.env.PARTNERAPPTOKEN;
-    const apiUrl = `https://partner.gupshup.io/partner/app/${process.env.PARTNERAPPTOKEN}/templates`;
+    const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
 
     const response = await fetch(apiUrl, {
       method: 'GET',
@@ -1041,10 +1041,10 @@ app.get('/w/gupshup-templates', async (req, res) => {
     const data = await response.json();
 
     // Nombres a filtrar (puedes ajustar según tus necesidades)
-    const nombresFiltrar = ['nombramiento3', 'nombramiento1', 'nombramien2', 'nombramiento_4', 'act_codeudor'];
+    const nombresFiltrar = ['negociacion_1dlc', 'negociacion_1nd', 'saldoconfirmacion_3nd', 'negociacion_1cv', 'confirmacion1dlc'];
 
     // Filtrar las plantillas por nombres
-    const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(templates.elementName));
+    const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(template.elementName));
 
     res.json({ status: 'success', templates: plantillasFiltradas });
   } catch (error) {
