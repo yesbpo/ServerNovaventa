@@ -1040,7 +1040,7 @@ app.get('/w/gupshup-templates', async (req, res) => {
     const data = await response.json();
 
     // Nombres a filtrar (puedes ajustar según tus necesidades)
-    const nombresFiltrar = process.env.TEMPLATES.split(',');
+    const nombresFiltrar = [process.env.TEMPLATES.split(',')];
     console.log(nombresFiltrar);
 
     // Filtrar las plantillas por nombres
