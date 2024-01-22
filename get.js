@@ -966,8 +966,8 @@ app.post('/w/createTemplates', async (req, res) => {
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {
   try {
-    const appId = '522e21b6-d83f-486c-ba0e-872180219095';
-    const partnerAppToken = 'sk_3cf52c6b3c5d40e8b742d46c6ab3845d';
+    const appId = process.env.APPID;
+    const partnerAppToken = process.env.PARTNERAPPTOKEN;
     const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
 
     const response = await fetch(apiUrl, {
@@ -978,10 +978,21 @@ app.get('/w/gupshup-templates', async (req, res) => {
       },
     });
 
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Gupshup templates. Status: ${response.status}`);
+    }
+
     const data = await response.json();
-    res.json(data);
+
+    // Nombres a filtrar (puedes ajustar según tus necesidades)
+    const nombresFiltrar = ['negociacion_1dlc', 'saldoconfirmacion_3nd', 'confirmacion1dlc'];
+
+    // Filtrar las plantillas por nombres
+    const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(template.elementname));
+
+    res.json({ status: 'success', templates: plantillasFiltradas });
   } catch (error) {
-    
+    console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
