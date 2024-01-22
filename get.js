@@ -416,6 +416,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       chatsvalidados = await existentes.json();
       
       try {
+        console.log('mensajesultdia')
         const fechaActual = new Date();
         const options = { timeZone: 'America/Bogota', hour12: false };
               const fechaInicio = new Date(fechaActual);
@@ -448,8 +449,10 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         }
         const mensajesultimodia = await responsemensajes.json();
         const chatsExistentes = await response.json();
+        console.log(mensajesultdia)
         const mensajesultdia = mensajesultimodia.map(m => {
           if (m.number && m.type_comunication == 'message') {
+            console.log('ingresa')
             return {
               number: m.number,
               type_comunication: m.type_comunication
@@ -464,6 +467,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         // Realizar la resta elemento por elemento
         const rexpclient = [];
         for (let i = 0; i < maxLength; i++) {
+          console.log('ingresa')
           const mensaje = mensajesultdia[i] ? mensajesultdia[i].number : 0;
           const numchat = numchatclient[i] ? numchatclient[i] : 0;
           rexpclient.push({
@@ -471,7 +475,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
             resultado: numchat - mensaje
           });
         } 
-        console.log(rexpclient)
+        console.log('sddsgs',rexpclient)
         //rexpclient.forEach( async(chat)=>{
          // const requestBody = {
           //  idChat2: idChat2,
