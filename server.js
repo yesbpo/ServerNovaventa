@@ -2,7 +2,6 @@ const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { promisePool, conexion } = require('./db'); // Importa tu pool de conexión y otros elementos necesarios
 const app = express();
 require('dotenv').config();
 app.use(express.json());
@@ -616,16 +615,23 @@ app.get(process.env.DB_ROUTE+'/obtener-chats', async (req, res) => {
 
 
 //Consultar plantillas base de datos
-const realizarConsulta = async () => {
+app.get(process.env.DB_ROUTE + '/obtener-plantillas', async (req, res) => {
   try {
-    const [resultados] = await promisePool.query('SELECT elementname FROM Seetemp');
-    return resultados.map(resultado => resultado.elementname);
-  } finally {
-    conexion.release();
-  }
-};
+    // Obtener todos los elementos de la columna elementname de la tabla Seetemp
+    const [rows] = await promisePool.execute('SELECT elementname FROM Seetemp');
 
-module.exports = { realizarConsulta };
+    if (Array.isArray(rows) && rows.length > 0) {
+      // Extraer los valores de la columna elementname y devolverlos como un array
+      const elementNames = rows.map(row => row.elementname);
+      res.json(elementNames);
+    } else {
+      res.json({ mensaje: 'No hay datos disponibles en la base de datos' });
+    }
+  } catch (error) {
+    console.error('Error al obtener datos:', error.message || error);
+    res.status(500).json({ error: 'Error al obtener los datos' });
+  }
+});
 
 
 // actualizar mensajes 

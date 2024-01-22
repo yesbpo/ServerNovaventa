@@ -7,7 +7,7 @@ const http = require('http');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const socketIo = require('socket.io');
-const { realizarConsulta } = require('./server'); // Importa la función desde server.js
+const obtenerDatosSeetemp = require('./server'); // Ajusta la ruta según tu estructura de archivos
 const app = express();
 const port = 8080;
 const multer = require('multer');
@@ -964,21 +964,11 @@ app.post('/w/createTemplates', async (req, res) => {
   }
 });
 
-// Función para obtener los elementname de la tabla Seetemp desde la base de datos
-const obtenerDatosSeetemp = async () => {
-  try {
-    const elementnames = await realizarConsulta(); // Utiliza la función exportada
-    return elementnames;
-  } catch (error) {
-    console.error('Error al obtener datos de Seetemp:', error.message || error);
-    throw error; // Puedes manejar el error según tus necesidades
-  }
-};
-
 // Get templates
-app.get('/w/gupshup-templates', async (req, res) => {
+const router = express.Router();
+
+router.get('/gupshup-templates', async (req, res) => {
   try {
-    // Obtiene las plantillas de Gupshup
     const appId = process.env.APPID;
     const partnerAppToken = process.env.PARTNERAPPTOKEN;
     const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
@@ -991,30 +981,23 @@ app.get('/w/gupshup-templates', async (req, res) => {
       },
     });
 
-    if (!response.ok) {
-      console.error(`Error en la solicitud a la API de Gupshup: ${response.statusText}`);
-      res.status(response.status).json({ error: 'Bad Gateway', errorMessage: response.statusText });
-      return;
-    }
-
-    // Obtiene la respuesta de Gupshup
     const gupshupData = await response.json();
+    const datosSeetemp = await obtenerDatosSeetemp(); // Obtener datos de la tabla Seetemp
 
-    // Obtiene los elementname de la tabla Seetemp
-    const datosSeetemp = await obtenerDatosSeetemp();
-
-    // Filtra las plantillas de Gupshup según los elementname presentes en datosSeetemp
+    // Filtrar las plantillas de Gupshup según los elementname presentes en datosSeetemp
     const templatesFiltradas = gupshupData.templates.filter(template => {
       return datosSeetemp.includes(template.elementname);
     });
 
-    // Devuelve las plantillas filtradas
     res.json({ status: 'success', templates: templatesFiltradas });
   } catch (error) {
     console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+module.exports = router;
+
 
 //DELETE TEMPLATES
 app.delete('/w/deleteTemplate/:elementName', async (req, res) => {
