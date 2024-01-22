@@ -416,6 +416,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       chatsvalidados = await existentes.json();
       
       try {
+        console.log('mensajesultdia')
         const fechaActual = new Date();
         const options = { timeZone: 'America/Bogota', hour12: false };
               const fechaInicio = new Date(fechaActual);
