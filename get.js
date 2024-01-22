@@ -1024,7 +1024,7 @@ app.get('/w/gupshup-templates', async (req, res) => {
   try {
     const appId = process.env.APPID;
     const partnerAppToken = process.env.PARTNERAPPTOKEN;
-    const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
+    const apiUrl = `https://partner.gupshup.io/partner/app/${process.env.PARTNERAPPTOKEN}/templates`;
 
     const response = await fetch(apiUrl, {
       method: 'GET',
