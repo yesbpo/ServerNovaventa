@@ -1023,7 +1023,7 @@ app.post('/w/createTemplates', async (req, res) => {
 app.get('/w/gupshup-templates', async (req, res) => {
   try {
     const appId = process.env.APPID;
-    const partnerAppToken = process.env.PARTNERAPPTOKEN.split(',');
+    const partnerAppToken = process.env.PARTNERAPPTOKEN;
     const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
 
     const response = await fetch(apiUrl, {
@@ -1041,7 +1041,7 @@ app.get('/w/gupshup-templates', async (req, res) => {
     const data = await response.json();
 
     // Nombres a filtrar (puedes ajustar según tus necesidades)
-    const nombresFiltrar = process.env.TEMPLATES;
+    const nombresFiltrar = process.env.TEMPLATES.split(',');
 
     // Filtrar las plantillas por nombres
     const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(template.elementName));
