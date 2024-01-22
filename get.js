@@ -12,6 +12,7 @@ const port = 8080;
 const multer = require('multer');
 const path = require('path');
 const server = http.createServer(app);
+const realizarConsulta = require('./server.js'); 
 const io = socketIo(server, {
   cors: {
     origin: "*", // Reemplaza con tu dominio
@@ -963,6 +964,17 @@ app.post('/w/createTemplates', async (req, res) => {
   }
 });
 
+// Función para obtener los elementname de la tabla Seetemp desde la base de datos
+const obtenerDatosSeetemp = async () => {
+  try {
+    const elementnames = await realizarConsulta(); // Realiza la consulta a la base de datos
+    return elementnames;
+  } catch (error) {
+    console.error('Error al obtener datos de Seetemp:', error.message || error);
+    throw error; // Puedes manejar el error según tus necesidades
+  }
+};
+
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {
   try {
@@ -982,10 +994,10 @@ app.get('/w/gupshup-templates', async (req, res) => {
     // Obtiene la respuesta de Gupshup
     const gupshupData = await response.json();
 
-    // Obtiene el array de la otra ruta
+    // Obtiene los elementname de la tabla Seetemp
     const datosSeetemp = await obtenerDatosSeetemp();
 
-    // Filtra las plantillas de Gupshup según los elementos presentes en datosSeetemp
+    // Filtra las plantillas de Gupshup según los elementname presentes en datosSeetemp
     const templatesFiltradas = gupshupData.templates.filter(template => {
       return datosSeetemp.includes(template.elementname);
     });
