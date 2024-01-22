@@ -615,17 +615,17 @@ app.get(process.env.DB_ROUTE+'/obtener-chats', async (req, res) => {
 
 
 //Consultar plantillas base de datos
-app.get(process.env.DB_ROUTE+'/get-temp', async (req, res) => {
+app.get(process.env.DB_ROUTE + '/get-temp', async (req, res) => {
   try {
-    const [resultados] = await promisePool.query('SELECT elementname FROM Seetemp'); // Utiliza pool en lugar de promisePool
-    return resultados.map(resultado => resultado.elementname);
+    const [resultados] = await promisePool.query('SELECT elementname FROM Seetemp');
+    const elementNames = resultados.map(resultado => resultado.elementname);
+    res.json({ elementNames }); 
   } finally {
     conexion.release();
   }
 });
 
 module.exports = realizarConsulta;
-
 
 
 // actualizar mensajes 
