@@ -78,9 +78,9 @@ app.all('/w/api/index', async (req, res) => {
     try {
       var data = req.body;
       await processAsync(data);
-      
+      console.log(data)      
 
-      
+
       const fechaActual = new Date();
 const options = { timeZone: 'America/Bogota', hour12: false };
 const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
