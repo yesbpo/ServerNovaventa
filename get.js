@@ -442,9 +442,9 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         
         const fechaFinString = `${anioFin}-${mesFin}-${diaFin} ${horaFin}:${minutosFin}:${segundosFin}`;
         console.log('mensajesultdia12')
-              const responsemensajes = await fetch(process.env.NEXT_PUBLIC_BASE_DB+`/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`);
-
-              const response = await fetch(process.env.BASE_DB+'/obtener-chats');
+        const responsemensajes = await fetch(process.env.NEXT_PUBLIC_BASE_DB+`/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`);
+        console.log('mensajesultdia13')
+        const response = await fetch(process.env.BASE_DB+'/obtener-chats');
         
         const mensajesultimodia = await responsemensajes.json();
         const chatsExistentes = await response.json();
