@@ -395,9 +395,9 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       async function normalizarNumero(numero) {
      
        
-      
+        const numeroLimpio = numero.replace(/\D/g, '');
         // Si el número tiene 10 dígitos, agregar el prefijo '57'
-        const numeroNormalizado = numero.length === 10 ? '57' + numero : numero;
+        const numeroNormalizado = numeroLimpio.length === 10 ? '57' + numero : numero;
        
        
         return numeroNormalizado;
