@@ -78,7 +78,7 @@ app.all('/w/api/index', async (req, res) => {
     try {
       var data = req.body;
       await processAsync(data);
-      console.log(data)      
+         
 
 
       const fechaActual = new Date();
@@ -434,40 +434,40 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         
         const fechaFinString = `${anioFin}-${mesFin}-${diaFin} ${horaFin}:${minutosFin}:${segundosFin}`;
         
-              const responsemensajes = await fetch(process.env.NEXT_PUBLIC_BASE_DB+`/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`);
+     //         const responsemensajes = await fetch(process.env.NEXT_PUBLIC_BASE_DB+`/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`);
 
               const response = await fetch(process.env.BASE_DB+'/obtener-chats');
         if (!response.ok) { 
         }
-        const mensajesultimodia = await responsemensajes.json();
+     //   const mensajesultimodia = await responsemensajes.json();
         const chatsExistentes = await response.json();
-        console.log(mensajesultdia)
-        const mensajesultdia = mensajesultimodia.map(m => {
-          if (m.number && m.type_comunication == 'message') {
-            console.log('ingresa')
-            return {
-              number: m.number,
-              type_comunication: m.type_comunication
-            };
-            
-          }
-          return null; // O cualquier valor que prefieras para los objetos que no cumplen la condición
-        }).filter(Boolean)
-        const numchatclient = chatsExistentes.map(c => c.idChat2)
-        const maxLength = Math.max(mensajesultdia.length, numchatclient.length);
+       // console.log(mensajesultdia)
+       // const mensajesultdia = mensajesultimodia.map(m => {
+       //   if (m.number && m.type_comunication == 'message') {
+       //     console.log('ingresa')
+       //     return {
+       //       number: m.number,
+       //       type_comunication: m.type_comunication
+       //     };
+       //     
+       //   }
+       //   return null; // O cualquier valor que prefieras para los objetos que no cumplen la condición
+       // }).filter(Boolean)
+       // const numchatclient = chatsExistentes.map(c => c.idChat2)
+       // const maxLength = Math.max(mensajesultdia.length, numchatclient.length);
 
         // Realizar la resta elemento por elemento
-        const rexpclient = [];
-        for (let i = 0; i < maxLength; i++) {
-          console.log('ingresa')
-          const mensaje = mensajesultdia[i] ? mensajesultdia[i].number : 0;
-          const numchat = numchatclient[i] ? numchatclient[i] : 0;
-          rexpclient.push({
-            idChat2: numchat,
-            resultado: numchat - mensaje
-          });
-        } 
-        console.log('sddsgs',rexpclient)
+       // const rexpclient = [];
+        //for (let i = 0; i < maxLength; i++) {
+          //console.log('ingresa')
+          //const mensaje = mensajesultdia[i] ? mensajesultdia[i].number : 0;
+          //const numchat = numchatclient[i] ? numchatclient[i] : 0;
+          //rexpclient.push({
+           // idChat2: numchat,
+          //  resultado: numchat - mensaje
+         // });
+        //} 
+        //console.log('sddsgs',rexpclient)
         //rexpclient.forEach( async(chat)=>{
          // const requestBody = {
           //  idChat2: idChat2,
