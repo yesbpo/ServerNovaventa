@@ -244,7 +244,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           async function engestionSinResolver(){
 
             if(chats.error === undefined){  
-              if(chats[0].status === 'in progress' || 'pending'){
+              if(chats[0].status === 'in progress' || chats[0].status ==='pending'){
               try {
                 console.log('creado2')
                 const idChat2 = chats[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
