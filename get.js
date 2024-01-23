@@ -211,7 +211,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       if(data.type == 'message'){
 
         singuardar()
-        if(chats.error === undefined){if( chats[0].status == 'closed' || chats[0].status == 'expiredbyasesor'|| chats[0].status == 'expiredbyclient' ){
+        if(chats.error === undefined){if( chats[0].status === 'closed' || chats[0].status === 'expiredbyasesor'|| chats[0].status === 'expiredbyclient' ){
           const fechaActual = new Date();
           const options = { timeZone: 'America/Bogota', hour12: false };
           const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
