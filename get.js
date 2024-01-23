@@ -211,7 +211,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       if(data.type == 'message'){
 
         singuardar()
-        if(chats.error === undefined){if( chats[0].status == 'closed' || 'expiredbyasesor'|| 'expiredbyclient' ){
+        if(chats.error === undefined){if( chats[0].status == 'closed' || chats[0].status == 'expiredbyasesor'|| chats[0].status == 'expiredbyclient' ){
           const fechaActual = new Date();
           const options = { timeZone: 'America/Bogota', hour12: false };
           const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
@@ -284,9 +284,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
             const hora = fechaActual.toLocaleString('en-US', { hour: '2-digit', hour12: false, timeZone: options.timeZone });
             const minutos = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
             const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
-
-              
-              const data5 = {
+            const data5 = {
                idChat2: data.payload.source,
                resolved: false,
                status: 'pending',
