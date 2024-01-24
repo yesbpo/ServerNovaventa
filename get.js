@@ -159,15 +159,16 @@ const options = { timeZone: 'America/Bogota', hour12: false };
        if (!response.ok) {
          throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
        }
-       
+       let constidmsj=[] ;
        const mensajes = await response.json();
        Object.values(mensajes)[0].forEach( async element => {
+        constidmsj.push(element.idMessage) 
         const chateje = element.number;
         const responseUsuarios = await fetch(process.env.BASE_DB+'/obtener-usuarios');  
       const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
       const chats = await responseChatExistente.json();
       const usuariosC = await responseUsuarios.json();
-      if(chats){
+      if(chats && onstidmsj){
         
         
         const nameuser = usuariosC.find(user => user.id === chats[0].userId).complete_name
@@ -175,7 +176,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         const conver = {
           idchat: chats[0].idChat2,
           asesor: nameuser,
-          conversacion: "["+element.timestamp+"]" +"["+element.status+"]"+ element.content  ,
+          conversacion: "[" + element.timestamp  + (element.status === 'text' ? 'cliente: ' : nameuser + ': ') + ' ' + element.content + "]",
           numero: element.idMessage,
           calificacion: chats[0].status,
           fecha_ingreso: new Date(chats[0].receivedDate).toISOString().slice(0, 19).replace('T', ' '),
