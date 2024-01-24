@@ -296,6 +296,33 @@ app.get(process.env.DB_ROUTE+'/generar-informe', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+// obtener mensajes por fecha y telefono
+app.get(process.env.DB_ROUTE + '/obtener-mensajes-por-fecha-y-numero', async (req, res) => {
+  try {
+    const { fechaInicio, fechaFin, number } = req.query; // Utiliza req.query para obtener parámetros de la URL
+
+    // Validar que las fechas y el número estén presentes
+    if (!fechaInicio || !fechaFin || !number) {
+      return res.status(400).json({ error: 'Se requieren fechas de inicio, fin y número para obtener mensajes en un rango de fechas.' });
+    }
+
+    // Consultar mensajes en el rango de fechas y por número
+    const [result] = await promisePool.execute(
+      'SELECT * FROM Mensaje WHERE timestamp >= ? AND timestamp <= ? AND number = ?',
+      [fechaInicio, fechaFin, number]
+    );
+
+    if (result.length > 0) {
+      res.json({ mensajes: result });
+    } else {
+      res.json({ mensajes: [], mensaje: 'No se encontraron mensajes en el rango de fechas y número especificados.' });
+    }
+  } catch (error) {
+    console.error('Error al obtener mensajes por fecha y número en la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 app.post(process.env.DB_ROUTE+'/guardar-mensajes', async (req, res) => {
   try {
     const { content, type_comunication, status, number, timestamp, type_message, idMessage } = req.body;
