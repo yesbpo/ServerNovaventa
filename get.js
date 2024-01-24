@@ -236,9 +236,9 @@ const options = { timeZone: 'America/Bogota', hour12: false };
             body: JSON.stringify(data1),
           });  
           if (!response.ok) {
-            console.log('no exito')       
+                  
           }
-          console.log('creado') 
+          
         }}
           
           async function engestionSinResolver(){
@@ -246,7 +246,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
             if(chats.error === undefined){  
               if(chats[0].status === 'in progress' || chats[0].status ==='pending'){
               try {
-                console.log('creado2')
+                
                 const idChat2 = chats[0].idChat2; // Reemplaza 'tu_id_chat2' con el valor real que deseas actualizar
                 const resolvedValue = false; // Reemplaza 'nuevo_valor_resolved' con el nuevo valor para 'resolved'
               
@@ -334,7 +334,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
        if (!respnseweb.ok) {
         console.log('no exitoso')       
       }
-      console.log('se actualiza')
+      
       const respnse1 = await respnseweb.json();
     
       } catch (error) {
@@ -406,7 +406,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       chatsvalidados = await existentes.json();
       
       try {
-        console.log('mensajesultdia')
+        
         const fechaActual = new Date();
         const options = { timeZone: 'America/Bogota', hour12: false };
               const fechaInicio = new Date(fechaActual);
