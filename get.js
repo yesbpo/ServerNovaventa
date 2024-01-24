@@ -102,7 +102,7 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
       };
       
       try {
-        console.log(mensaje)
+        
         const response = await fetch(process.env.BASE_DB+'/guardar-mensajes', {
         method: 'POST',
         headers: {
@@ -197,7 +197,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           }
     
           const data = await response.json();
-          console.log('Respuesta del servidor:', data);
+          
         } catch (error) {
           console.error('Error durante la solicitud:', error.message);
         }}
@@ -526,7 +526,7 @@ if (chatsSinUserId.length>1) {
 
         // Obtén las frecuencias del valor mínimo
         var frecuenciasMinimas = frecuenciaNumeros[minimoValorFrecuencia];
-        console.log
+        
         // Si hay más de una frecuencia mínima, selecciona un valor al azar
         let elementosSeleccionados = [];
         if (frecuenciasMinimas > 1) {
@@ -1049,7 +1049,7 @@ const obtenerDatosColumna = () => {
 // Ejemplo de cómo usar la función
 obtenerDatosColumna()
   .then(arrayDeDatos => {
-    console.log('Datos obtenidos:', arrayDeDatos);
+
   })
   .catch(error => {
     console.error('Error al obtener datos:', error);
