@@ -439,6 +439,23 @@ app.post(process.env.DB_ROUTE+'/crear-chat', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+//consulta por userid chats
+app.get(process.env.DB_ROUTE+'/consultar-chats/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    // Consultar chats por userId
+    const [chatsResult] = await promisePool.execute(
+      'SELECT * FROM Chat WHERE userId = ?',
+      [userId]
+    );
+
+    res.json({ chats: chatsResult });
+  } catch (error) {
+    console.error('Error al consultar los chats por userId:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 // consulta por status
 app.get(process.env.DB_ROUTE + '/consultar_por_status', async (req, res) => {
   try {
