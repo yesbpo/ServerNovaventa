@@ -707,20 +707,20 @@ app.post(process.env.DB_ROUTE + '/agregar-contenido', async (req, res) => {
 
     // Verificar si ya existe un registro con el mismo name
     const [existingResult] = await promisePool.execute(
-      'SELECT * FROM tu_tabla WHERE name = ?',
+      'SELECT * FROM responsefast WHERE name = ?',
       [name]
     );
 
     if (existingResult.length > 0) {
       // Si ya existe, actualiza la fecha de actualización y el contenido
       await promisePool.execute(
-        'UPDATE tu_tabla SET date_update = CURRENT_TIMESTAMP, contentn = ? WHERE name = ?',
+        'UPDATE responsefast SET date_update = CURRENT_TIMESTAMP, contentn = ? WHERE name = ?',
         [contentn, name]
       );
     } else {
       // Si no existe, inserta un nuevo registro
       await promisePool.execute(
-        'INSERT INTO tu_tabla (date_create, date_update, contentn, status, name) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, "Activo", ?)',
+        'INSERT INTO responsefast (date_create, date_update, contentn, status, name) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, "Activo", ?)',
         [contentn, name]
       );
     }
