@@ -724,7 +724,7 @@ if (chatsSinUserId.length>1) {
         const chatsParaAsignar = idsChats.filter(value => value !== null && value !== 0);
         const responseUsuarios = await fetch(process.env.BASE_DB+'/obtener-usuarios');
         const usuarios = await responseUsuarios.json();   
-        const usuariosActivos = usuarios.filter((usuario) => usuario.session === 'Activo' && usuario.type_user ==='Asesor');
+        const usuariosActivos = usuarios.filter((usuario) => usuario.session === 'Activo' && usuario.type_user ==='Asesor' || usuario.type_user ==='Asesor1');
         const idsUactivos = usuariosActivos.map(objeto => objeto.id);
         var frecuenciaNumeros = {};
         chatsParaAsignar.forEach(numero => {
