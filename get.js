@@ -168,7 +168,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
       const chats = await responseChatExistente.json();
       const usuariosC = await responseUsuarios.json();
-      if(chats && onstidmsj){
+      if(chats){
         
         
         const nameuser = usuariosC.find(user => user.id === chats[0].userId).complete_name
