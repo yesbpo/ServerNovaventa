@@ -209,7 +209,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
      
       }
       
-      if(data.type == 'message'){
+      if(data.type === 'message'){
 
         singuardar()
         if(chats.error === undefined){if( chats[0].status === 'closed' || chats[0].status === 'expiredbyasesor'|| chats[0].status === 'expiredbyclient' ){
@@ -286,11 +286,13 @@ const options = { timeZone: 'America/Bogota', hour12: false };
             const minutos = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
             const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
             const data5 = {
-               idChat2: data.payload.source,
+               assignedDate: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`,
+               receivedDate: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`,
                resolved: false,
                status: 'pending',
                userId: 0,
-               receivedDate: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`
+               idChat2: data.payload.source,
+               
 
              };
              const response = await fetch(process.env.BASE_DB+'/crear-chat', {
