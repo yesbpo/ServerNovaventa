@@ -393,6 +393,21 @@ app.get(process.env.DB_ROUTE+'/obtener-mensajes', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+// consultar mensajes por numero
+app.get(process.env.DB_ROUTE + '/obtener-mensajes/:numero', async (req, res) => {
+  try {
+    const numero = req.params.numero;
+
+    // Ejecutar la consulta SQL para obtener mensajes según el número proporcionado
+    const [rows] = await promisePool.query('SELECT * FROM Mensaje WHERE number = ?', [numero]);
+
+    // Enviar los mensajes obtenidos como respuesta
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener los mensajes de la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 // crear chats 
 app.post(process.env.DB_ROUTE+'/crear-chat', async (req, res) => {
   try {
