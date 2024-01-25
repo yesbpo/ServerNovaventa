@@ -700,6 +700,38 @@ app.get(process.env.DB_ROUTE+'/obtener-chats', async (req, res) => {
   }
 });
 
+// crear mensaje rapido
+app.post(process.env.DB_ROUTE + '/agregar-contenido', async (req, res) => {
+  try {
+    const { contentn, name } = req.body;
+
+    // Verificar si ya existe un registro con el mismo name
+    const [existingResult] = await promisePool.execute(
+      'SELECT * FROM responsefast WHERE name = ?',
+      [name]
+    );
+
+    if (existingResult.length > 0) {
+      // Si ya existe, actualiza la fecha de actualización y el contenido
+      await promisePool.execute(
+        'UPDATE responsefast SET date_update = CURRENT_TIMESTAMP, contentn = ? WHERE name = ?',
+        [contentn, name]
+      );
+    } else {
+      // Si no existe, inserta un nuevo registro
+      await promisePool.execute(
+        'INSERT INTO responsefast (date_create, date_update, contentn, status, name) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, "Activo", ?)',
+        [contentn, name]
+      );
+    }
+
+    res.json({ mensaje: 'Contenido agregado o actualizado con éxito' });
+  } catch (error) {
+    console.error('Error al agregar contenido:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 
 // actualizar mensajes 
 app.put(process.env.DB_ROUTE+'/mensajeenviado', async (req, res) => {
@@ -772,27 +804,6 @@ app.put(process.env.DB_ROUTE+'/mensajestatus', async (req, res) => {
   } catch (error) {
     console.error('Error al actualizar el mensaje:', error);
     res.status(500).json({ error: 'Error interno del servidor.' });
-  }
-});
-
-
-// Ruta para agregar contenido (mensajes rápidos)
-app.post(process.env.DB_ROUTE + '/agregar-contenido', async (req, res) => {
-  const { name, content, status } = req.body;
-
-  try {
-    // Crear una nueva entrada en la base de datos
-    const query = `
-      INSERT INTO responsefast (name, date_create, date_update, content, status)
-      VALUES (?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?)
-    `;
-
-    await promisePool.execute(query, [name, content, status]);
-
-    res.json({ mensaje: 'Contenido agregado correctamente' });
-  } catch (error) {
-    console.error('Error al procesar la solicitud:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
 
