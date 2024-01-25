@@ -600,7 +600,7 @@ app.put(process.env.DB_ROUTE+'/actualizar-usuario-chat', async (req, res) => {
     const chatStatus = chatResult[0].status;
     // Validar que el estado del chat sea 'pending' antes de continuar
     if (chatStatus !== 'pending' || chatStatus !== 'in process') {
-      res.status(400).json({ error: 'No se puede asignar un chat que no está en estado "pending"' });
+      res.status(400).json({ error: 'No se puede asignar un chat que no está en estado "pendiente o en gestion"' });
       return;
     }
 
