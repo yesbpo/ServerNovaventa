@@ -700,6 +700,38 @@ app.get(process.env.DB_ROUTE+'/obtener-chats', async (req, res) => {
   }
 });
 
+// crear mensaje rapido
+app.post(process.env.DB_ROUTE + '/agregar-contenido', async (req, res) => {
+  try {
+    const { contentn, name } = req.body;
+
+    // Verificar si ya existe un registro con el mismo name
+    const [existingResult] = await promisePool.execute(
+      'SELECT * FROM tu_tabla WHERE name = ?',
+      [name]
+    );
+
+    if (existingResult.length > 0) {
+      // Si ya existe, actualiza la fecha de actualización y el contenido
+      await promisePool.execute(
+        'UPDATE tu_tabla SET date_update = CURRENT_TIMESTAMP, contentn = ? WHERE name = ?',
+        [contentn, name]
+      );
+    } else {
+      // Si no existe, inserta un nuevo registro
+      await promisePool.execute(
+        'INSERT INTO tu_tabla (date_create, date_update, contentn, status, name) VALUES (CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, "Activo", ?)',
+        [contentn, name]
+      );
+    }
+
+    res.json({ mensaje: 'Contenido agregado o actualizado con éxito' });
+  } catch (error) {
+    console.error('Error al agregar contenido:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 
 // actualizar mensajes 
 app.put(process.env.DB_ROUTE+'/mensajeenviado', async (req, res) => {
