@@ -776,27 +776,6 @@ app.put(process.env.DB_ROUTE+'/mensajestatus', async (req, res) => {
 });
 
 
-// Ruta para agregar contenido (mensajes rápidos)
-app.post(process.env.DB_ROUTE + '/agregar-contenido', async (req, res) => {
-  const { name, contentn, status } = req.body;
-
-  try {
-    // Crear una nueva entrada en la base de datos
-    const query = `
-      INSERT INTO responsefast (name, date_create, date_update, contentn, status)
-      VALUES (?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?)
-    `;
-
-    await promisePool.execute(query, [name, contentn, status]);
-
-    res.json({ mensaje: 'Contenido agregado correctamente' });
-  } catch (error) {
-    console.error('Error al procesar la solicitud:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
-});
-
-
 //obtener usuaios
 app.get(process.env.DB_ROUTE+'/obtener-usuarios', async (req, res) => {
   try {
