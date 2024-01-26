@@ -738,7 +738,7 @@ app.get(process.env.DB_ROUTE + '/obtener-nombres-contenidos', async (req, res) =
   try {
     // Realiza una consulta para obtener solo name y contentn de la tabla responsefast
     const [result] = await promisePool.execute(
-      'SELECT contentn FROM responsefast'
+      'SELECT name, contentn FROM responsefast'
     );
 
     // Responde con los datos obtenidos
