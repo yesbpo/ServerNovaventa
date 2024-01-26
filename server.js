@@ -733,6 +733,23 @@ app.post(process.env.DB_ROUTE + '/agregar-contenido', async (req, res) => {
 });
 
 
+// obtener respuestas rapidas
+app.get(process.env.DB_ROUTE + '/obtener-nombres-contenidos', async (req, res) => {
+  try {
+    // Realiza una consulta para obtener solo name y contentn de la tabla responsefast
+    const [result] = await promisePool.execute(
+      'SELECT name, contentn FROM responsefast'
+    );
+
+    // Responde con los datos obtenidos
+    res.json(result);
+  } catch (error) {
+    console.error('Error al obtener nombres y contenidos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+
 // actualizar mensajes 
 app.put(process.env.DB_ROUTE+'/mensajeenviado', async (req, res) => {
   try {
