@@ -1025,17 +1025,6 @@ app.post('/w/createTemplates', async (req, res) => {
 });
 
 // Ejemplo de cómo usar la función
-obtenerDatosColumna()
-  .then(arrayDeDatos => {
-
-  })
-  .catch(error => {
-    console.error('Error al obtener datos:', error);
-  })
-  .finally(() => {
-    // Cerrar la conexión a la base de datos después de realizar la consulta
-    connection.end();
-  });
 
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {
