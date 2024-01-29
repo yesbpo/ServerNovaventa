@@ -1033,7 +1033,7 @@ app.post('/w/createTemplates', async (req, res) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ elementname: newElementName }),
+        body: JSON.stringify({ elementname: newElementName }), // Cambiado a newElementName
       });
 
       // Aquí puedes realizar cualquier otra lógica necesaria con el nuevo elementname
