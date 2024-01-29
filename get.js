@@ -962,6 +962,7 @@ app.get('/w/api/users', async (req, res) => {
   }
 });
 //generar partner token
+
 // Ruta para manejar la petición POST
 app.post('/w/partner/account/login', async (req, res) => {
   const { email, password } = req.body;
@@ -1025,6 +1026,15 @@ app.post('/w/createTemplates', async (req, res) => {
 
       // Agregar el nuevo elementname al array
       arrayElementNames.push(newElementName);
+
+      // Realizar la segunda solicitud para agregar contenido a Seetemp usando fetch
+      await fetch(process.env.DB_ROUTE + '/agregar-contenido-seetemp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ elementname: newElementName }),
+      });
 
       // Aquí puedes realizar cualquier otra lógica necesaria con el nuevo elementname
 
