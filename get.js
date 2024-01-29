@@ -166,9 +166,6 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         const chateje = element.number;
         const responseUsuarios = await fetch(process.env.BASE_DB+'/obtener-usuarios');  
       const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
-      if(!responseChatExistente){
-
-      }
       const chats = await responseChatExistente.json();
       const usuariosC = await responseUsuarios.json();
       if(chats){
@@ -962,7 +959,6 @@ app.get('/w/api/users', async (req, res) => {
   }
 });
 //generar partner token
-
 // Ruta para manejar la petición POST
 app.post('/w/partner/account/login', async (req, res) => {
   const { email, password } = req.body;
@@ -1001,16 +997,14 @@ app.use((req, res, next) => {
   next();
 });
 
-const arrayElementNames = [];
-
 //Post templates
 app.post('/w/createTemplates', async (req, res) => {
   try {
-    const appId = process.env.APPID;
-    const partnerAppToken = process.env.PARTNERAPPTOKEN;
+    const appId = process.env.APPID; // Reemplaza con tu ID de aplicación real
+    const partnerAppToken = process.env.PARTNERAPPTOKEN; // Reemplaza con tu token de partner real
     const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
 
-    const templateData = req.body;
+    const templateData = req.body; // Los datos de la plantilla provienen del cuerpo de la solicitud
 
     const response = await axios.post(apiUrl, templateData, {
       headers: {
@@ -1020,33 +1014,25 @@ app.post('/w/createTemplates', async (req, res) => {
       },
     });
 
-    // Verificar si la plantilla se creó exitosamente y tiene el campo elementname
-    if (response.status === 200 && response.data && response.data.elementname) {
-      const newElementName = response.data.elementname;
-
-      // Agregar el nuevo elementname al array
-      arrayElementNames.push(newElementName);
-
-      // Realizar la segunda solicitud para agregar contenido a Seetemp usando fetch
-      await fetch(process.env.DB_ROUTE + '/agregar-contenido-seetemp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ elementname: newElementName }), // Cambiado a newElementName
-      });
-
-      // Aquí puedes realizar cualquier otra lógica necesaria con el nuevo elementname
-
-      res.status(response.status).json(response.data);
-    } else {
-      res.status(response.status).json(response.data);
-    }
+    res.status(response.status).json(response.data);
   } catch (error) {
-    console.error('Error al crear plantilla:', error);
+    
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+// Ejemplo de cómo usar la función
+obtenerDatosColumna()
+  .then(arrayDeDatos => {
+
+  })
+  .catch(error => {
+    console.error('Error al obtener datos:', error);
+  })
+  .finally(() => {
+    // Cerrar la conexión a la base de datos después de realizar la consulta
+    connection.end();
+  });
 
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {
