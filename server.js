@@ -750,6 +750,36 @@ app.get(process.env.DB_ROUTE + '/obtener-nombres-contenidos', async (req, res) =
 });
 
 
+//  agregar nombres plantillas
+app.post(process.env.DB_ROUTE + '/agregar-contenido-seetemp', async (req, res) => {
+  try {
+    const { elementname } = req.body;
+
+    // Verificar si ya existe un registro con el mismo elementname
+    const [existingResult] = await promisePool.execute(
+      'SELECT * FROM Seetemp WHERE elementname = ?',
+      [elementname]
+    );
+
+    if (existingResult.length > 0) {
+      res.status(400).json({ error: 'Ya existe un registro con el mismo elementname' });
+    } else {
+      // Si no existe, inserta un nuevo registro
+      await promisePool.execute(
+        'INSERT INTO Seetemp (elementname) VALUES (?)',
+        [elementname]
+      );
+
+      res.json({ mensaje: 'Contenido agregado con éxito en Seetemp' });
+    }
+  } catch (error) {
+    console.error('Error al agregar contenido en Seetemp:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+
+
 // actualizar mensajes 
 app.put(process.env.DB_ROUTE+'/mensajeenviado', async (req, res) => {
   try {
