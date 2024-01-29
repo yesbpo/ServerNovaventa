@@ -166,6 +166,9 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         const chateje = element.number;
         const responseUsuarios = await fetch(process.env.BASE_DB+'/obtener-usuarios');  
       const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
+      if(!responseChatExistente){
+
+      }
       const chats = await responseChatExistente.json();
       const usuariosC = await responseUsuarios.json();
       if(chats){
