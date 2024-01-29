@@ -997,14 +997,16 @@ app.use((req, res, next) => {
   next();
 });
 
+const arrayElementNames = [];
+
 //Post templates
 app.post('/w/createTemplates', async (req, res) => {
   try {
-    const appId = process.env.APPID; // Reemplaza con tu ID de aplicación real
-    const partnerAppToken = process.env.PARTNERAPPTOKEN; // Reemplaza con tu token de partner real
+    const appId = process.env.APPID;
+    const partnerAppToken = process.env.PARTNERAPPTOKEN;
     const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
 
-    const templateData = req.body; // Los datos de la plantilla provienen del cuerpo de la solicitud
+    const templateData = req.body;
 
     const response = await axios.post(apiUrl, templateData, {
       headers: {
@@ -1014,53 +1016,24 @@ app.post('/w/createTemplates', async (req, res) => {
       },
     });
 
-    res.status(response.status).json(response.data);
+    // Verificar si la plantilla se creó exitosamente y tiene el campo elementname
+    if (response.status === 200 && response.data && response.data.elementname) {
+      const newElementName = response.data.elementname;
+
+      // Agregar el nuevo elementname al array
+      arrayElementNames.push(newElementName);
+
+      // Aquí puedes realizar cualquier otra lógica necesaria con el nuevo elementname
+
+      res.status(response.status).json(response.data);
+    } else {
+      res.status(response.status).json(response.data);
+    }
   } catch (error) {
-    
+    console.error('Error al crear plantilla:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-// Configurar la conexión a la base de datos
-const connection = mysql.createConnection({
-  host: process.env.DBHOST,
-  port: process.env.DBPORT,
-  user: process.env.DBUSER,
-  password: process.env.DBPASS,
-  database: process.env.DBNAME,
-});
-
-// Conectar a la base de datos
-connection.connect();
-
-// Realizar la consulta y pasar los datos a un array
-const obtenerDatosColumna = () => {
-  return new Promise((resolve, reject) => {
-    const query = 'SELECT elementname FROM Seetemp';
-
-    connection.query(query, (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        const datosArray = results.map(resultado => resultado.nombre_columna);
-        resolve(datosArray);
-      }
-    });
-  });
-};
-
-// Ejemplo de cómo usar la función
-obtenerDatosColumna()
-  .then(arrayDeDatos => {
-
-  })
-  .catch(error => {
-    console.error('Error al obtener datos:', error);
-  })
-  .finally(() => {
-    // Cerrar la conexión a la base de datos después de realizar la consulta
-    connection.end();
-  });
 
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {
