@@ -154,7 +154,7 @@ app.post(process.env.DB_ROUTE + '/actualizar-usuario/:id', async (req, res) => {
 
 // ruta de crear mensajes
 
-app.use(process.env.DB_ROUTE+'/obtener-mensajes-por-fecha', cors());
+app.use(process.env.DB_ROUTE+'  ', cors());
 app.get(process.env.DB_ROUTE+'/obtener-mensajes-por-fecha', async (req, res) => {
   try {
     const { fechaInicio, fechaFin } = req.query; // Utiliza req.query para obtener parámetros de la URL
