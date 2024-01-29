@@ -169,6 +169,31 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       if(!responseChatExistente){
 
       }
+      
+
+      
+      try{
+        console.log('entrante')
+        const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${element.number}`);
+        const chats = await responseChatExistente.json();
+        const responseUsuarios = await fetch(process.env.BASE_DB+'/obtener-usuarios');
+        const usuarios = await responseUsuarios.json();   
+        const usuariosActivos = usuarios.filter((usuario) => usuario.session === 'Activo' && usuario.type_user ==='Asesor' || usuario.type_user ==='Asesor1');
+        const idsUactivos = usuariosActivos.map(objeto => objeto.id);
+        const nuevoUserId = idsUactivos[Math.floor(Math.random() * idsUactivos.length)];
+        const idChat2 = element.number
+        console.log(chats[0].userId)
+        if(chats[0].userId == 0 && element.type_comunication == 'message' ){
+        const response = await fetch(process.env.BASE_DB+'/actualizar-usuario-chat', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ idChat2, nuevoUserId}),
+        });
+      }
+      }catch{}
+    
       const chats = await responseChatExistente.json();
       const usuariosC = await responseUsuarios.json();
       if(chats){
