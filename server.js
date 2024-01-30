@@ -153,6 +153,27 @@ app.post(process.env.DB_ROUTE + '/actualizar-usuario/:id', async (req, res) => {
 });
 
 // ruta de crear mensajes
+app.get(process.env.DB_ROUTE+'/obtener-mensaje/:idMessage', async (req, res) => {
+  try {
+    const { idMessage } = req.params;
+
+    // Verificar si existe un mensaje con el idMessage proporcionado
+    const [result] = await promisePool.execute(
+      'SELECT * FROM Mensaje WHERE idMessage = ?',
+      [idMessage]
+    );
+
+    if (result.length > 0) {
+      const mensaje = result[0];
+      res.json({ mensaje });
+    } else {
+      res.status(404).json({ error: 'Mensaje no encontrado para el idMessage proporcionado.' });
+    }
+  } catch (error) {
+    console.error('Error al obtener mensaje de la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 
 app.use(process.env.DB_ROUTE+'  ', cors());
 app.get(process.env.DB_ROUTE+'/obtener-mensajes-por-fecha', async (req, res) => {
