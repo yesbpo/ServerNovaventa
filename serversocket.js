@@ -41,7 +41,7 @@ const promisePool = pool.promise();
   console.log('Un cliente se ha conectado a la ruta de Socket.IO');
   socket.on('message', (data)=>{
   
-  console.log('Mensaje recibido desde el cliente:', data);
+  console.log('Mensaje recibido:', data);
 
   // Guarda la información en la tabla 'Mensajes'
   const query = 'INSERT INTO Mensaje (content, type_comunication, status, number, timestamp, type_message, idMessage) VALUES (?, ?, ?, ?, ?, ?, ?)';

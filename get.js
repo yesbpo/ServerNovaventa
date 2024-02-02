@@ -7,6 +7,7 @@ const http = require('http');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const socketIo = require('socket.io');
+const socket = require('socket.io-client')
 const app = express();
 const port = 8080;
 const multer = require('multer');
@@ -23,6 +24,7 @@ const apiUrlenvio = 'https://api.gupshup.io/sm/api/v1/msg';
 const apiKey = 'thpuawjbidnbbbfrp9bw7qg03eci6rdz';
 const apiUrluser = `https://api.gupshup.io/sm/api/v1/users/${process.env.APPNAME}`;
 const apiUrlPartnertoken = 'https://partner.gupshup.io/partner/account/login';
+const socketclient = socket('wss://novaventa.appcenteryes.com/socket.io/')
 app.use(cors({ origin: '*' }));
 // conexion crud base de datos
 app.options('/w/crear-datos', (req, res) => {
@@ -71,7 +73,10 @@ io.on('connection', (socket) => {
   });
 });// Ruta para recibir eventos del webhook
 app.all('/w/api/index', async (req, res) => {
- 
+  socket
+  socketclient.on('message', (data) => {
+    
+  });
   const userAgent = req.get('User-Agent');
   // Verifica si la solicitud es del User-Agent específico
   if (userAgent) {
