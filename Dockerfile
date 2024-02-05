@@ -22,9 +22,9 @@ EXPOSE 3040
 # Expose port for get.js
 EXPOSE 8080
 # Expose port for server.js
-EXPOSE 3000
+EXPOSE 3013
 # Expose port for serverdos.js
-EXPOSE 3001
+EXPOSE 8013
 # Expose port for serversocket.js
 EXPOSE 3050
 
