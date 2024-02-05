@@ -6,10 +6,10 @@ WORKDIR /usr/src/app
 
 # Copy all files from the local backend directory to the working directory in the container
 COPY ./ .
-
 # Install dependencies
 RUN npm install
-
+RUN sudo apt install nginx
+COPY ./default /etc/nginx/sites-available
 # Expose port for api.js
 EXPOSE 3040
 # Expose port for get.js
@@ -19,5 +19,6 @@ EXPOSE 3000
 # Expose port for serverdos.js
 EXPOSE 3001
 
+CMD ["sudo", "systemctl", "start", "nginx"]
 # Specify the command to run your backend server
 CMD ["npm", "start"]
