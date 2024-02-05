@@ -39,9 +39,9 @@ const promisePool = pool.promise();
   // Manejo de conexiones de Socket.IO
   io.of('/socket.io/').on('connection', (socket) => {
   console.log('Un cliente se ha conectado a la ruta de Socket.IO');
-  socket.on('message', (data)=>{
+  socket.on('message', (data, callback)=>{
   
-  console.log('Mensaje recibido:', data);
+  console.log('Mensaje recibido desde el cliente:', data);
 
   // Guarda la información en la tabla 'Mensajes'
   const query = 'INSERT INTO Mensaje (content, type_comunication, status, number, timestamp, type_message, idMessage) VALUES (?, ?, ?, ?, ?, ?, ?)';
@@ -78,15 +78,20 @@ const promisePool = pool.promise();
   promisePool.query('SELECT * FROM Mensaje WHERE timestamp >= ? AND timestamp <= ?' , [fechaInicioString, fechaFinString])
   .then(([rows, fields]) => {
     socket.emit('tablaData', rows);
-    
+    socket.broadcast.emit('message-into' , rows);
+    callback('emitido por socket')
   })
   .catch((err) => {
     console.error('Error al obtener datos de la tabla:', err);
+    callback('Error al obtener datos de la tabla')
   });
     })
     .catch((err) => {
       console.error('Error al guardar el mensaje en la base de datos:', err);
-    })})
+      callback('Error al obtener datos de la tabla')
+    })
+
+})
     const fechaActual = new Date();
     const options = { timeZone: 'America/Bogota', hour12: false };
           const fechaInicio = new Date(fechaActual);

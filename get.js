@@ -25,7 +25,7 @@ const apiUrlenvio = 'https://api.gupshup.io/sm/api/v1/msg';
 const apiKey = 'thpuawjbidnbbbfrp9bw7qg03eci6rdz';
 const apiUrluser = `https://api.gupshup.io/sm/api/v1/users/${process.env.APPNAME}`;
 const apiUrlPartnertoken = 'https://partner.gupshup.io/partner/account/login';
-const socketclient = socket('wss://appcenteryes.appcenteryes.com/socket.io/')
+const socketclient = socket('wss://novaventa.appcenteryes.com/socket.io/')
 app.use(cors({ origin: '*' }));
 // conexion crud base de datos
 app.options('/w/crear-datos', (req, res) => {
