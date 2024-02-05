@@ -7,7 +7,8 @@ const http = require('http');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const socketIo = require('socket.io');
-const socket = require('socket.io-client')
+const socket = require('socket.io-client');
+
 const app = express();
 const port = 8080;
 const multer = require('multer');
@@ -24,7 +25,7 @@ const apiUrlenvio = 'https://api.gupshup.io/sm/api/v1/msg';
 const apiKey = 'thpuawjbidnbbbfrp9bw7qg03eci6rdz';
 const apiUrluser = `https://api.gupshup.io/sm/api/v1/users/${process.env.APPNAME}`;
 const apiUrlPartnertoken = 'https://partner.gupshup.io/partner/account/login';
-const socketclient = socket('wss://novaventa.appcenteryes.com/socket.io/')
+const socketclient = socket('wss://appcenteryes.appcenteryes.com/socket.io/')
 app.use(cors({ origin: '*' }));
 // conexion crud base de datos
 app.options('/w/crear-datos', (req, res) => {
@@ -66,17 +67,9 @@ app.use('/w/uploads', express.static(directorioCargas));
 
 
 
-io.on('connection', (socket) => {
-  // Manejar la desconexión del cliente
-  socket.on('disconnect', () => {
-    // Puedes agregar lógica adicional cuando un cliente se desconecta
-  });
-});// Ruta para recibir eventos del webhook
+// Ruta para recibir eventos del webhook
 app.all('/w/api/index', async (req, res) => {
-  socket
-  socketclient.on('message', (data) => {
-    
-  });
+ 
   const userAgent = req.get('User-Agent');
   // Verifica si la solicitud es del User-Agent específico
   if (userAgent) {
@@ -84,6 +77,7 @@ app.all('/w/api/index', async (req, res) => {
       var data = req.body;
       await processAsync(data);
          
+      
 
 
       const fechaActual = new Date();
@@ -105,9 +99,23 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
        const mensaje = {
         content, type_comunication, status, number, timestamp, type_message, idMessage
       };
-      
+      /*io.on('connection', (socket) => {
+        console.log('ingresa al socket')
+        io.emit('message' , () => {
+          console.log('mensaje enviado')})
+        // Manejar la desconexión del cliente
+        socket.on('disconnect', () => {
+          // Puedes agregar lógica adicional cuando un cliente se desconecta
+        });
+      });
+      */
+      const enviarmensaje = (mensaje) => {
+        console.log('entrando a enviar el mensaje', mensaje)
+        socketclient.emit('message' , mensaje ,(respuesta) => {
+        console.log(respuesta)})}
       try {
-        
+       enviarmensaje(mensaje)
+      
         const response = await fetch(process.env.BASE_DB+'/guardar-mensajes', {
         method: 'POST',
         headers: {
@@ -199,8 +207,6 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       const chats = await responseChatExistente.json();
       const usuariosC = await responseUsuarios.json();
       if(chats){
-        
-        
         const nameuser = usuariosC.find(user => user.id === chats[0].userId).complete_name
              
         const conver = {
@@ -1051,7 +1057,46 @@ app.post('/w/createTemplates', async (req, res) => {
   }
 });
 
+// Configurar la conexión a la base de datos
+const connection = mysql.createConnection({
+  host: process.env.DBHOST,
+  port: process.env.DBPORT,
+  user: process.env.DBUSER,
+  password: process.env.DBPASS,
+  database: process.env.DBNAME,
+});
+
+// Conectar a la base de datos
+connection.connect();
+
+// Realizar la consulta y pasar los datos a un array
+const obtenerDatosColumna = () => {
+  return new Promise((resolve, reject) => {
+    const query = 'SELECT elementname FROM Seetemp';
+
+    connection.query(query, (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        const datosArray = results.map(resultado => resultado.nombre_columna);
+        resolve(datosArray);
+      }
+    });
+  });
+};
+
 // Ejemplo de cómo usar la función
+obtenerDatosColumna()
+  .then(arrayDeDatos => {
+
+  })
+  .catch(error => {
+    console.error('Error al obtener datos:', error);
+  })
+  .finally(() => {
+    // Cerrar la conexión a la base de datos después de realizar la consulta
+    connection.end();
+  });
 
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {

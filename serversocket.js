@@ -78,6 +78,7 @@ const promisePool = pool.promise();
   promisePool.query('SELECT * FROM Mensaje WHERE timestamp >= ? AND timestamp <= ?' , [fechaInicioString, fechaFinString])
   .then(([rows, fields]) => {
     socket.emit('tablaData', rows);
+    
   })
   .catch((err) => {
     console.error('Error al obtener datos de la tabla:', err);
