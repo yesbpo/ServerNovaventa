@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: yesbpoconreg.azurecr.io/backend:latest
+        ports:
+        - containerPort: 3040
+        - containerPort: 8080
+        - containerPort: 3000
+        - containerPort: 3001

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+    - name: api-port
+      protocol: TCP
+      port: 3040
+      targetPort: 3040
+    - name: get-port
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+    - name: server-port
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+    - name: serverdos-port
+      protocol: TCP
+      port: 3001
+      targetPort: 3001
+  type: LoadBalancer

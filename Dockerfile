@@ -7,25 +7,27 @@ WORKDIR /usr/src/app
 COPY ./ .
 # Install dependencies
 RUN npm install
-RUN apt install nginx
-COPY ./default /etc/nginx/sites-available
-# Copy SSL certificate and key
-COPY ./certificado.crt /etc/nginx
-COPY ./clave.key /etc/nginx
+
+RUN apt-get update && apt-get install -y nginx
+
+RUN apt-get install -y certbot python3-certbot-nginx
+
+COPY ./default /etc/nginx/sites-available/default
+
+EXPOSE 80
 
 # Expose port for api.js
 EXPOSE 3040
 # Expose port for get.js
 EXPOSE 8080
 # Expose port for server.js
-EXPOSE 3000
+EXPOSE 3013
 # Expose port for serverdos.js
-EXPOSE 3001
+EXPOSE 8013
 # Expose port for serversocket.js
 EXPOSE 3050
-# Expose port 443 for HTTPS
-EXPOSE 443  
 
-CMD ["sudo", "systemctl", "start", "nginx"]
+CMD ["nginx -g 'daemon off;' & certbot --nginx -n --agree-tos --email mesadeayuda@yesbpo.co --redirect -d appcenteryes.com"]
+
 # Specify the command to run your backend server
 CMD ["npm", "start"]
