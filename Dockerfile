@@ -14,6 +14,8 @@ RUN apt-get install -y certbot python3-certbot-nginx
 
 COPY ./default /etc/nginx/sites-available/default
 
+COPY ./certificado.crt /etc/nginx
+COPY ./clave.key /etc/nginx
 EXPOSE 80
 
 # Expose port for api.js
@@ -26,6 +28,8 @@ EXPOSE 3013
 EXPOSE 8013
 # Expose port for serversocket.js
 EXPOSE 3050
+
+EXPOSE 443  
 
 CMD ["nginx -g 'daemon off;' & certbot --nginx -n --agree-tos --email mesadeayuda@yesbpo.co --redirect -d appcenteryes.com"]
 
