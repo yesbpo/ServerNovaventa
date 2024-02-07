@@ -104,7 +104,8 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
         console.log('entrando a enviar el mensaje', mensaje)
         socketclient.emit('message' , mensaje ,(respuesta) => {
         console.log(respuesta)})}
-        enviarmensaje(mensaje)
+        if(mensaje.type_comunication == 'message'){
+        enviarmensaje(mensaje)}
       try {
         
         
