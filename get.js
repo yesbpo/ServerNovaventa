@@ -99,22 +99,15 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
        const mensaje = {
         content, type_comunication, status, number, timestamp, type_message, idMessage
       };
-      /*io.on('connection', (socket) => {
-        console.log('ingresa al socket')
-        io.emit('message' , () => {
-          console.log('mensaje enviado')})
-        // Manejar la desconexión del cliente
-        socket.on('disconnect', () => {
-          // Puedes agregar lógica adicional cuando un cliente se desconecta
-        });
-      });
-      */
+      
       const enviarmensaje = (mensaje) => {
         console.log('entrando a enviar el mensaje', mensaje)
         socketclient.emit('message' , mensaje ,(respuesta) => {
         console.log(respuesta)})}
+        enviarmensaje(mensaje)
       try {
-       enviarmensaje(mensaje)
+        
+        
       
         const response = await fetch(process.env.BASE_DB+'/guardar-mensajes', {
         method: 'POST',
