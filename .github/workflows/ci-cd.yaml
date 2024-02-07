@@ -27,7 +27,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          docker build -t yesbpoconreg.azurecr.io/backend:latest -f ../../Dockerfile .
+          docker build -t yesbpoconreg.azurecr.io/backend:latest -f ./Dockerfile .
           docker tag yesbpoconreg.azurecr.io/backend:latest yesbpoconreg.azurecr.io/backend:latest
           echo ${{ secrets.ACR_PASSWORD }} | docker login yesbpoconreg.azurecr.io -u ${{ secrets.ACR_USERNAME }} --password-stdin
           docker push yesbpoconreg.azurecr.io/backend:latest
