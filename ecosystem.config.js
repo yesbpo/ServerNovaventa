@@ -7,6 +7,15 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: '1G',
+      env: {
+        DBHOST: 'yesappcenterdb.mysql.database.azure.com',
+        DBPORT: 3306,
+        DBUSER: 'yesdbadmin',
+        DBPASS: 'qBABt797iNHu9Zx',
+        DBNAME: 'dbappnovaventa',
+        PORTSERVER: 8080,
+        DB_ROUTE: '/w'
+      }
     },
     {
       name: 'get',
@@ -15,6 +24,15 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: '1G',
+      env: {
+        DBHOST: 'yesappcenterdb.mysql.database.azure.com',
+        DBPORT: 3306,
+        DBUSER: 'yesdbadmin',
+        DBPASS: 'qBABt797iNHu9Zx',
+        DBNAME: 'dbappnovaventa',
+        PORTSERVER: 3013,
+        DB_ROUTE: '/dbgf'
+      }
     },
     {
       name: 'server',
@@ -23,6 +41,16 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: '1G',
+      env: {
+        DBHOST: 'yesappcenterdb.mysql.database.azure.com',
+        DBPORT: 3306,
+        DBUSER: 'yesdbadmin',
+        DBPASS: 'qBABt797iNHu9Zx',
+        DBNAME: 'dbappnovaventa',
+        PORTSERVER: 8013,
+        DB_ROUTE: '/dbn2'
+
+      }
     },
     {
       name: 'serverdos',
@@ -31,7 +59,32 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: '1G',
+      env: {
+        DBHOST: 'yesappcenterdb.mysql.database.azure.com',
+        DBPORT: 3306,
+        DBUSER: 'yesdbadmin',
+        DBPASS: 'qBABt797iNHu9Zx',
+        DBNAME: 'dbappnovaventa',
+        PORTSERVER: 3040,
+        DB_ROUTE: '/sa'
+      }
     },
-    // Add more app configurations if needed
+    {
+      name: 'serversocket',
+      script: 'serversocket.js',
+      instances: 1,
+      autorestart: true,
+      watch: false,
+      max_memory_restart: '1G',
+      env: {
+        DBHOST: 'yesappcenterdb.mysql.database.azure.com',
+        DBPORT: 3306,
+        DBUSER: 'yesdbadmin',
+        DBPASS: 'qBABt797iNHu9Zx',
+        DBNAME: 'dbappnovaventa',
+        PORTSERVER: 3050,
+        DB_ROUTE: '/socket.io'
+      }
+    },
   ],
 };
