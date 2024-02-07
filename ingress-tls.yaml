@@ -1,0 +1,64 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: backend-yes-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/issuer: "letsencrypt-prod"
+spec:
+  tls:
+  - hosts:
+    - back.appcenteryes.com
+    secretName: backendyestls
+  - hosts:
+    - front.appcenteryes.com
+    secretName: frontendyestl
+  rules:
+  - host: back.appcenteryes.com
+    http:
+      paths:
+      - path: /w
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 8080
+      - path: /dbgf
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 3013
+      - path: /sa
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 3040
+      - path: /dbn2
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 8013
+      - path: /socket.io/
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 3050
+  - host: front.appcenteryes.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: backend-service
+            port:
+              number: 3000

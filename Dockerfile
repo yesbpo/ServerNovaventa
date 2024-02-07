@@ -8,16 +8,7 @@ COPY ./ .
 # Install dependencies
 RUN npm install
 
-RUN apt-get update && apt-get install -y nginx
-
-RUN apt-get install -y certbot python3-certbot-nginx
-
-COPY ./default /etc/nginx/sites-available/default
-
-COPY ./certificado.crt /etc/nginx
-COPY ./clave.key /etc/nginx
 EXPOSE 80
-
 # Expose port for api.js
 EXPOSE 3040
 # Expose port for get.js
@@ -30,8 +21,6 @@ EXPOSE 8013
 EXPOSE 3050
 
 EXPOSE 443  
-
-CMD ["nginx -g 'daemon off;' & certbot --nginx -n --agree-tos --email mesadeayuda@yesbpo.co --redirect -d appcenteryes.com"]
 
 # Specify the command to run your backend server
 CMD ["npm", "start"]

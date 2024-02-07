@@ -1,0 +1,48 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Set up Docker
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+
+      - name: Build and Push Docker Image
+        run: |
+          docker build -t yesbpoconreg.azurecr.io/backend:latest -f ./Dockerfile .
+          docker tag yesbpoconreg.azurecr.io/backend:latest yesbpoconreg.azurecr.io/backend:latest
+          echo ${{ secrets.ACR_PASSWORD }} | docker login yesbpoconreg.azurecr.io -u ${{ secrets.ACR_USERNAME }} --password-stdin
+          docker push yesbpoconreg.azurecr.io/backend:latest
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: AKS Restart Deployment
+        run: |
+          az aks get-credentials --resource-group yesbpo-rg --name yesbpok8s
+          kubectl rollout restart deployment backend-deployment
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
