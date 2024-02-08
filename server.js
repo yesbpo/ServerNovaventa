@@ -749,7 +749,7 @@ app.get(process.env.DB_ROUTE + '/obtener-nombres-contenidos', async (req, res) =
   }
 });
 
-//  agregar nombres plantillas
+//  Obtener nombre de la tabla seetemp
 app.get(process.env.DB_ROUTE + '/obtener-contenido-seetemp', async (req, res) => {
   try {
     // Consultar todos los datos de la tabla Seetemp
@@ -763,6 +763,31 @@ app.get(process.env.DB_ROUTE + '/obtener-contenido-seetemp', async (req, res) =>
     }
   } catch (error) {
     console.error('Error al obtener contenido en Seetemp:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+
+// Ruta para agregar un nuevo dato a la tabla Seetemp
+app.post(process.env.DB_ROUTE + '/agregar-elemento-seetemp', async (req, res) => {
+  try {
+    const { elementName } = req.body;
+
+    // Verificar si el elementoName se proporcionó en la solicitud
+    if (!elementName) {
+      return res.status(400).json({ error: 'El elementoName es requerido' });
+    }
+
+    // Insertar el nuevo elementoName en la tabla Seetemp
+    const [result] = await promisePool.execute('INSERT INTO Seetemp (elementname) VALUES (?)', [elementName]);
+
+    if (result.affectedRows === 1) {
+      res.status(201).json({ mensaje: 'Elemento insertado correctamente en Seetemp' });
+    } else {
+      res.status(500).json({ error: 'Error al insertar el elemento en Seetemp' });
+    }
+  } catch (error) {
+    console.error('Error al agregar elemento a Seetemp:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });

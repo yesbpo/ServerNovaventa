@@ -13,8 +13,8 @@ module.exports = {
         DBUSER: 'yesdbadmin',
         DBPASS: 'qBABt797iNHu9Zx',
         DBNAME: 'dbappnovaventa',
-        PORTSERVER: 8080,
-        DB_ROUTE: '/w'
+        PORTSERVER: 3040,
+        DB_ROUTE: '/sa'
       }
     },
     {
@@ -30,8 +30,8 @@ module.exports = {
         DBUSER: 'yesdbadmin',
         DBPASS: 'qBABt797iNHu9Zx',
         DBNAME: 'dbappnovaventa',
-        PORTSERVER: 3013,
-        DB_ROUTE: '/dbgf'
+        PORTSERVER: 8080,
+        DB_ROUTE: '/w'
       }
     },
     {
@@ -47,8 +47,8 @@ module.exports = {
         DBUSER: 'yesdbadmin',
         DBPASS: 'qBABt797iNHu9Zx',
         DBNAME: 'dbappnovaventa',
-        PORTSERVER: 8013,
-        DB_ROUTE: '/dbn2'
+        PORTSERVER: 3013,
+        DB_ROUTE: '/dbn'
 
       }
     },
@@ -65,8 +65,8 @@ module.exports = {
         DBUSER: 'yesdbadmin',
         DBPASS: 'qBABt797iNHu9Zx',
         DBNAME: 'dbappnovaventa',
-        PORTSERVER: 3040,
-        DB_ROUTE: '/sa'
+        PORTSERVER: 8013,
+        DB_ROUTE: '/dbn2'
       }
     },
     {
