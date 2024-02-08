@@ -182,7 +182,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         const chats = await responseChatExistente.json();
         const responseUsuarios = await fetch(process.env.BASE_DB+'/obtener-usuarios');
         const usuarios = await responseUsuarios.json();   
-        const usuariosActivos = usuarios.filter((usuario) => usuario.session === 'Activo' && usuario.type_user ==='Asesor' || usuario.type_user ==='Asesor1');
+        const usuariosActivos = usuarios.filter((usuario) => usuario.session === 'Activo' && usuario.type_user ==='Asesor' || usuario.session === 'Activo' && usuario.type_user ==='Asesor1');
         const idsUactivos = usuariosActivos.map(objeto => objeto.id);
         const nuevoUserId = idsUactivos[Math.floor(Math.random() * idsUactivos.length)];
         const idChat2 = element.number
