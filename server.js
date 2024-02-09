@@ -588,7 +588,7 @@ app.get(process.env.DB_ROUTE+'/obtener-conversaciones-fecha', async (req, res) =
 
     // Consultar las conversaciones en el rango de fechas especificado
     const [conversaciones] = await promisePool.execute(
-      'SELECT * FROM Conversation WHERE fecha_ingreso BETWEEN ? AND ?',
+      'SELECT * FROM Conversation WHERE fecha_ultimagestion BETWEEN ? AND ?',
       [fechaInicio, fechaFin]
     );
 
