@@ -169,7 +169,8 @@ const options = { timeZone: 'America/Bogota', hour12: false };
        let constidmsj=[] ;
        const mensajes = await response.json();
        Object.values(mensajes)[0].forEach( async element => {
-        constidmsj.push(element.idMessage) 
+        
+         
         const chateje = element.number;
         const responseUsuarios = await fetch(process.env.BASE_DB+'/obtener-usuarios');  
       const responseChatExistente = await fetch(`${process.env.BASE_DB}/obtener-chat-id?idChat2=${chateje}`)
@@ -200,7 +201,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
       console.log('ids',constidmsj)
       const chats = await responseChatExistente.json();
       const usuariosC = await responseUsuarios.json();
-      if(chats){
+      if(chats && !constidmsj.includes(element.idMessage)){
         const nameuser = usuariosC.find(user => user.id === chats[0].userId).complete_name
              
         const conver = {
@@ -226,7 +227,14 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           if (!response.ok) {
             throw new Error(`Error en la solicitud: ${response.status}`);
           }
-    
+          if (constidmsj.length >= 11) {
+            // Si constidmsj ya tiene 11 elementos o más
+            constidmsj.push(element.idMessage); // Agrega el nuevo elemento al final
+            constidmsj.shift(); // Elimina el primer elemento
+          } else {
+            // Si constidmsj tiene menos de 11 elementos
+            constidmsj.push(element.idMessage); // Agrega el nuevo elemento al final
+          }
           const data = await response.json();
           
         } catch (error) {
