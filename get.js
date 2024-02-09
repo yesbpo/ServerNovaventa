@@ -193,11 +193,11 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ idChat2, nuevoUserId}),
+          body: JSON.stringify({idChat2, nuevoUserId}),
         });
       }
       }catch{}
-    
+      console.log('ids',constidmsj)
       const chats = await responseChatExistente.json();
       const usuariosC = await responseUsuarios.json();
       if(chats){
