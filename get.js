@@ -211,7 +211,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           numero: element.idMessage,
           calificacion: chats[0].status,
           fecha_ingreso: new Date(chats[0].receivedDate).toISOString().slice(0, 19).replace('T', ' '),
-          fecha_ultimagestion: fechaFinString,
+          fecha_ultimagestion: `${anio}-${mes}-${dia} ${hora}:${minutos}:${segundos}`,
           userid: chats[0].userId
         }
         try {

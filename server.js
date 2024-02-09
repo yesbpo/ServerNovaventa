@@ -541,9 +541,9 @@ app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
         const validaid = existingConversation.numero == numero
         let updatedConversacion;
         const [existingPartialConversation] = await promisePool.execute(
-  'SELECT * FROM Conversation WHERE idchat = ? AND conversacion LIKE ?',
-  [idchat, `%${conversacion}%`]
-);
+        'SELECT * FROM Conversation WHERE idchat = ? AND conversacion LIKE ?',
+        [idchat, `%${conversacion}%`]
+        );
         if(existingPartialConversation.length !== 0){
 
           updatedConversacion = existingConversation.conversacion
