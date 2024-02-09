@@ -571,7 +571,7 @@ app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
   }
 });
 // obtener conversacione por fecha 
-app.get(process.env.DB_ROUTE + '/obtener-conversaciones-fecha', async (req, res) => {
+app.get(process.env.DB_ROUTE+'/obtener-conversaciones-fecha', async (req, res) => {
   try {
     // Obtener parámetros de fecha del cuerpo de la solicitud
     const { fechaInicio, fechaFin } = req.query;
