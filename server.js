@@ -518,8 +518,8 @@ app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
 
     // Verificar si ya existe una conversación con el mismo idchat y userid diferente a cero
     const [existingConversations] = await promisePool.execute(
-      'SELECT * FROM Conversation WHERE idchat = ? AND userid != 0 AND conversacion LIKE ?',
-      [idchat, `%${conversacion}%`]
+      'SELECT * FROM Conversation WHERE idchat = ? AND userid != 0',
+      [idchat]
     );
 
     if (existingConversations.length > 0) {
@@ -540,7 +540,12 @@ app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
         // Agregar el nuevo dato a la conversación existente
         const validaid = existingConversation.numero == numero
         let updatedConversacion;
-        if(validaid){
+        const [existingPartialConversation] = await promisePool.execute(
+  'SELECT * FROM Conversation WHERE idchat = ? AND conversacion LIKE ?',
+  [idchat, `%${conversacion}%`]
+);
+        if(existingPartialConversation.length !== 0){
+
           updatedConversacion = existingConversation.conversacion
           
         }else{
