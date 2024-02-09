@@ -570,6 +570,29 @@ app.post(process.env.DB_ROUTE + '/insertar-conversacion', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+// obtener conversacione por fecha 
+app.get(process.env.DB_ROUTE + '/obtener-conversaciones-fecha', async (req, res) => {
+  try {
+    // Obtener parámetros de fecha del cuerpo de la solicitud
+    const { fechaInicio, fechaFin } = req.query;
+
+    // Validar que las fechas se proporcionen y tengan el formato adecuado (puedes agregar más validaciones según tus necesidades)
+    if (!fechaInicio || !fechaFin) {
+      return res.status(400).json({ error: 'Las fechas de inicio y fin son obligatorias' });
+    }
+
+    // Consultar las conversaciones en el rango de fechas especificado
+    const [conversaciones] = await promisePool.execute(
+      'SELECT * FROM Conversation WHERE fecha_ingreso BETWEEN ? AND ?',
+      [fechaInicio, fechaFin]
+    );
+
+    res.json({ conversaciones });
+  } catch (error) {
+    console.error('Error al procesar la solicitud:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 
 
 // obtener conversaciones 

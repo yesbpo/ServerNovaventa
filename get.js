@@ -252,7 +252,6 @@ const options = { timeZone: 'America/Bogota', hour12: false };
           const minutos = fechaActual.toLocaleString('en-US', { minute: '2-digit', timeZone: options.timeZone });
           const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZone: options.timeZone });  
           const data1 = {
-          
             idChat2: chats[0].idChat2,
             resolved: false,
             status: 'pending',
