@@ -450,26 +450,25 @@ app.post(process.env.DB_ROUTE+'/crear-chat', async (req, res) => {
 app.get(process.env.DB_ROUTE + '/consultar-chats-hoy', async (req, res) => {
   try {
     // Obtener la fecha y hora actual con zona horaria
-    const currentDate = new Date();
-    const currentDateWithTimeZone = currentDate.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+    const currentDateColombia = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
 
     // Convertir la fecha con zona horaria a objeto Date
-    const currentDateColombia = new Date(currentDateWithTimeZone);
+    const currentDateColombiaDate = new Date(currentDateColombia);
 
     // Establecer la fecha de inicio de hoy a las 00:00:00
-    const startOfDay = new Date(currentDateColombia);
+    const startOfDay = new Date(currentDateColombiaDate);
     startOfDay.setHours(0, 0, 0, 0);
 
     // Establecer la fecha de finalización de hoy a las 23:59:59
-    const endOfDay = new Date(currentDateColombia);
+    const endOfDay = new Date(currentDateColombiaDate);
     endOfDay.setHours(23, 59, 59, 999);
-    const formattedStartDate = startOfDay.toISOString().slice(0, 19).replace('T', ' ');
-const formattedEndDate = endOfDay.toISOString().slice(0, 19).replace('T', ' ');
-    console.log(formattedStartDate, formattedEndDate)
+
+    console.log(startOfDay, endOfDay);
+
     // Realizar la consulta para obtener los chats de hoy
     const [result] = await promisePool.execute(
       'SELECT * FROM Chat WHERE assignedDate >= ? AND assignedDate <= ?',
-      [formattedStartDate, formattedEndDate]
+      [startOfDay, endOfDay]
     );
 
     res.json({ chats: result });
