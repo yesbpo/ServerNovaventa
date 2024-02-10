@@ -463,7 +463,7 @@ app.get(process.env.DB_ROUTE + '/consultar-chats-hoy', async (req, res) => {
     // Establecer la fecha de finalización de hoy a las 23:59:59
     const endOfDay = new Date(currentDateColombia);
     endOfDay.setHours(23, 59, 59, 999);
-
+    console.log(startOfDay, endOfDay)
     // Realizar la consulta para obtener los chats de hoy
     const [result] = await promisePool.execute(
       'SELECT * FROM Chat WHERE assignedDate >= ? AND assignedDate <= ?',
