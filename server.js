@@ -446,6 +446,37 @@ app.post(process.env.DB_ROUTE+'/crear-chat', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+// consulta de chats del dia actual 
+app.get(process.env.DB_ROUTE + '/consultar-chats-hoy', async (req, res) => {
+  try {
+    // Obtener la fecha y hora actual con zona horaria
+    const currentDate = new Date();
+    const currentDateWithTimeZone = currentDate.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+
+    // Convertir la fecha con zona horaria a objeto Date
+    const currentDateColombia = new Date(currentDateWithTimeZone);
+
+    // Establecer la fecha de inicio de hoy a las 00:00:00
+    const startOfDay = new Date(currentDateColombia);
+    startOfDay.setHours(0, 0, 0, 0);
+
+    // Establecer la fecha de finalización de hoy a las 23:59:59
+    const endOfDay = new Date(currentDateColombia);
+    endOfDay.setHours(23, 59, 59, 999);
+
+    // Realizar la consulta para obtener los chats de hoy
+    const [result] = await promisePool.execute(
+      'SELECT * FROM Chat WHERE assignedDate >= ? AND assignedDate <= ?',
+      [startOfDay, endOfDay]
+    );
+
+    res.json({ chats: result });
+  } catch (error) {
+    console.error('Error al consultar los chats de hoy:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 //consulta por userid chats
 app.get(process.env.DB_ROUTE+'/consultar-chats/:userId', async (req, res) => {
   try {
