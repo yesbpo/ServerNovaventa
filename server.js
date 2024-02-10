@@ -450,7 +450,9 @@ app.post(process.env.DB_ROUTE+'/crear-chat', async (req, res) => {
 app.get(process.env.DB_ROUTE + '/consultar-chats-hoy', async (req, res) => {
   try {
     // Obtener la fecha y hora actual con zona horaria
-    const currentDateColombia = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+    const options = { timeZone: 'America/Bogota', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    const formatter = new Intl.DateTimeFormat('es-CO', options);
+    const currentDateColombia = formatter.format(new Date());
 
     // Convertir la fecha con zona horaria a objeto Date
     const currentDateColombiaDate = new Date(currentDateColombia);
@@ -477,6 +479,7 @@ app.get(process.env.DB_ROUTE + '/consultar-chats-hoy', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+
 
 //consulta por userid chats
 app.get(process.env.DB_ROUTE+'/consultar-chats/:userId', async (req, res) => {
