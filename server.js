@@ -450,20 +450,16 @@ app.post(process.env.DB_ROUTE+'/crear-chat', async (req, res) => {
 app.get(process.env.DB_ROUTE + '/consultar-chats-hoy', async (req, res) => {
   try {
     // Obtener la fecha y hora actual con zona horaria
-    const options = { timeZone: 'America/Bogota', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-    const formatter = new Intl.DateTimeFormat('es-CO', options);
-    const currentDateColombia = formatter.format(new Date());
-
-    // Convertir la fecha con zona horaria a objeto Date
-    const currentDateColombiaDate = new Date(currentDateColombia);
+    const currentDateColombia = new Date();
+    currentDateColombia.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
 
     // Establecer la fecha de inicio de hoy a las 00:00:00
-    const startOfDay = new Date(currentDateColombiaDate);
-    startOfDay.setHours(0, 0, 0, 0);
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0);
 
     // Establecer la fecha de finalización de hoy a las 23:59:59
-    const endOfDay = new Date(currentDateColombiaDate);
-    endOfDay.setHours(23, 59, 59, 999);
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59);
 
     console.log(startOfDay, endOfDay);
 
