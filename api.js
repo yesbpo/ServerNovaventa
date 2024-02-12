@@ -102,8 +102,6 @@ app.post('/sa/api/envios', bodyParser.urlencoded({ extended: true }), async (req
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
-
 // Ruta para realizar la solicitud y devolver la respuesta al cliente de los templates
 app.get('/sa/api/templates', async (req, res) => {
   try {
@@ -217,50 +215,42 @@ app.post('/sa/createTemplates', async (req, res) => {
   }
 });
 
-//Templates de Seetemp
-async function obtenerContenidoSeetemp() {
-  try {
-    // Realizar la solicitud GET a la ruta
-    const response = await fetch(`${process.env.DB_ROUTE}/obtener-contenido-seetemp`);
-
-    // Verificar si la solicitud fue exitosa y si hay datos
-    if (response.ok) {
-      const data = await response.json();
-
-      // Verificar si hay datos en la respuesta
-      if (data && data.datos) {
-        // Guardar los datos en un array
-        const datosArray = data.datos;
-
-        // Extraer los elementName y guardarlos en un array
-        const elementNames = datosArray.map(item => item.elementName);
-
-        // Retornar los datos por si quieres hacer algo más con ellos fuera de esta función
-        return elementNames;
-      } else {
-        console.log('No se encontraron datos en la tabla Seetemp');
-        return [];
-      }
-    } else {
-      // Si la respuesta no fue exitosa, lanzar un error
-      throw new Error('Error al obtener contenido en Seetemp');
-    }
-  } catch (error) {
-    console.error('Error al obtener contenido en Seetemp:', error);
-    return [];
-  }
-}
+// Configurar la conexión a la base de datos
 
 // Ejemplo de cómo usar la función
-obtenerContenidoSeetemp()
-  .then(elementNames => {
-    // Hacer algo con los nombres de elementos obtenidos, si es necesario
-  })
-  .catch(error => {
-    console.error('Error al obtener contenido en Seetemp:', error);
-  });
+// Get templates
+app.get('/sa/gupshup-templates', async (req, res) => {
+  try {
+    const appId = process.env.APPID;
+    const partnerAppToken = process.env.PARTNERAPPTOKEN;
+    const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
 
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Connection': 'keep-alive',
+        'token': partnerAppToken,
+      },
+    });
 
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Gupshup templates. Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // Nombres a filtrar (puedes ajustar según tus necesidades)
+    const nombresFiltrar = process.env.TEMPLATES.split(',');
+
+    // Filtrar las plantillas por nombres
+    const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(template.elementName));
+
+    res.json({ status: 'success', templates: plantillasFiltradas });
+  } catch (error) {
+    console.error('Error:', error.message || error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 //DELETE TEMPLATES
 app.delete('/sa/deleteTemplate/:elementName', async (req, res) => {
