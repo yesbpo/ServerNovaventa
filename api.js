@@ -215,7 +215,49 @@ app.post('/sa/createTemplates', async (req, res) => {
   }
 });
 
-// Configurar la conexión a la base de datos
+//Templates de Seetemp
+async function obtenerContenidoSeetemp() {
+  try {
+    // Realizar la solicitud GET a la ruta
+    const response = await fetch(`${process.env.DB_ROUTE}/obtener-contenido-seetemp`);
+
+    // Verificar si la solicitud fue exitosa y si hay datos
+    if (response.ok) {
+      const data = await response.json();
+
+      // Verificar si hay datos en la respuesta
+      if (data && data.datos) {
+        // Guardar los datos en un array
+        const datosArray = data.datos;
+
+        // Hacer algo con los datos guardados en el array
+        console.log('Datos de Seetemp:', datosArray);
+
+        // Retornar los datos por si quieres hacer algo más con ellos fuera de esta función
+        return datosArray;
+      } else {
+        console.log('No se encontraron datos en la tabla Seetemp');
+        return [];
+      }
+    } else {
+      // Si la respuesta no fue exitosa, lanzar un error
+      throw new Error('Error al obtener contenido en Seetemp');
+    }
+  } catch (error) {
+    console.error('Error al obtener contenido en Seetemp:', error);
+    return [];
+  }
+}
+
+// Ejemplo de cómo usar la función
+obtenerContenidoSeetemp()
+  .then(datos => {
+    // Hacer algo con los datos obtenidos, si es necesario
+  })
+  .catch(error => {
+    console.error('Error al obtener contenido en Seetemp:', error);
+  });
+
 
 // Ejemplo de cómo usar la función
 // Get templates
@@ -239,13 +281,7 @@ app.get('/sa/gupshup-templates', async (req, res) => {
 
     const data = await response.json();
 
-    // Nombres a filtrar (puedes ajustar según tus necesidades)
-    const nombresFiltrar = process.env.TEMPLATES.split(',');
-
-    // Filtrar las plantillas por nombres
-    const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(template.elementName));
-
-    res.json({ status: 'success', templates: plantillasFiltradas });
+    res.json({ status: 'success', templates: data.templates });
   } catch (error) {
     console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Internal Server Error' });
