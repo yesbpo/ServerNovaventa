@@ -104,6 +104,35 @@ app.post('/sa/api/envios', bodyParser.urlencoded({ extended: true }), async (req
 });
 
 
+// Ruta para realizar la solicitud y devolver la respuesta al cliente de los templates
+app.get('/sa/api/templates', async (req, res) => {
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'apikey': apiKey,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    
+    // Nombres a filtrar desde el entorno
+    const nombresFiltrar = process.env.TEMPLATES.split(',');
+
+    // Filtrar las plantillas por nombres
+    const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(template.elementName));
+
+    res.json(plantillasFiltradas); // Devolver la respuesta al cliente
+  } catch (error) {
+    console.error('Error:', error.message || error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 //solicitud de usuarios activos en gupshup
 app.get('/sa/api/users', async (req, res) => {
   try {
@@ -232,40 +261,6 @@ obtenerContenidoSeetemp()
   });
 
 
-// Ejemplo de cómo usar la función
-// Get templates
-app.get('/sa/gupshup-templates', async (req, res) => {
-  try {
-    const appId = process.env.APPID;
-    const partnerAppToken = process.env.PARTNERAPPTOKEN;
-    const apiUrl = `https://partner.gupshup.io/partner/app/${appId}/templates`;
-
-    const response = await fetch(apiUrl, {
-      method: 'GET',
-      headers: {
-        'Connection': 'keep-alive',
-        'token': partnerAppToken,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch Gupshup templates. Status: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    // Obtener los nombres de los elementos de Seetemp
-    const elementNames = await obtenerContenidoSeetemp();
-
-    // Filtrar las plantillas por los nombres de elementos de Seetemp
-    const filteredTemplates = data.templates.filter(template => elementNames.includes(template.elementName));
-
-    res.json({ status: 'success', templates: filteredTemplates });
-  } catch (error) {
-    console.error('Error:', error.message || error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
 
 //DELETE TEMPLATES
 app.delete('/sa/deleteTemplate/:elementName', async (req, res) => {
