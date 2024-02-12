@@ -180,6 +180,102 @@ app.get(process.env.DB_ROUTE+'/obtener-mensajes-por-fecha', async (req, res) => 
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+// obtener mensajes del dia
+app.get(process.env.DB_ROUTE+'/obtener-mensajes-hoy', async (req, res) => {
+  try {
+    const currentDateColombia = new Date();
+    currentDateColombia.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+
+    // Establecer la fecha de inicio de hoy a las 00:00:00
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0);
+
+    // Establecer la fecha de finalización de hoy a las 23:59:59
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59);
+
+
+    // Consultar mensajes en el rango de fechas
+    const [result] = await promisePool.execute(
+      'SELECT * FROM Mensaje WHERE timestamp >= ? AND timestamp <= ?',
+      [startOfDay, endOfDay]
+    );
+
+    if (result.length > 0) {
+      res.json({ mensajes: result });
+    } else {
+      res.json({ mensajes: [], mensaje: 'No se encontraron mensajes en el rango de fechas especificado.' });
+    }
+  } catch (error) {
+    console.error('Error al obtener mensajes por fecha en la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// obtener mensajes de la semana
+app.get(process.env.DB_ROUTE+'/obtener-mensajes-semana', async (req, res) => {
+  try {
+    const currentDateColombia = new Date();
+    currentDateColombia.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+
+    // Establecer la fecha de inicio de hoy a las 00:00:00
+    const startOfDay = new Date();
+    startOfDay.setDate(startOfDay.getDate() - startOfDay.getDay() + (startOfDay.getDay() === 0 ? -6 : 1));
+
+    // Establecer la fecha de finalización de hoy a las 23:59:59
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59);
+
+
+    // Consultar mensajes en el rango de fechas
+    const [result] = await promisePool.execute(
+      'SELECT * FROM Mensaje WHERE timestamp >= ? AND timestamp <= ?',
+      [startOfDay, endOfDay]
+    );
+
+    if (result.length > 0) {
+      res.json({ mensajes: result });
+    } else {
+      res.json({ mensajes: [], mensaje: 'No se encontraron mensajes en el rango de fechas especificado.' });
+    }
+  } catch (error) {
+    console.error('Error al obtener mensajes por fecha en la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// obtener mensajes del mes
+app.get(process.env.DB_ROUTE+'/obtener-mensajes-mes', async (req, res) => {
+  try {
+    const currentDateColombia = new Date();
+    currentDateColombia.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+
+    // Establecer la fecha de inicio de hoy a las 00:00:00
+    const startOfDay = new Date();
+    startOfDay.setDate(1);
+
+    // Establecer la fecha de finalización de hoy a las 23:59:59
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59);
+
+
+    // Consultar mensajes en el rango de fechas
+    const [result] = await promisePool.execute(
+      'SELECT * FROM Mensaje WHERE timestamp >= ? AND timestamp <= ?',
+      [startOfDay, endOfDay]
+    );
+
+    if (result.length > 0) {
+      res.json({ mensajes: result });
+    } else {
+      res.json({ mensajes: [], mensaje: 'No se encontraron mensajes en el rango de fechas especificado.' });
+    }
+  } catch (error) {
+    console.error('Error al obtener mensajes por fecha en la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
 //actualizar status template
 // Agrega una nueva ruta para actualizar solo el status basado en el idmessageTemplate
 app.put(process.env.DB_ROUTE + '/actualizar-status-template/:idmessageTemplate', async (req, res) => {
@@ -484,7 +580,7 @@ app.get(process.env.DB_ROUTE + '/consultar-chats-mes', async (req, res) => {
 
     // Establecer la fecha de inicio de hoy a las 00:00:00
     const startOfDay = new Date();
-    startOfDay.setDate(startOfDay.getDate()-7);
+    startOfDay.setDate(1);
 
     // Establecer la fecha de finalización de hoy a las 23:59:59
     const endOfDay = new Date();
@@ -513,11 +609,11 @@ app.get(process.env.DB_ROUTE + '/consultar-chats-semana', async (req, res) => {
 
     // Establecer la fecha de inicio de hoy a las 00:00:00
     const startOfDay = new Date();
-    startOfDay.setDate(startOfDay.getDate()-30);
+    startOfDay.setDate(startOfDay.getDate() - startOfDay.getDay() + (startOfDay.getDay() === 0 ? -6 : 1));
 
     // Establecer la fecha de finalización de hoy a las 23:59:59
     const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59);
+    endOfDay.setHours(23, 59, 58);
 
     console.log(startOfDay, endOfDay);
 
