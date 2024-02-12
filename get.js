@@ -1051,48 +1051,8 @@ app.post('/w/createTemplates', async (req, res) => {
   }
 });
 
-// Configurar la conexión a la base de datos
-const connection = mysql.createConnection({
-  host: process.env.DBHOST,
-  port: process.env.DBPORT,
-  user: process.env.DBUSER,
-  password: process.env.DBPASS,
-  database: process.env.DBNAME,
-});
 
-// Conectar a la base de datos
-connection.connect();
-
-// Realizar la consulta y pasar los datos a un array
-const obtenerDatosColumna = () => {
-  return new Promise((resolve, reject) => {
-    const query = 'SELECT elementname FROM Seetemp';
-
-    connection.query(query, (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        const datosArray = results.map(resultado => resultado.nombre_columna);
-        resolve(datosArray);
-      }
-    });
-  });
-};
-
-// Ejemplo de cómo usar la función
-obtenerDatosColumna()
-  .then(arrayDeDatos => {
-
-  })
-  .catch(error => {
-    console.error('Error al obtener datos:', error);
-  })
-  .finally(() => {
-    // Cerrar la conexión a la base de datos después de realizar la consulta
-    connection.end();
-  });
-
-// Get templates
+// Get all templates without any filtering
 app.get('/w/gupshup-templates', async (req, res) => {
   try {
     const appId = process.env.APPID;
@@ -1113,13 +1073,7 @@ app.get('/w/gupshup-templates', async (req, res) => {
 
     const data = await response.json();
 
-    // Nombres a filtrar (puedes ajustar según tus necesidades)
-    const nombresFiltrar = process.env.TEMPLATES.split(',');
-
-    // Filtrar las plantillas por nombres
-    const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(template.elementName));
-
-    res.json({ status: 'success', templates: plantillasFiltradas });
+    res.json({ status: 'success', templates: data.templates });
   } catch (error) {
     console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Internal Server Error' });
