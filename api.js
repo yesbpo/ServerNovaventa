@@ -230,11 +230,11 @@ async function obtenerContenidoSeetemp() {
         // Guardar los datos en un array
         const datosArray = data.datos;
 
-        // Hacer algo con los datos guardados en el array
-        console.log('Datos de Seetemp:', datosArray);
+        // Extraer los elementName y guardarlos en un array
+        const elementNames = datosArray.map(item => item.elementName);
 
         // Retornar los datos por si quieres hacer algo más con ellos fuera de esta función
-        return datosArray;
+        return elementNames;
       } else {
         console.log('No se encontraron datos en la tabla Seetemp');
         return [];
@@ -251,8 +251,8 @@ async function obtenerContenidoSeetemp() {
 
 // Ejemplo de cómo usar la función
 obtenerContenidoSeetemp()
-  .then(datos => {
-    // Hacer algo con los datos obtenidos, si es necesario
+  .then(elementNames => {
+    // Hacer algo con los nombres de elementos obtenidos, si es necesario
   })
   .catch(error => {
     console.error('Error al obtener contenido en Seetemp:', error);
@@ -281,7 +281,13 @@ app.get('/sa/gupshup-templates', async (req, res) => {
 
     const data = await response.json();
 
-    res.json({ status: 'success', templates: data.templates });
+    // Obtener los nombres de los elementos de Seetemp
+    const elementNames = await obtenerContenidoSeetemp();
+
+    // Filtrar las plantillas por los nombres de elementos de Seetemp
+    const filteredTemplates = data.templates.filter(template => elementNames.includes(template.elementName));
+
+    res.json({ status: 'success', templates: filteredTemplates });
   } catch (error) {
     console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Internal Server Error' });
