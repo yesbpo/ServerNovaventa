@@ -517,7 +517,7 @@ app.get(process.env.DB_ROUTE + '/consultar-chats-semana', async (req, res) => {
 
     // Establecer la fecha de finalización de hoy a las 23:59:59
     const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59);
+    endOfDay.setHours(23, 59, 58);
 
     console.log(startOfDay, endOfDay);
 
