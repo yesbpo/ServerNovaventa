@@ -475,6 +475,64 @@ app.get(process.env.DB_ROUTE + '/consultar-chats-hoy', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+// consultar chats ultima semana
+app.get(process.env.DB_ROUTE + '/consultar-chats-mes', async (req, res) => {
+  try {
+    // Obtener la fecha y hora actual con zona horaria
+    const currentDateColombia = new Date();
+    currentDateColombia.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+
+    // Establecer la fecha de inicio de hoy a las 00:00:00
+    const startOfDay = new Date();
+    startOfDay.setDate(startOfDay.getDate()-7);
+
+    // Establecer la fecha de finalización de hoy a las 23:59:59
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59);
+
+    console.log(startOfDay, endOfDay);
+
+    // Realizar la consulta para obtener los chats de hoy
+    const [result] = await promisePool.execute(
+      'SELECT * FROM Chat WHERE assignedDate >= ? AND assignedDate <= ?',
+      [startOfDay, endOfDay]
+    );
+
+    res.json({ chats: result });
+  } catch (error) {
+    console.error('Error al consultar los chats de hoy:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+// consultar chats ultimo mes
+app.get(process.env.DB_ROUTE + '/consultar-chats-semana', async (req, res) => {
+  try {
+    // Obtener la fecha y hora actual con zona horaria
+    const currentDateColombia = new Date();
+    currentDateColombia.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+
+    // Establecer la fecha de inicio de hoy a las 00:00:00
+    const startOfDay = new Date();
+    startOfDay.setDate(startOfDay.getDate()-30);
+
+    // Establecer la fecha de finalización de hoy a las 23:59:59
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59);
+
+    console.log(startOfDay, endOfDay);
+
+    // Realizar la consulta para obtener los chats de hoy
+    const [result] = await promisePool.execute(
+      'SELECT * FROM Chat WHERE assignedDate >= ? AND assignedDate <= ?',
+      [startOfDay, endOfDay]
+    );
+
+    res.json({ chats: result });
+  } catch (error) {
+    console.error('Error al consultar los chats de hoy:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 
 
 //consulta por userid chats
