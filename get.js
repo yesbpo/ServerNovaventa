@@ -1052,7 +1052,7 @@ app.post('/w/createTemplates', async (req, res) => {
 });
 
 
-// Get all templates without any filtering
+// Get templates
 app.get('/w/gupshup-templates', async (req, res) => {
   try {
     const appId = process.env.APPID;
@@ -1073,7 +1073,13 @@ app.get('/w/gupshup-templates', async (req, res) => {
 
     const data = await response.json();
 
-    res.json({ status: 'success', templates: data.templates });
+    // Nombres a filtrar (puedes ajustar según tus necesidades)
+    const nombresFiltrar = process.env.TEMPLATES.split(',');
+
+    // Filtrar las plantillas por nombres
+    const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(template.elementName));
+
+    res.json({ status: 'success', templates: plantillasFiltradas });
   } catch (error) {
     console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Internal Server Error' });

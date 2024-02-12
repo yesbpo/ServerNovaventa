@@ -215,7 +215,6 @@ app.post('/sa/createTemplates', async (req, res) => {
   }
 });
 
-// Configurar la conexión a la base de datos
 
 // Ejemplo de cómo usar la función
 // Get templates
