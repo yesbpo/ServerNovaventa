@@ -484,7 +484,7 @@ app.get(process.env.DB_ROUTE + '/consultar-chats-mes', async (req, res) => {
 
     // Establecer la fecha de inicio de hoy a las 00:00:00
     const startOfDay = new Date();
-    startOfDay.setDate(startOfDay.getDate()-7);
+    startOfDay.setDate(startOfDay.getDate()-30);
 
     // Establecer la fecha de finalización de hoy a las 23:59:59
     const endOfDay = new Date();
@@ -513,7 +513,7 @@ app.get(process.env.DB_ROUTE + '/consultar-chats-semana', async (req, res) => {
 
     // Establecer la fecha de inicio de hoy a las 00:00:00
     const startOfDay = new Date();
-    startOfDay.setDate(startOfDay.getDate()-30);
+    startOfDay.setDate(startOfDay.getDate()-7);
 
     // Establecer la fecha de finalización de hoy a las 23:59:59
     const endOfDay = new Date();
