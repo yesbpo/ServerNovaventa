@@ -275,7 +275,7 @@ app.get(process.env.DB_ROUTE+'/obtener-mensajes-mes', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
-// promedio de tiempo de respuesta
+// promedio de tiempo de respuesta hoy
 app.get(process.env.DB_ROUTE + '/obtener-mensajes-tiemporespuesta-hoy', async (req, res) => 
   {
     try {
@@ -340,7 +340,136 @@ app.get(process.env.DB_ROUTE + '/obtener-mensajes-tiemporespuesta-hoy', async (r
       res.status(500).json({ error: 'Error interno del servidor' });
     }
   });
+// promedio de tiempo de respuesta semana
+app.get(process.env.DB_ROUTE + '/obtener-mensajes-tiemporespuesta-semana', async (req, res) => 
+  {
+    try {
+      const currentDateColombia = new Date();
+      currentDateColombia.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+  
+      // Establecer la fecha de inicio de hoy a las 00:00:00
+      const startOfDay = new Date();
+      startOfDay.setDate(startOfDay.getDate() - startOfDay.getDay() + (startOfDay.getDay() === 0 ? -6 : 1));
+  
+      // Establecer la fecha de finalización de hoy a las 23:59:59
+      const endOfDay = new Date();
+      endOfDay.setHours(23, 59, 59);
+  
+      // Consultar mensajes en el rango de fechas y obtener el tiempo promedio por número
+      const [result] = await promisePool.execute(`
+        SELECT
+          c.idChat2 AS number,
+          AVG(TIMESTAMPDIFF(SECOND, c.assignedDate, m.timestamp)) AS tiempo_promedio
+        FROM
+          Chat c
+        JOIN
+          Mensaje m ON c.idChat2 = m.number
+        WHERE
+          m.type_comunication IN ('message', 'message-event')
+          AND m.timestamp > c.assignedDate
+          AND m.number IN (
+            SELECT
+              c2.idChat2
+            FROM
+              Chat c2
+            JOIN (
+              SELECT
+                c3.idChat2,
+                MIN(m3.timestamp) AS first_message_timestamp
+              FROM
+                Chat c3
+              JOIN
+                Mensaje m3 ON c3.idChat2 = m3.number
+              WHERE
+                m3.type_comunication IN ('message', 'message-event')
+                AND m3.timestamp > c3.assignedDate
+              GROUP BY
+                c3.idChat2
+            ) AS subquery ON c2.idChat2 = subquery.idChat2 AND m.timestamp = subquery.first_message_timestamp
+          )
+          AND c.assignedDate >= ? AND c.assignedDate <= ? 
+        GROUP BY
+          c.idChat2
+      `, [startOfDay, endOfDay]);
+  
+      if (result.length > 0) {
+        // Calcular el promedio de los tiempos promedio
+        const tiempoPromedioTotal = result.reduce((total, item) => total + item.tiempo_promedio, 0) / result.length;
+  
+        res.json({ tiempo_promedio_total: tiempoPromedioTotal });
+      } else {
+        res.json({ tiempo_promedio_total: null, mensaje: 'No se encontraron mensajes en el rango de fechas y chats especificado.' });
+      }
+    } catch (error) {
+      console.error('Error al obtener mensajes y tiempo promedio por fecha en la base de datos:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  });
+  // promedio de tiempo de respuesta mes
+app.get(process.env.DB_ROUTE + '/obtener-mensajes-tiemporespuesta-mes', async (req, res) => 
+{
+  try {
+    const currentDateColombia = new Date();
+    currentDateColombia.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
 
+    // Establecer la fecha de inicio de hoy a las 00:00:00
+    const startOfDay = new Date();
+    startOfDay.setDate(1);
+
+    // Establecer la fecha de finalización de hoy a las 23:59:59
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59);
+
+    // Consultar mensajes en el rango de fechas y obtener el tiempo promedio por número
+    const [result] = await promisePool.execute(`
+      SELECT
+        c.idChat2 AS number,
+        AVG(TIMESTAMPDIFF(SECOND, c.assignedDate, m.timestamp)) AS tiempo_promedio
+      FROM
+        Chat c
+      JOIN
+        Mensaje m ON c.idChat2 = m.number
+      WHERE
+        m.type_comunication IN ('message', 'message-event')
+        AND m.timestamp > c.assignedDate
+        AND m.number IN (
+          SELECT
+            c2.idChat2
+          FROM
+            Chat c2
+          JOIN (
+            SELECT
+              c3.idChat2,
+              MIN(m3.timestamp) AS first_message_timestamp
+            FROM
+              Chat c3
+            JOIN
+              Mensaje m3 ON c3.idChat2 = m3.number
+            WHERE
+              m3.type_comunication IN ('message', 'message-event')
+              AND m3.timestamp > c3.assignedDate
+            GROUP BY
+              c3.idChat2
+          ) AS subquery ON c2.idChat2 = subquery.idChat2 AND m.timestamp = subquery.first_message_timestamp
+        )
+        AND c.assignedDate >= ? AND c.assignedDate <= ? 
+      GROUP BY
+        c.idChat2
+    `, [startOfDay, endOfDay]);
+
+    if (result.length > 0) {
+      // Calcular el promedio de los tiempos promedio
+      const tiempoPromedioTotal = result.reduce((total, item) => total + item.tiempo_promedio, 0) / result.length;
+
+      res.json({ tiempo_promedio_total: tiempoPromedioTotal });
+    } else {
+      res.json({ tiempo_promedio_total: null, mensaje: 'No se encontraron mensajes en el rango de fechas y chats especificado.' });
+    }
+  } catch (error) {
+    console.error('Error al obtener mensajes y tiempo promedio por fecha en la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
 //actualizar status template
 // Agrega una nueva ruta para actualizar solo el status basado en el idmessageTemplate
 app.put(process.env.DB_ROUTE + '/actualizar-status-template/:idmessageTemplate', async (req, res) => {
