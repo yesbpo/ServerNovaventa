@@ -1051,46 +1051,6 @@ app.post('/w/createTemplates', async (req, res) => {
   }
 });
 
-// Configurar la conexión a la base de datos
-const connection = mysql.createConnection({
-  host: process.env.DBHOST,
-  port: process.env.DBPORT,
-  user: process.env.DBUSER,
-  password: process.env.DBPASS,
-  database: process.env.DBNAME,
-});
-
-// Conectar a la base de datos
-connection.connect();
-
-// Realizar la consulta y pasar los datos a un array
-const obtenerDatosColumna = () => {
-  return new Promise((resolve, reject) => {
-    const query = 'SELECT elementname FROM Seetemp';
-
-    connection.query(query, (error, results) => {
-      if (error) {
-        reject(error);
-      } else {
-        const datosArray = results.map(resultado => resultado.nombre_columna);
-        resolve(datosArray);
-      }
-    });
-  });
-};
-
-// Ejemplo de cómo usar la función
-obtenerDatosColumna()
-  .then(arrayDeDatos => {
-
-  })
-  .catch(error => {
-    console.error('Error al obtener datos:', error);
-  })
-  .finally(() => {
-    // Cerrar la conexión a la base de datos después de realizar la consulta
-    connection.end();
-  });
 
 // Get templates
 app.get('/w/gupshup-templates', async (req, res) => {

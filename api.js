@@ -215,49 +215,6 @@ app.post('/sa/createTemplates', async (req, res) => {
   }
 });
 
-//Templates de Seetemp
-async function obtenerContenidoSeetemp() {
-  try {
-    // Realizar la solicitud GET a la ruta
-    const response = await fetch(`${process.env.DB_ROUTE}/obtener-contenido-seetemp`);
-
-    // Verificar si la solicitud fue exitosa y si hay datos
-    if (response.ok) {
-      const data = await response.json();
-
-      // Verificar si hay datos en la respuesta
-      if (data && data.datos) {
-        // Guardar los datos en un array
-        const datosArray = data.datos;
-
-        // Extraer los elementName y guardarlos en un array
-        const elementNames = datosArray.map(item => item.elementName);
-
-        // Retornar los datos por si quieres hacer algo más con ellos fuera de esta función
-        return elementNames;
-      } else {
-        console.log('No se encontraron datos en la tabla Seetemp');
-        return [];
-      }
-    } else {
-      // Si la respuesta no fue exitosa, lanzar un error
-      throw new Error('Error al obtener contenido en Seetemp');
-    }
-  } catch (error) {
-    console.error('Error al obtener contenido en Seetemp:', error);
-    return [];
-  }
-}
-
-// Ejemplo de cómo usar la función
-obtenerContenidoSeetemp()
-  .then(elementNames => {
-    // Hacer algo con los nombres de elementos obtenidos, si es necesario
-  })
-  .catch(error => {
-    console.error('Error al obtener contenido en Seetemp:', error);
-  });
-
 
 // Ejemplo de cómo usar la función
 // Get templates
@@ -281,13 +238,13 @@ app.get('/sa/gupshup-templates', async (req, res) => {
 
     const data = await response.json();
 
-    // Obtener los nombres de los elementos de Seetemp
-    const elementNames = await obtenerContenidoSeetemp();
+    // Nombres a filtrar (puedes ajustar según tus necesidades)
+    const nombresFiltrar = process.env.TEMPLATES.split(',');
 
-    // Filtrar las plantillas por los nombres de elementos de Seetemp
-    const filteredTemplates = data.templates.filter(template => elementNames.includes(template.elementName));
+    // Filtrar las plantillas por nombres
+    const plantillasFiltradas = data.templates.filter(template => nombresFiltrar.includes(template.elementName));
 
-    res.json({ status: 'success', templates: filteredTemplates });
+    res.json({ status: 'success', templates: plantillasFiltradas });
   } catch (error) {
     console.error('Error:', error.message || error);
     res.status(500).json({ error: 'Internal Server Error' });
