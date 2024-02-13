@@ -292,9 +292,11 @@ app.get(process.env.DB_ROUTE + '/obtener-mensajes-tiemporespuesta-hoy', async (r
   
       // Consultar mensajes en el rango de fechas y obtener el tiempo promedio por número
       const [result] = await promisePool.execute(`
+      SELECT AVG(tiempo_promedio) AS promedio_total_hoy
+      FROM (
         SELECT
           c.idChat2 AS number,
-          AVG(TIMESTAMPDIFF(SECOND, c.assignedDate, m.timestamp)) AS tiempo_promedio
+          AVG(TIMESTAMPDIFF(MINUTE, c.assignedDate, m.timestamp)) AS tiempo_promedio
         FROM
           Chat c
         JOIN
@@ -302,6 +304,8 @@ app.get(process.env.DB_ROUTE + '/obtener-mensajes-tiemporespuesta-hoy', async (r
         WHERE
           m.type_comunication IN ('message', 'message-event')
           AND m.timestamp > c.assignedDate
+          AND c.assignedDate >= CURDATE()
+          AND c.assignedDate < CURDATE() + INTERVAL 1 DAY
           AND m.number IN (
             SELECT
               c2.idChat2
@@ -318,23 +322,23 @@ app.get(process.env.DB_ROUTE + '/obtener-mensajes-tiemporespuesta-hoy', async (r
               WHERE
                 m3.type_comunication IN ('message', 'message-event')
                 AND m3.timestamp > c3.assignedDate
+                AND c3.assignedDate >= CURDATE()
+                AND c3.assignedDate < CURDATE() + INTERVAL 1 DAY
               GROUP BY
                 c3.idChat2
             ) AS subquery ON c2.idChat2 = subquery.idChat2 AND m.timestamp = subquery.first_message_timestamp
           )
-          AND c.assignedDate >= ? AND c.assignedDate <= ? 
         GROUP BY
           c.idChat2
+      ) AS tiempo_promedio_hoy
+      
       `, [startOfDay, endOfDay]);
   
       if (result.length > 0) {
-        // Calcular el promedio de los tiempos promedio
-        const tiempoPromedioTotal = result.reduce((total, item) => total + item.tiempo_promedio, 0) / result.length;
-  
-        res.json({ tiempo_promedio_total: tiempoPromedioTotal });
+        res.json({ mensajes: result });
       } else {
-        res.json({ tiempo_promedio_total: null, mensaje: 'No se encontraron mensajes en el rango de fechas y chats especificado.' });
-      }
+        res.json({ mensajes: [], mensaje: 'No se encontraron mensajes en el rango de fechas y chats especificado.' });
+      } 
     } catch (error) {
       console.error('Error al obtener mensajes y tiempo promedio por fecha en la base de datos:', error);
       res.status(500).json({ error: 'Error interno del servidor' });
@@ -357,9 +361,11 @@ app.get(process.env.DB_ROUTE + '/obtener-mensajes-tiemporespuesta-semana', async
   
       // Consultar mensajes en el rango de fechas y obtener el tiempo promedio por número
       const [result] = await promisePool.execute(`
+      SELECT AVG(tiempo_promedio) AS promedio_total_semana
+      FROM (
         SELECT
           c.idChat2 AS number,
-          AVG(TIMESTAMPDIFF(SECOND, c.assignedDate, m.timestamp)) AS tiempo_promedio
+          AVG(TIMESTAMPDIFF(MINUTE, c.assignedDate, m.timestamp)) AS tiempo_promedio
         FROM
           Chat c
         JOIN
@@ -367,6 +373,8 @@ app.get(process.env.DB_ROUTE + '/obtener-mensajes-tiemporespuesta-semana', async
         WHERE
           m.type_comunication IN ('message', 'message-event')
           AND m.timestamp > c.assignedDate
+          AND c.assignedDate >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY
+          AND c.assignedDate < CURDATE() + INTERVAL 1 DAY
           AND m.number IN (
             SELECT
               c2.idChat2
@@ -383,22 +391,22 @@ app.get(process.env.DB_ROUTE + '/obtener-mensajes-tiemporespuesta-semana', async
               WHERE
                 m3.type_comunication IN ('message', 'message-event')
                 AND m3.timestamp > c3.assignedDate
+                AND c3.assignedDate >= CURDATE() - INTERVAL WEEKDAY(CURDATE()) DAY
+                AND c3.assignedDate < CURDATE() + INTERVAL 1 DAY
               GROUP BY
                 c3.idChat2
             ) AS subquery ON c2.idChat2 = subquery.idChat2 AND m.timestamp = subquery.first_message_timestamp
           )
-          AND c.assignedDate >= ? AND c.assignedDate <= ? 
         GROUP BY
           c.idChat2
+      ) AS tiempo_promedio_semana
+      
       `, [startOfDay, endOfDay]);
   
       if (result.length > 0) {
-        // Calcular el promedio de los tiempos promedio
-        const tiempoPromedioTotal = result.reduce((total, item) => total + item.tiempo_promedio, 0) / result.length;
-  
-        res.json({ tiempo_promedio_total: tiempoPromedioTotal });
+        res.json({ mensajes: result });
       } else {
-        res.json({ tiempo_promedio_total: null, mensaje: 'No se encontraron mensajes en el rango de fechas y chats especificado.' });
+        res.json({ mensajes: [], mensaje: 'No se encontraron mensajes en el rango de fechas y chats especificado.' });
       }
     } catch (error) {
       console.error('Error al obtener mensajes y tiempo promedio por fecha en la base de datos:', error);
@@ -422,9 +430,11 @@ app.get(process.env.DB_ROUTE + '/obtener-mensajes-tiemporespuesta-mes', async (r
 
     // Consultar mensajes en el rango de fechas y obtener el tiempo promedio por número
     const [result] = await promisePool.execute(`
+    SELECT AVG(tiempo_promedio) AS promedio_total
+    FROM (
       SELECT
         c.idChat2 AS number,
-        AVG(TIMESTAMPDIFF(SECOND, c.assignedDate, m.timestamp)) AS tiempo_promedio
+        AVG(TIMESTAMPDIFF(MINUTE, c.assignedDate, m.timestamp)) AS tiempo_promedio
       FROM
         Chat c
       JOIN
@@ -432,6 +442,8 @@ app.get(process.env.DB_ROUTE + '/obtener-mensajes-tiemporespuesta-mes', async (r
       WHERE
         m.type_comunication IN ('message', 'message-event')
         AND m.timestamp > c.assignedDate
+        AND c.assignedDate >= CURDATE() - INTERVAL DAYOFMONTH(CURDATE())-1 DAY
+        AND c.assignedDate < CURDATE() + INTERVAL 1 DAY
         AND m.number IN (
           SELECT
             c2.idChat2
@@ -448,22 +460,22 @@ app.get(process.env.DB_ROUTE + '/obtener-mensajes-tiemporespuesta-mes', async (r
             WHERE
               m3.type_comunication IN ('message', 'message-event')
               AND m3.timestamp > c3.assignedDate
+              AND c3.assignedDate >= CURDATE() - INTERVAL DAYOFMONTH(CURDATE())-1 DAY
+              AND c3.assignedDate < CURDATE() + INTERVAL 1 DAY
             GROUP BY
               c3.idChat2
           ) AS subquery ON c2.idChat2 = subquery.idChat2 AND m.timestamp = subquery.first_message_timestamp
         )
-        AND c.assignedDate >= ? AND c.assignedDate <= ? 
       GROUP BY
         c.idChat2
+    ) AS tiempo_promedio_subquery;
+    
     `, [startOfDay, endOfDay]);
 
     if (result.length > 0) {
-      // Calcular el promedio de los tiempos promedio
-      const tiempoPromedioTotal = result.reduce((total, item) => total + item.tiempo_promedio, 0) / result.length;
-
-      res.json({ tiempo_promedio_total: tiempoPromedioTotal });
+      res.json({ mensajes: result });
     } else {
-      res.json({ tiempo_promedio_total: null, mensaje: 'No se encontraron mensajes en el rango de fechas y chats especificado.' });
+      res.json({ mensajes: [], mensaje: 'No se encontraron mensajes en el rango de fechas y chats especificado.' });
     }
   } catch (error) {
     console.error('Error al obtener mensajes y tiempo promedio por fecha en la base de datos:', error);
