@@ -76,7 +76,16 @@ app.all('/w/api/index', async (req, res) => {
     try {
       var data = req.body;
       await processAsync(data);
-         
+      const fechaHoraActualColombia = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+
+// Parsea la fecha y hora actual de Colombia
+const fechaHoraActualColombiaObj = new Date(fechaHoraActualColombia);
+
+// Ajusta la hora a las 18:00:00 (6 PM) en la zona horaria de Colombia
+fechaHoraActualColombiaObj.setHours(18, 0, 0, 0);
+        if(new Date(timestamp) >= fechaHoraActualColombiaObj){
+          res.send('Nuestos horarios de atención son de 8am a 6pm')
+        } 
       
 
 
