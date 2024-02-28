@@ -749,34 +749,32 @@ app.post(process.env.DB_ROUTE+'/crear-chat', async (req, res) => {
   }
 });
 // consulta de chats del dia actual 
-app.get(process.env.DB_ROUTE + '/consultar-chats-hoy', async (req, res) => {
+app.get(process.env.DB_ROUTE + '/consultar-chats', async (req, res) => {
   try {
-    // Obtener la fecha y hora actual con zona horaria
-    const currentDateColombia = new Date();
-    currentDateColombia.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+    // Obtener los parámetros de la URL
+    const { startDate, endDate } = req.query;
 
-    // Establecer la fecha de inicio de hoy a las 00:00:00
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0);
+    console.log(startDate, endDate);
 
-    // Establecer la fecha de finalización de hoy a las 23:59:59
-    const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59);
+    // Construir la consulta SQL dependiendo de si se proporcionan parámetros
+    let sql = 'SELECT * FROM Chat';
+    const params = [];
 
-    console.log(startOfDay, endOfDay);
+    if (startDate && endDate) {
+      sql += ' WHERE assignedDate >= ? AND assignedDate <= ?';
+      params.push(startDate, endDate);
+    }
 
-    // Realizar la consulta para obtener los chats de hoy
-    const [result] = await promisePool.execute(
-      'SELECT * FROM Chat WHERE assignedDate >= ? AND assignedDate <= ?',
-      [startOfDay, endOfDay]
-    );
+    // Realizar la consulta para obtener los chats según el rango de fechas (o sin parámetros)
+    const [result] = await promisePool.execute(sql, params);
 
     res.json({ chats: result });
   } catch (error) {
-    console.error('Error al consultar los chats de hoy:', error);
+    console.error('Error al consultar los chats:', error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+
 // consultar chats ultima semana
 app.get(process.env.DB_ROUTE + '/consultar-chats-mes', async (req, res) => {
   try {
