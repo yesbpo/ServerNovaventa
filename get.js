@@ -102,8 +102,9 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
       };
       try {
         
-        const timetime = new Date(mensaje.timestamp);
-timetime.setHours(9, 0, 0);
+const timetime = new Date(mensaje.timestamp);
+const HORARIODESALIDA = 6;
+timetime.setHours(HORARIODESALIDA, 0, 0);
 const year = timetime.getFullYear();
 const month = (timetime.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-based
 const day = timetime.getDate().toString().padStart(2, '0');
