@@ -163,7 +163,7 @@ app.get(process.env.DB_ROUTE+'/obtener-mensajes-por-fecha', async (req, res) => 
     if (!fechaInicio || !fechaFin) {
       return res.status(400).json({ error: 'Se requieren fechas de inicio y fin para obtener mensajes en un rango de fechas.' });
     }
-
+      
     // Consultar mensajes en el rango de fechas
     const [result] = await promisePool.execute(
       'SELECT * FROM Mensaje WHERE timestamp >= ? AND timestamp <= ?',

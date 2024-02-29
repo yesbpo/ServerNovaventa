@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 const socketIo = require('socket.io');
 const socket = require('socket.io-client');
-
+const numeros = [];
 const app = express();
 const port = 8080;
 const multer = require('multer');
@@ -68,28 +68,19 @@ app.use('/w/uploads', express.static(directorioCargas));
 
 
 // Ruta para recibir eventos del webhook
-app.all('/w/api/index', async (req, res) => {
- 
+app.all('/w/api/index', async (req, res) => 
+{
+  
   const userAgent = req.get('User-Agent');
   // Verifica si la solicitud es del User-Agent específico
-  if (userAgent) {
+  if(userAgent){
     try {
       var data = req.body;
-      await processAsync(data);
-      const fechaHoraActualColombia = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
-
-// Parsea la fecha y hora actual de Colombia
-const fechaHoraActualColombiaObj = new Date(fechaHoraActualColombia);
-
-// Ajusta la hora a las 18:00:00 (6 PM) en la zona horaria de Colombia
-fechaHoraActualColombiaObj.setHours(13, 0, 0);
-        if(new Date(timestamp) >= new Date(fechaHoraActualColombiaObj)){
-          res.send('Nuestos horarios de atención son de 8am a 6pm')
-        } 
       
-
-
-      const fechaActual = new Date();
+      await processAsync(data);
+      console.log('mensaje',data)
+      
+const fechaActual = new Date();
 const options = { timeZone: 'America/Bogota', hour12: false };
 const anio = fechaActual.toLocaleString('en-US', { year: 'numeric', timeZone: options.timeZone });
 const mes = fechaActual.toLocaleString('en-US', { month: '2-digit', timeZone: options.timeZone });
@@ -105,18 +96,70 @@ const segundos = fechaActual.toLocaleString('en-US', { second: '2-digit', timeZo
       const type_message = data.payload.type;
       const idMessage = data.payload.gsId || data.payload.id ;
        //condicional para determinar si el idMessage ya existe
+       
        const mensaje = {
         content, type_comunication, status, number, timestamp, type_message, idMessage
       };
-      
+      try {
+        
+        const timetime = new Date(mensaje.timestamp);
+timetime.setHours(9, 0, 0);
+const year = timetime.getFullYear();
+const month = (timetime.getMonth() + 1).toString().padStart(2, '0'); // Month is zero-based
+const day = timetime.getDate().toString().padStart(2, '0');
+const hours = timetime.getHours().toString().padStart(2, '0');
+const minutes = timetime.getMinutes().toString().padStart(2, '0');
+const seconds = timetime.getSeconds().toString().padStart(2, '0');
+
+// Create the formatted string
+const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+console.log('mensaje',numeros.includes(mensaje.number))
+        
+if(mensaje.timestamp > formattedDate && mensaje.type_comunication == 'message'){
+   console.log(numeros)
+  
+  if(numeros.includes(mensaje.number) == false){
+  const clientData = {
+      channel: 'whatsapp',
+      source: process.env.CELLPHONE,
+      'src.name': process.env.APPNAME,
+      destination: data.payload.source,
+      message: 'nuestros horarios de atención son de 9:00 am a 6:00 pm, por favor comunícate en nuestro horario de atención',
+      disablePreview: true,
+  
+  };
+  try {
+    const response = await fetch('http://localhost:3040/sa/api/envios', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams(clientData),
+    });
+  
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log(responseData); // Maneja la respuesta según tus necesidades
+      numeros.push(mensaje.number);
+    } else {
+      throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error('Error en la solicitud:', error);
+  }  }
+        }
+      }catch{}
       const enviarmensaje = (mensaje) => {
         console.log('entrando a enviar el mensaje', mensaje)
         socketclient.emit('message' , mensaje ,(respuesta) => {
-        console.log(respuesta)})}
-        if(mensaje.type_comunication == 'message'){
-        enviarmensaje(mensaje)}
-      try {
+        console.log(respuesta)})} 
         
+        try{if(mensaje.type_comunication == 'message'){ 
+        enviarmensaje(mensaje)}
+        }catch{}
+          
+      try {
+         
         
       
         const response = await fetch(process.env.BASE_DB+'/guardar-mensajes', {
@@ -175,6 +218,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
        if (!response.ok) {
          throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
        }
+       
        let constidmsj=[] ;
        const mensajes = await response.json();
        Object.values(mensajes)[0].forEach( async element => {
@@ -360,7 +404,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
     } catch (error) {
       console.error('Error en la solicitud:', error);
     }
-      // Manejar el error según tus necesidades
+    // Manejar el error según tus necesidades
       const idmessageTemplate = data.payload.gsId || data.payload.id ;; // Reemplaza con el valor correcto
       const nuevoStatus = data.payload.type;
 
@@ -384,12 +428,7 @@ const options = { timeZone: 'America/Bogota', hour12: false };
   
       res.status(500).send('Error interno del servidor.');
     }
-    } else {
-     //La solicitud no proviene de Gupshup, responde con un error
-    res.status(403).send('Acceso no autorizado.');
-    }
-  
-     //obtener mensajes
+    //obtener mensajes
      const fechaActual = new Date();
 const options = { timeZone: 'America/Bogota', hour12: false };
      const fechaInicio = new Date(fechaActual);
@@ -427,15 +466,16 @@ const options = { timeZone: 'America/Bogota', hour12: false };
            }
        
            const mensajes = await response.json();
-           console.log(Object.values(mensajes))
+           console.log(Object.values(mensajes), "sfdsdg")
+           
            // Filtra solo los usuarios activos
            const mensajesEntrantes = Object.values(mensajes)[0].filter(mensaje=> mensaje.type_comunication=='message')
            const numerosUnicos = [...new Set(mensajesEntrantes.map((mensaje) => mensaje.number))];
            
       async function normalizarNumero(numero) {
      
-       
-        const numeroLimpio = numero.replace(/\D/g, '');
+        const numeroComoCadena = numero.toString();
+        const numeroLimpio = numeroComoCadena.replace(/\D/g, '');
         // Si el número tiene 10 dígitos, agregar el prefijo '57'
         const numeroNormalizado = numeroLimpio.length === 10 ? '57' + numero : numero;
        
@@ -474,68 +514,12 @@ const options = { timeZone: 'America/Bogota', hour12: false };
         
         const fechaFinString = `${anioFin}-${mesFin}-${diaFin} ${horaFin}:${minutosFin}:${segundosFin}`;
         
-     //         const responsemensajes = await fetch(process.env.NEXT_PUBLIC_BASE_DB+`/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`);
-
+     
               const response = await fetch(process.env.BASE_DB+`/obtener-mensajes-por-fecha?fechaInicio=${fechaInicioString}&fechaFin=${fechaFinString}`);
         if (!response.ok) { 
         }
-     //   const mensajesultimodia = await responsemensajes.json();
+     
         const chatsExistentes = await response.json();
-       // console.log(mensajesultdia)
-       // const mensajesultdia = mensajesultimodia.map(m => {
-       //   if (m.number && m.type_comunication == 'message') {
-       //     console.log('ingresa')
-       //     return {
-       //       number: m.number,
-       //       type_comunication: m.type_comunication
-       //     };
-       //     
-       //   }
-       //   return null; // O cualquier valor que prefieras para los objetos que no cumplen la condición
-       // }).filter(Boolean)
-       // const numchatclient = chatsExistentes.map(c => c.idChat2)
-       // const maxLength = Math.max(mensajesultdia.length, numchatclient.length);
-
-        // Realizar la resta elemento por elemento
-       // const rexpclient = [];
-        //for (let i = 0; i < maxLength; i++) {
-          //console.log('ingresa')
-          //const mensaje = mensajesultdia[i] ? mensajesultdia[i].number : 0;
-          //const numchat = numchatclient[i] ? numchatclient[i] : 0;
-          //rexpclient.push({
-           // idChat2: numchat,
-          //  resultado: numchat - mensaje
-         // });
-        //} 
-        //console.log('sddsgs',rexpclient)
-        //rexpclient.forEach( async(chat)=>{
-         // const requestBody = {
-          //  idChat2: idChat2,
-          //  nuevoEstado: nuevoEstado,
-          //  nuevoUserId: nuevoUserId,
-          //};
-          
-          // Realiza la solicitud PUT a la ruta
-          //try {
-          //  const response = await fetch(url, {
-           //   method: 'PUT',
-            //  headers: {
-             //   'Content-Type': 'application/json',
-             // },
-             // body: JSON.stringify(requestBody),
-            //});
-          
-         //   if (response.ok) {
-          //    const data = await response.json();
-           //   console.log(data);  // Maneja la respuesta según tus necesidades
-           // } else {
-            //  console.error('Error al realizar la solicitud:', response.status, response.statusText);
-            //}
-          //} catch (error) {
-           // console.error('Error al realizar la solicitud:', error.message);
-         // }
-       // }
-        //  )
         const chatsConUserId = chatsExistentes.filter(chat => chat.userId!== 0);
         const idsChatasignados = chatsConUserId.map(objeto => objeto.userId);
         const chatsSinUserId = chatsExistentes.filter(chat => chat.userId == 0 && chat.status == 'pending');
@@ -903,7 +887,7 @@ if (chatsSinUserId.length>1) {
   }
   
 
-);
+});
 // Función asíncrona para procesar la solicitud
 async function processAsync(datas) {
   // Implementa lógica de procesamiento asíncrono aquí

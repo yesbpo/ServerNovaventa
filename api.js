@@ -102,6 +102,43 @@ app.post('/sa/api/envios', bodyParser.urlencoded({ extended: true }), async (req
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+//api envios template
+app.post('/sa/api/enviostemplate', bodyParser.urlencoded({ extended: true }), async (req, res) => {
+  try {
+    const url = apiEnvioTemplates;
+    // Obtenemos la data proporcionada por el cliente
+    const clientData = req.body;
+    // Construimos la solicitud a la API de Gupshup
+    const formData = new URLSearchParams();
+    Object.entries(clientData).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+    const headers = {
+      'Cache-Control': 'no-cache',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'apikey': apiKey,
+    };
+    // Hacemos la solicitud a la API de Gupshup
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: headers,
+      body: formData,
+    });
+    // Manejamos la respuesta del servidor Gupshup
+    if (response.ok) {
+      const responseData = await response.json();
+    
+      // Enviamos la respuesta al cliente
+      res.json(responseData);
+    } else {
+      throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
+    }
+  } catch (error) {
+    
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // Ruta para realizar la solicitud y devolver la respuesta al cliente de los templates
 app.get('/sa/api/templates', async (req, res) => {
   try {
