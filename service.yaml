@@ -16,14 +16,18 @@ spec:
       targetPort: 8080
     - name: server-port
       protocol: TCP
-      port: 3013
-      targetPort: 3013
+      port: 3001
+      targetPort: 3001
     - name: serverdos-port
       protocol: TCP
-      port: 8013
-      targetPort: 8013
+      port: 8001
+      targetPort: 8001
     - name: socket-port
       protocol: TCP
       port: 3050
       targetPort: 3050
+      name: authentication-port
+      protocol: TCP
+      port: 3003
+      targetPort: 3003
   type: LoadBalancer

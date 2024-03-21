@@ -19,7 +19,7 @@ app.post('/login', async (req, res) => {
     const password = req.body.password;
     const type_user = req.body.type_user;
     try {
-        const usuarios = await fetch('http://20.94.145.220:3013/dbn/obtener-usuarios');
+        const usuarios = await fetch('http://localhost:3001/dbn/obtener-usuarios');
         const usuariosJson = await usuarios.json();
         console.log(usuariosJson);
         console.log(username);

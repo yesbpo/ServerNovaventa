@@ -8,11 +8,11 @@ module.exports = {
       watch: false,
       max_memory_restart: '1G',
       env: {
-        DBHOST: 'yesappcenterdb.mysql.database.azure.com',
+        DBHOST: '172.19.176.1',
         DBPORT: 3306,
-        DBUSER: 'yesdbadmin',
-        DBPASS: 'qBABt797iNHu9Zx',
-        DBNAME: 'dbappnovaventa',
+        DBUSER: 'root',
+        DBPASS: 'contraseña123',
+        DBNAME: 'baseprueba1',
         PORTSERVER: 3040,
         DB_ROUTE: '/sa'
       }
@@ -25,11 +25,11 @@ module.exports = {
       watch: false,
       max_memory_restart: '1G',
       env: {
-        DBHOST: 'yesappcenterdb.mysql.database.azure.com',
+        DBHOST: '172.19.176.1',
         DBPORT: 3306,
-        DBUSER: 'yesdbadmin',
-        DBPASS: 'qBABt797iNHu9Zx',
-        DBNAME: 'dbappnovaventa',
+        DBUSER: 'root',
+        DBPASS: 'contraseña123',
+        DBNAME: 'baseprueba1',
         PORTSERVER: 8080,
         DB_ROUTE: '/w'
       }
@@ -42,12 +42,12 @@ module.exports = {
       watch: false,
       max_memory_restart: '1G',
       env: {
-        DBHOST: 'yesappcenterdb.mysql.database.azure.com',
+        DBHOST: '172.19.176.1',
         DBPORT: 3306,
-        DBUSER: 'yesdbadmin',
-        DBPASS: 'qBABt797iNHu9Zx',
-        DBNAME: 'dbappnovaventa',
-        PORTSERVER: 3013,
+        DBUSER: 'root',
+        DBPASS: 'contraseña123',
+        DBNAME: 'baseprueba1',
+        PORTSERVER: 3001,
         DB_ROUTE: '/dbn'
 
       }
@@ -60,12 +60,12 @@ module.exports = {
       watch: false,
       max_memory_restart: '1G',
       env: {
-        DBHOST: 'yesappcenterdb.mysql.database.azure.com',
+        DBHOST: '172.19.176.1',
         DBPORT: 3306,
-        DBUSER: 'yesdbadmin',
-        DBPASS: 'qBABt797iNHu9Zx',
-        DBNAME: 'dbappnovaventa',
-        PORTSERVER: 8013,
+        DBUSER: 'root',
+        DBPASS: 'contraseña123',
+        DBNAME: 'baseprueba1',
+        PORTSERVER: 8001,
         DB_ROUTE: '/dbn2'
       }
     },
@@ -77,11 +77,11 @@ module.exports = {
       watch: false,
       max_memory_restart: '1G',
       env: {
-        DBHOST: 'yesappcenterdb.mysql.database.azure.com',
+        DBHOST: 'localhost',
         DBPORT: 3306,
-        DBUSER: 'yesdbadmin',
-        DBPASS: 'qBABt797iNHu9Zx',
-        DBNAME: 'dbappnovaventa',
+        DBUSER: 'root',
+        DBPASS: 'contraseña123',
+        DBNAME: 'baseprueba1',
         PORTSERVER: 3050,
         DB_ROUTE: '/socket.io'
       }
