@@ -14,10 +14,11 @@ spec:
     spec:
       containers:
       - name: backend
-        image: yesbpoconreg.azurecr.io/backend:latest
+        image: /backend:latest
         ports:
         - containerPort: 3040
         - containerPort: 8080
-        - containerPort: 3013
-        - containerPort: 8013
+        - containerPort: 3001
+        - containerPort: 8001
         - containerPort: 3050
+        - containerPort: 3003

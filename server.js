@@ -180,6 +180,341 @@ app.get(process.env.DB_ROUTE+'/obtener-mensajes-por-fecha', async (req, res) => 
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 });
+// ruta para crear respuesta de tabla llamada AfterHours con los campor respuesta y estado, el id es autoincremental, y que cada vez que se crea un elemento elimine los anteriores elementos
+
+app.post(process.env.DB_ROUTE+'/crear-respuestafueradehorario', async (req, res) => {
+
+  try {
+    const { respuesta, estado } = req.body;
+
+    // Validar que todos los campos requeridos estén presentes
+
+    if (!respuesta || !estado) {
+      return res.status(400).json({ error: 'Faltan datos requeridos para insertar en la tabla.' });
+    }
+
+    // Eliminar todos los registros existentes en la tabla AfterHours
+    await promisePool.execute('DELETE FROM AfterHours');
+
+    // Insertar un nuevo registro en la tabla AfterHours
+    const [insertResult] = await promisePool.execute(
+      'INSERT INTO AfterHours (respuesta, estado) VALUES (?, ?)',
+      [respuesta, estado]
+    );
+      
+    const nuevoRegistro = {
+      id: insertResult.insertId,
+      respuesta,
+      estado
+    };
+
+    res.json({ mensaje: 'Registro insertado con éxito', datos: nuevoRegistro });
+  } catch (error) {
+    console.error('Error al insertar en la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+
+
+// ruta para eliminar datos de la tabla AfterHours
+app.delete(process.env.DB_ROUTE+'/eliminar-respuestafueradehorario/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    // Verificar si existe un registro con el mismo id
+    const [existingResult] = await promisePool.execute(
+      'SELECT * FROM AfterHours WHERE id = ?',
+      [id]
+    );
+
+    if (existingResult.length > 0) {
+      // Eliminar el registro de la tabla AfterHours
+      const [deleteResult] = await promisePool.execute(
+        'DELETE FROM AfterHours WHERE id = ?',
+        [id]
+      );
+
+      if (deleteResult.affectedRows > 0) {
+        res.json({ mensaje: 'Registro eliminado con éxito', id });
+      }
+    } else {
+      res.status(404).json({ error: 'No se encontró el registro para eliminar.' });
+    }
+  } catch (error) {
+
+    console.error('Error al eliminar en la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+// ruta para actualizar datos de la tabla AfterHours
+app.put(process.env.DB_ROUTE+'/actualizar-respuestafueradehorario', async (req, res) => {
+  try {
+    
+    const { id, estado } = req.body;
+
+    // Validar que el campo 'estado' esté presente
+    if (!estado) {
+      return res.status(400).json({ error: 'Falta el campo "estado" para la actualización.' });
+    }
+
+    // Verificar si existe un registro con el mismo id
+    const [existingResult] = await promisePool.execute(
+      'SELECT * FROM AfterHours WHERE id = ?',
+      [id]
+    );
+
+    if (existingResult.length > 0) {
+      // Actualizar solo el campo 'estado'
+      const [updateResult] = await promisePool.execute(
+        'UPDATE AfterHours SET estado = ? WHERE id = ?',
+        [estado, id]
+      );
+
+      if (updateResult.affectedRows > 0) {
+        res.json({ mensaje: 'Estado actualizado con éxito', id, estado });
+      } else {
+        res.status(404).json({ error: 'No se encontró el registro para actualizar.' });
+      }
+    } else {
+      res.status(404).json({ error: 'No se encontró el registro para actualizar.' });
+    }
+  } catch (error) {
+    console.error('Error al actualizar en la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+// ruta para obtener datos de la tabla AfterHours
+app.get(process.env.DB_ROUTE+'/obtener-respuestafueradehorario', async (req, res) => {
+  try {
+    // Ejecutar la consulta SQL para obtener todos los registros
+    const [rows] = await promisePool.query('SELECT * FROM AfterHours');
+
+    // Enviar los registros obtenidos como respuesta
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener los datos de la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+}); 
+// ruta para crear datos del siguiene endpoint /crear-horario
+app.post(process.env.DB_ROUTE+'/crear-horario', async (req, res) => {
+    // ejecutar consulta para eliminar todos los registros de la tabla AtentionHours
+    await promisePool.execute('DELETE FROM AtentionHours');
+  try {
+    const { horainicio, horafinal } = req.body;
+
+    // Validar que todos los campos requeridos estén presentes
+    if (!horainicio || !horafinal) {
+      return res.status(400).json({ error: 'Faltan datos requeridos para insertar en la tabla.' });
+    }
+
+    // Insertar un nuevo registro en la tabla Horario
+    const [insertResult] = await promisePool.execute(
+      'INSERT INTO AtentionHours (HoraInicio, HoraFinal) VALUES (?, ?)',
+      [horainicio, horafinal]
+    );
+
+    const nuevoRegistro = {
+      id: insertResult.insertId,
+      horainicio,
+      horafinal
+    };
+
+    res.json({ mensaje: 'Registro insertado con éxito', datos: nuevoRegistro });
+  } catch (error) {
+    console.error('Error al insertar en la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+}
+);
+// ruta para obtener datos de la tabla AtenctionHours
+app.get(process.env.DB_ROUTE+'/obtener-horario', async (req, res) => {
+
+
+  try {
+    // Ejecutar la consulta SQL para obtener todos los registros
+    const [rows] = await promisePool.query('SELECT * FROM AtentionHours');
+
+    // Enviar los registros obtenidos como respuesta
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener los datos de la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+// crear ruta para actualizar el estado de los chats que despues de 24 horas no han sido atendidos o el ultimo mensaje despues de 24 horas tuviera el el ultimo mensaje y un type_comunication igual a message type y su estado es diferente a closed y expiredbyclient quiero que se actualicen masivamente todos los chats que cumplan con estas condiciones
+app.put(process.env.DB_ROUTE+'/actualizar-estado-chatsexpiradosasesor', async (req, res) => {
+  try {
+    // Obtener la fecha y hora actual
+    const currentDateColombia = new Date();
+    currentDateColombia.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+
+    // Establecer la fecha de inicio de hoy a las 00:00:00
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0);
+
+    // Establecer la fecha de finalización de hoy a las 23:59:59
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59);
+
+    // Actualizar el estado de los chats que cumplan con las condiciones
+    const [updateResult] = await promisePool.execute(
+      `UPDATE Chat AS main
+      JOIN (
+          SELECT subquery.idChat2
+          FROM (
+              SELECT c2.idChat2
+              FROM Chat c2
+              JOIN (
+                  SELECT c3.idChat2, MAX(m3.timestamp) AS last_message_timestamp
+                  FROM Chat c3
+                  JOIN Mensaje m3 ON c3.idChat2 = m3.number
+                  WHERE m3.type_comunication = 'message'
+                  GROUP BY c3.idChat2
+              ) AS subquery ON c2.idChat2 = subquery.idChat2 
+              WHERE c2.assignedDate < ? 
+              AND subquery.last_message_timestamp < ?
+          ) AS subquery
+      ) AS sub
+      ON main.idChat2 = sub.idChat2
+      SET main.status = 'expiredbyagent'
+      WHERE main.status != 'closed' 
+      AND main.status != 'expiredbyclient' 
+      AND main.assignedDate < ?;
+      `,
+      [startOfDay, startOfDay, startOfDay]
+    );
+
+    res.json({ mensaje: 'Chats actualizados con éxito', cantidad: updateResult.affectedRows });
+  } catch (error) {
+    console.error('Error al actualizar los chats en la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+// crear ruta para actualizar el estado de los chats que despues de 24 horas no han sido atendidos o el ultimo mensaje despues de 24 horas tuviera el el ultimo mensaje y un type_comunication igual a message-event y su estado es diferente a closed y expiredbyagent quiero que se actualicen masivamente todos los chats que cumplan con estas condiciones
+app.put(process.env.DB_ROUTE+'/actualizar-estado-chatsexpiradoscliente', async (req, res) => {
+  try {
+    // Obtener la fecha y hora actual
+    const currentDateColombia = new Date();
+    currentDateColombia.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+
+    // Establecer la fecha de inicio de hoy a las 00:00:00
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0);
+
+    // Establecer la fecha de finalización de hoy a las 23:59:59
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59);
+
+    // Actualizar el estado de los chats que cumplan con las condiciones
+    const [updateResult] = await promisePool.execute(
+      `UPDATE Chat AS main
+      JOIN (
+          SELECT subquery.idChat2
+          FROM (
+              SELECT c2.idChat2
+              FROM Chat c2
+              JOIN (
+                  SELECT c3.idChat2, MAX(m3.timestamp) AS last_message_timestamp
+                  FROM Chat c3
+                  JOIN Mensaje m3 ON c3.idChat2 = m3.number
+                  WHERE m3.type_comunication = 'message-event'
+                  GROUP BY c3.idChat2
+              ) AS subquery ON c2.idChat2 = subquery.idChat2 
+              WHERE c2.assignedDate < ? 
+              AND subquery.last_message_timestamp < ?
+          ) AS subquery
+      ) AS sub
+      ON main.idChat2 = sub.idChat2
+      SET main.status = 'expiredbyclient'
+      WHERE main.status != 'closed' 
+      AND main.status != 'expiredbyagent' 
+      AND main.assignedDate < ?;
+      `,
+      [startOfDay, startOfDay, startOfDay]
+    );
+
+    res.json({ mensaje: 'Chats actualizados con éxito', cantidad: updateResult.affectedRows });
+  } catch (error) {
+    console.error('Error al actualizar los chats en la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+// ruta para crear respuesta de finalizacion de conversacion
+app.post(process.env.DB_ROUTE+'/crear-respuestafinalizacionconversacion', async (req, res) => {
+
+  try {
+    const { respuesta, estado } = req.body;
+
+    // Validar que todos los campos requeridos estén presentes
+    
+    if (!respuesta || !estado) {
+      return res.status(400).json({ error: 'Faltan datos requeridos para insertar en la tabla.' });
+    }
+
+    // Eliminar todos los registros existentes en la tabla EndConversation
+    await promisePool.execute('DELETE FROM EndConversation');
+
+    // Insertar un nuevo registro en la tabla EndConversation
+    const [insertResult] = await promisePool.execute(
+      'INSERT INTO EndConversation (respuesta, estado) VALUES (?, ?)',
+      [respuesta, estado]
+    );
+
+    const nuevoRegistro = {
+      id: insertResult.insertId,
+      respuesta,
+      estado
+    };
+
+    res.json({ mensaje: 'Registro insertado con éxito', datos: nuevoRegistro });
+  } catch (error) {
+    console.error('Error al insertar en la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+// ruta para obtener datos de la tabla EndConversation
+app.get(process.env.DB_ROUTE+'/obtener-respuestafinalizacionconversacion', async (req, res) => {
+  try {
+    // Ejecutar la consulta SQL para obtener todos los registros
+    const [rows] = await promisePool.query('SELECT * FROM EndConversation');
+
+    // Enviar los registros obtenidos como respuesta
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener los datos de la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+// ruta para actualizar datos de la tabla EndConversation
+app.put(process.env.DB_ROUTE+'/actualizar-respuestafinalizacionconversacion', async (req, res) => {
+
+  try {
+    const { estado } = req.body;
+
+    // Validar que el campo 'estado' esté presente
+    if (!estado) {
+      return res.status(400).json({ error: 'Falta el campo "estado" para la actualización.' });
+    }
+
+    // Actualizar el campo 'estado' en la tabla EndConversation
+    const [updateResult] = await promisePool.execute(
+      'UPDATE EndConversation SET estado = ?',
+      [estado]
+    );
+
+    if (updateResult.affectedRows > 0) {
+      res.json({ mensaje: 'Estado actualizado con éxito', estado });
+    }
+  } catch (error) {
+    console.error('Error al actualizar en la base de datos:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+
+
 // obtener mensajes del dia
 app.get(process.env.DB_ROUTE+'/obtener-mensajes-hoy', async (req, res) => {
   try {

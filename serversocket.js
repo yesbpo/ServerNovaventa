@@ -7,7 +7,7 @@ const cors = require('cors');
 const app = express();
 const mysql = require('mysql2');
 // Ruta al directorio de Let's Encrypt
-const letsEncryptDir = '/etc/letsencrypt/live/novaventa.appcenteryes.com/';
+/*const letsEncryptDir = '/etc/letsencrypt/live/front.appcenteryes.com/';
 
 // Lee los archivos del certificado y la clave privada
 const privateKey = fs.readFileSync(`${letsEncryptDir}privkey.pem`, 'utf8');
@@ -15,9 +15,9 @@ const certificate = fs.readFileSync(`${letsEncryptDir}cert.pem`, 'utf8');
 const ca = fs.readFileSync(`${letsEncryptDir}chain.pem`, 'utf8'); // Puede ser necesario incluir el archivo chain.pem
 
 const credentials = { key: privateKey, cert: certificate, ca: ca };
-
+*/
   // Crea un servidor HTTPS
-  const httpsServer = https.createServer(credentials, app);
+  const httpsServer = https.createServer( app);
 
   // Configura Socket.IO para trabajar con el servidor HTTPS
   const io = socketIO(httpsServer);
